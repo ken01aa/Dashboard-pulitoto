@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crosscheck Pasaran Togel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #f5f7fa;
+            --bg-card: #ffffff;
+            --bg-hover: #f8fafc;
+            --fg-primary: #1a1f36;
+            --fg-secondary: #6b7280;
+            --fg-muted: #9ca3af;
+            --accent-primary: #3b82f6;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+            --border-color: #e5e7eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-main);
+            color: var(--fg-primary);
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        .font-mono {
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        /* Container */
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            transition: all 0.3s ease;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 20px 24px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transform: translateY(-2px);
+        }
+
+        .stat-card.alert {
+            border-left: 4px solid var(--accent-warning);
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0.05), transparent);
+        }
+
+        .stat-card.success {
+            border-left: 4px solid var(--accent-success);
+        }
+
+        .stat-card.info {
+            border-left: 4px solid var(--accent-primary);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--fg-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--fg-primary);
+        }
+
+        .stat-card.alert .stat-value { color: var(--accent-warning); }
+        .stat-card.success .stat-value { color: var(--accent-success); }
+        .stat-card.info .stat-value { color: var(--accent-primary); }
+
+        /* Alert Banner */
+        .alert-banner {
+            background: linear-gradient(90deg, #fef3c7, #fde68a);
+            border: 1px solid #f59e0b;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            animation: bannerPulse 2s ease-in-out infinite;
+        }
+
+        .alert-banner.hidden { display: none; }
+
+        @keyframes bannerPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.3); }
+            50% { box-shadow: 0 0 20px 5px rgba(245, 158, 11, 0.2); }
+        }
+
+        .alert-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .alert-icon {
+            width: 40px; height: 40px;
+            background: #f59e0b;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff;
+        }
+
+        .alert-text h4 { font-size: 14px; font-weight: 600; color: #92400e; }
+        .alert-text p { font-size: 13px; color: #b45309; }
+
+        .alert-close {
+            padding: 8px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: #92400e;
+            opacity: 0.6;
+            transition: opacity 0.2s ease;
+        }
+        .alert-close:hover { opacity: 1; }
+
+        /* Table Section */
+        .table-section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .table-title { font-size: 16px; font-weight: 600; }
+
+        .clock-display {
+            display: flex; align-items: center; gap: 12px;
+            padding: 6px 14px;
+            background: linear-gradient(135deg, #1a1f36, #2d3350);
+            border-radius: 6px;
+            color: #fff;
+        }
+
+        .clock-time {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 14px;
+            font-weight: 600;
+            color: #60a5fa;
+        }
+
+        .table-count {
+            font-size: 13px;
+            color: var(--fg-secondary);
+            background: var(--bg-main);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        /* Table */
+        .data-table-container {
+            overflow-x: auto;
+            max-height: 65vh;
+            overflow-y: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px; /* Min width for extra columns */
+        }
+
+        .data-table th {
+            background: #f8fafc;
+            padding: 14px 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--fg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .data-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        .data-table tbody tr {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .data-table tbody tr:hover { background: var(--bg-hover); }
+        .data-table tbody tr:last-child td { border-bottom: none; }
+
+        /* Row Alert States */
+        .data-table tbody tr.row-alert {
+            background: #fef3c7;
+            animation: rowGlow 2s ease-in-out infinite;
+        }
+        .data-table tbody tr.row-alert:hover { background: #fde68a; }
+
+        .data-table tbody tr.row-result {
+            background: #d1fae5;
+            animation: rowGlowGreen 2s ease-in-out infinite;
+        }
+        .data-table tbody tr.row-result:hover { background: #a7f3d0; }
+
+        .data-table tbody tr.row-approved {
+            background: #f0fdf4;
+            opacity: 0.7;
+        }
+
+        @keyframes rowGlow {
+            0%, 100% { box-shadow: inset 0 0 0 0 rgba(245, 158, 11, 0); }
+            50% { box-shadow: inset 0 0 30px rgba(245, 158, 11, 0.1); }
+        }
+
+        @keyframes rowGlowGreen {
+            0%, 100% { box-shadow: inset 0 0 0 0 rgba(16, 185, 129, 0); }
+            50% { box-shadow: inset 0 0 30px rgba(16, 185, 129, 0.1); }
+        }
+
+        .market-name { font-weight: 600; color: var(--fg-primary); }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-waiting { background: #f3f4f6; color: #6b7280; }
+        .status-betclose { background: #fef3c7; color: #d97706; }
+        .status-result { background: #d1fae5; color: #059669; }
+        .status-approved { background: #dbeafe; color: #2563eb; }
+        .status-inactive { background: #f3f4f6; color: #9ca3af; }
+
+        .status-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+        .status-dot.pulse { animation: dotPulse 1.5s ease-in-out infinite; }
+
+        @keyframes dotPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.5; }
+        }
+
+        .time-cell {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .time-betclose { color: #d97706; }
+        .time-result { color: #059669; }
+
+        /* Action Buttons */
+        .btn-approve {
+            padding: 8px 16px;
+            background: var(--accent-success);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-approve:hover:not(:disabled) { background: #059669; transform: translateY(-1px); }
+        .btn-approve:disabled { background: #d1d5db; color: #9ca3af; cursor: not-allowed; transform: none; }
+
+        .btn-open-link {
+            padding: 6px 12px;
+            background: var(--accent-primary);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        .btn-open-link:hover { background: #2563eb; transform: translateY(-1px); }
+        .btn-open-link.disabled { background: #e5e7eb; color: #9ca3af; cursor: not-allowed; transform: none; }
+
+        .approved-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: #f0fdf4;
+            color: #059669;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Countdown indicator */
+        .countdown-indicator {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 6px;
+            font-weight: 500;
+        }
+        .countdown-soon { background: #fef3c7; color: #92400e; }
+        .countdown-urgent { background: #fee2e2; color: #dc2626; }
+
+        /* VIEWER SECTION (Blog Sebelah) */
+        #viewerSection {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: var(--bg-main);
+            z-index: 9999;
+            flex-direction: column;
+        }
+        #viewerSection.active { display: flex; }
+
+        .viewer-header {
+            background: #fff;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .viewer-title { font-weight: 600; font-size: 16px; color: var(--fg-primary); }
+        .viewer-url { font-size: 12px; color: var(--fg-muted); margin-top: 4px; }
+        
+        .viewer-content {
+            flex: 1;
+            background: #fff;
+            margin: 24px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .viewer-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            flex: 1;
+        }
+
+        .btn-back {
+            padding: 10px 20px;
+            background: #1a1f36;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-back:hover { background: #2d3350; }
+
+        .btn-new-tab {
+            padding: 8px 16px;
+            background: transparent;
+            color: var(--accent-primary);
+            border: 1px solid var(--accent-primary);
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .btn-new-tab:hover { background: rgba(59, 130, 246, 0.1); }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            body { padding: 16px; }
+            .table-header { flex-direction: column; gap: 12px; align-items: flex-start; }
+            .viewer-content { margin: 0; border-radius: 0; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Dashboard View -->
+    <div id="mainView" class="dashboard-container">
+        <!-- Alert Banner -->
+        <div class="alert-banner hidden" id="alertBanner">
+            <div class="alert-content">
+                <div class="alert-icon">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                </div>
+                <div class="alert-text">
+                    <h4 id="alertTitle">Perlu Crosscheck</h4>
+                    <p id="alertMessage">Ada pasaran yang memerlukan perhatian</p>
+                </div>
+            </div>
+            <button class="alert-close" onclick="hideAlertBanner()">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card info"><div class="stat-label">Total Pasaran</div><div class="stat-value" id="statTotal">0</div></div>
+            <div class="stat-card alert"><div class="stat-label">Perlu Crosscheck</div><div class="stat-value" id="statAlert">0</div></div>
+            <div class="stat-card success"><div class="stat-label">Sudah Approve</div><div class="stat-value" id="statApproved">0</div></div>
+            <div class="stat-card"><div class="stat-label">Menunggu</div><div class="stat-value" id="statWaiting">0</div></div>
+        </div>
+
+        <!-- Table Section -->
+        <div class="table-section">
+            <div class="table-header">
+                <h3 class="table-title">Daftar Pasaran</h3>
+                <div class="clock-display"><div class="clock-time" id="clock">00:00:00</div></div>
+                <span class="table-count" id="tableCount">0 data</span>
+            </div>
+            <div class="data-table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">No</th>
+                            <th>Nama Pasaran</th>
+                            <th>Jadwal</th>
+                            <th>Betclose</th>
+                            <th>Result</th>
+                            <th>Status</th>
+                            <th style="width: 100px;">Action</th>
+                            <th style="width: 80px;">Live Draw</th>
+                            <th style="width: 80px;">Live Youtube</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEWER SECTION (Hidden by default) -->
+    <div id="viewerSection">
+        <div class="viewer-header">
+            <div>
+                <div class="viewer-title" id="viewerTitle">Viewing Content</div>
+                <div class="viewer-url" id="viewerUrlDisplay"></div>
+            </div>
+            <div style="display: flex; gap: 12px; align-items: center;">
+                <a href="#" id="newTabLink" class="btn-new-tab" target="_blank">Buka di Tab Baru</a>
+                <button class="btn-back" onclick="closeViewer()">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                    Kembali ke Tabel
+                </button>
+            </div>
+        </div>
+        <div class="viewer-content">
+            <iframe id="viewerIframe" class="viewer-iframe" src="about:blank" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <script>
+        // Market Data with Links
+        const marketsData = [
+            { name: "TOTOMACAU PAGI", schedule: "SETIAP HARI", betclose: "00:00", result: "00:15", liveDraw: "https://www.poolstotomacao.com/", liveYt: "https://kick.com/live-ttm4d" },
+            { name: "HUAHIN 0100", schedule: "SETIAP HARI", betclose: "00:45", result: "01:00", liveDraw: "https://huahinlottery.com/", liveYt: "https://www.youtube.com/@huahinlottery5727" },
+            { name: "BANGKOK 0130", schedule: "SETIAP HARI", betclose: "01:15", result: "01:30", liveDraw: "https://bangkokpoolstoday.com/", liveYt: "" },
+            { name: "KENTUCKY MIDDAY", schedule: "SETIAP HARI", betclose: "01:05", result: "01:20", liveDraw: "https://www.usatoday.com/lottery/us-ky", liveYt: "" },
+            { name: "FLORIDA MIDDAY", schedule: "SETIAP HARI", betclose: "01:20", result: "01:30", liveDraw: "https://floridalottery.com/games/draw-games/pick-4", liveYt: "https://www.youtube.com/@floridalottery" },
+            { name: "NEW YORK MIDDAY", schedule: "SETIAP HARI", betclose: "02:15", result: "02:25", liveDraw: "https://nylottery.ny.gov/draw-game?game=win4", liveYt: "https://www.youtube.com/live/jI8o2LZh5_Y" },
+            { name: "BRUNEI02", schedule: "SETIAP HARI", betclose: "02:30", result: "02:45", liveDraw: "https://bruneipools.com/", liveYt: "" },
+            { name: "CAROLINADAY", schedule: "SETIAP HARI", betclose: "02:45", result: "03:00", liveDraw: "https://www.wral.com/evening-pick-3-pick-4-and-cash-5/1075494/", liveYt: "" },
+            { name: "OREGON03", schedule: "SETIAP HARI", betclose: "03:50", result: "04:00", liveDraw: "https://www.oregonlottery.org/pick-4/winning-numbers/", liveYt: "" },
+            { name: "OREGON06", schedule: "SETIAP HARI", betclose: "06:50", result: "07:00", liveDraw: "https://www.oregonlottery.org/pick-4/winning-numbers/", liveYt: "" },
+            { name: "BANGKOK 0930", schedule: "SETIAP HARI", betclose: "09:15", result: "09:30", liveDraw: "https://bangkokpoolstoday.com/", liveYt: "" },
+            { name: "CALIFORNIA", schedule: "SETIAP HARI", betclose: "09:25", result: "09:30", liveDraw: "https://www.calottery.com/draw-games/daily-4", liveYt: "" },
+            { name: "FLORIDA EVENING", schedule: "SETIAP HARI", betclose: "09:35", result: "09:45", liveDraw: "https://floridalottery.com/games/draw-games/pick-4", liveYt: "https://www.youtube.com/@floridalottery" },
+            { name: "OREGON09", schedule: "SETIAP HARI", betclose: "09:50", result: "10:00", liveDraw: "https://www.oregonlottery.org/pick-4/winning-numbers/", liveYt: "" },
+            { name: "NEW YORK EVENING", schedule: "SETIAP HARI", betclose: "10:25", result: "10:35", liveDraw: "https://nylottery.ny.gov/draw-game?game=win4", liveYt: "https://www.youtube.com/live/jI8o2LZh5_Y" },
+            { name: "KENTUCKY EVENING", schedule: "SETIAP HARI", betclose: "10:45", result: "11:00", liveDraw: "https://www.usatoday.com/lottery/us-ky", liveYt: "" },
+            { name: "TOTO CAMBODIA LIVE", schedule: "SETIAP HARI", betclose: "10:45", result: "11:00", liveDraw: "https://totocambodialive.com/live-draw.html", liveYt: "https://www.youtube.com/@TotoCambodiaOfficial/streams" },
+            { name: "CHELSEA 11", schedule: "SETIAP HARI", betclose: "11:00", result: "11:15", liveDraw: "https://chelseapools.co.uk/", liveYt: "" },
+            { name: "CAROLINA EVENING", schedule: "SETIAP HARI", betclose: "11:17", result: "11:22", liveDraw: "https://www.wral.com/evening-pick-3-pick-4-and-cash-5/1075494/", liveYt: "" },
+            { name: "BULLSEYE", schedule: "SETIAP HARI", betclose: "12:00", result: "12:15", liveDraw: "https://mylotto.co.nz/results/bullseye", liveYt: "" },
+            { name: "POIPET12", schedule: "SETIAP HARI", betclose: "12:15", result: "12:30", liveDraw: "https://poipetlottery.com/", liveYt: "https://www.youtube.com/@poipetpools" },
+            { name: "OREGON12", schedule: "SETIAP HARI", betclose: "12:50", result: "13:00", liveDraw: "https://www.oregonlottery.org/pick-4/winning-numbers/", liveYt: "" },
+            { name: "TOTOMACAU SIANG", schedule: "SETIAP HARI", betclose: "13:00", result: "13:15", liveDraw: "https://www.poolstotomacao.com/", liveYt: "https://kick.com/live-ttm4d" },
+            { name: "SYDNEY LOTTO", schedule: "SETIAP HARI", betclose: "13:49", result: "14:05", liveDraw: "https://lottosydney.fun/", liveYt: "https://www.youtube.com/@SYDNEYLOTTOOFFICIAL1" },
+            { name: "BRUNEI14", schedule: "SETIAP HARI", betclose: "14:30", result: "14:45", liveDraw: "https://bruneipools.com/", liveYt: "" },
+            { name: "CHELSEA 15", schedule: "SETIAP HARI", betclose: "15:00", result: "15:15", liveDraw: "https://chelseapools.co.uk/", liveYt: "" },
+            { name: "POIPET15", schedule: "SETIAP HARI", betclose: "15:15", result: "15:30", liveDraw: "https://poipetlottery.com/", liveYt: "https://www.youtube.com/@poipetpools" },
+            { name: "TOTOMALI1530", schedule: "SETIAP HARI", betclose: "15:15", result: "15:30", liveDraw: "https://totomali.com/", liveYt: "https://www.youtube.com/@TotoMaliLive" },
+            { name: "TOTOMACAU SORE", schedule: "SETIAP HARI", betclose: "16:00", result: "16:15", liveDraw: "https://www.poolstotomacao.com/", liveYt: "https://kick.com/live-ttm4d" },
+            { name: "HUAHIN 1630", schedule: "SETIAP HARI", betclose: "16:15", result: "16:30", liveDraw: "https://huahinlottery.com/", liveYt: "https://www.youtube.com/@huahinlottery5727" },
+            { name: "KING KONG4D SORE", schedule: "SETIAP HARI", betclose: "17:00", result: "17:15", liveDraw: "http://kingkongpools.id/", liveYt: "https://kick.com/king-kong-pools" },
+            { name: "SINGAPORE", schedule: "SELASA & JUMAT TUTUP", betclose: "17:30", result: "17:45", liveDraw: "https://online.singaporepools.com/en/lottery", liveYt: "" },
+            { name: "MAGNUM4D", schedule: "RABU, SABTU & MINGGU", betclose: "18:10", result: "18:40", liveDraw: "https://www.magnum4d.my/results/draw-results", liveYt: "" },
+            { name: "TOTOMACAU MALAM I", schedule: "SETIAP HARI", betclose: "19:00", result: "19:15", liveDraw: "https://www.poolstotomacao.com/", liveYt: "https://kick.com/live-ttm4d" },
+            { name: "CHELSEA 19", schedule: "SETIAP HARI", betclose: "19:00", result: "19:15", liveDraw: "https://chelseapools.co.uk/", liveYt: "" },
+            { name: "POIPET19", schedule: "SETIAP HARI", betclose: "19:30", result: "19:45", liveDraw: "https://poipetlottery.com/", liveYt: "https://www.youtube.com/@poipetpools" },
+            { name: "PCSO", schedule: "MINGGU TUTUP", betclose: "19:50", result: "20:10", liveDraw: "https://www.pcso.gov.ph/", liveYt: "https://www.youtube.com/@PCSOGOVPHOfficial" },
+            { name: "TOTOMALI2030", schedule: "SETIAP HARI", betclose: "20:15", result: "20:30", liveDraw: "https://totomali.com/", liveYt: "https://www.youtube.com/@TotoMaliLive" },
+            { name: "HUAHIN 2100", schedule: "SETIAP HARI", betclose: "20:45", result: "21:00", liveDraw: "https://huahinlottery.com/", liveYt: "https://www.youtube.com/@huahinlottery5727" },
+            { name: "CHELSEA 21", schedule: "SETIAP HARI", betclose: "21:00", result: "21:15", liveDraw: "https://chelseapools.co.uk/", liveYt: "" },
+            { name: "NEVADA", schedule: "SETIAP HARI", betclose: "21:15", result: "21:30", liveDraw: "https://www.nevadalottery.us/", liveYt: "" },
+            { name: "BRUNEI21", schedule: "SETIAP HARI", betclose: "21:30", result: "21:45", liveDraw: "https://bruneipools.com/", liveYt: "" },
+            { name: "TOTOMACAU MALAM II", schedule: "SETIAP HARI", betclose: "22:00", result: "22:15", liveDraw: "https://www.poolstotomacao.com/", liveYt: "https://kick.com/live-ttm4d" },
+            { name: "POIPET22", schedule: "SETIAP HARI", betclose: "22:30", result: "22:45", liveDraw: "https://poipetlottery.com/", liveYt: "https://www.youtube.com/@poipetpools" },
+            { name: "HONGKONG LOTTO", schedule: "SETIAP HARI", betclose: "22:59", result: "23:15", liveDraw: "http://hongkongfunlotto.net/", liveYt: "https://www.youtube.com/@HONGKONGLOTTOOFFICIAL1" },
+            { name: "TOTOMACAU MALAM III", schedule: "SETIAP HARI", betclose: "23:00", result: "23:15", liveDraw: "https://www.poolstotomacao.com/", liveYt: "https://kick.com/live-ttm4d" },
+            { name: "TOTOMALI2330", schedule: "SETIAP HARI", betclose: "23:15", result: "23:30", liveDraw: "https://totomali.com/", liveYt: "https://www.youtube.com/@TotoMaliLive" },
+            { name: "HOKIDRAW 5D", schedule: "SETIAP JAM (24X)", betclose: "XX:00", result: "XX:10", hourly: true, liveDraw: "https://www.youtube.com/@huahinlottery5727", liveYt: "https://dlive.tv/u/HOKIDRAW" },
+            { name: "KING KONG4D MALAM", schedule: "SETIAP HARI", betclose: "23:30", result: "23:45", liveDraw: "http://kingkongpools.id/", liveYt: "https://kick.com/king-kong-pools" }
+        ];
+
+        let approvedMarkets = {};
+        const clockEl = document.getElementById('clock');
+        const tableBody = document.getElementById('tableBody');
+        const alertBanner = document.getElementById('alertBanner');
+        const alertTitle = document.getElementById('alertTitle');
+        const alertMessage = document.getElementById('alertMessage');
+        const mainView = document.getElementById('mainView');
+        const viewerSection = document.getElementById('viewerSection');
+        const viewerIframe = document.getElementById('viewerIframe');
+        const viewerTitle = document.getElementById('viewerTitle');
+        const viewerUrlDisplay = document.getElementById('viewerUrlDisplay');
+        const newTabLink = document.getElementById('newTabLink');
+
+        function loadApproved() {
+            try {
+                const saved = localStorage.getItem('togelApproved');
+                if (saved) approvedMarkets = JSON.parse(saved);
+            } catch (e) { approvedMarkets = {}; }
+        }
+
+        function saveApproved() { localStorage.setItem('togelApproved', JSON.stringify(approvedMarkets)); }
+        function parseTimeToMinutes(timeStr) {
+            if (!timeStr || !timeStr.includes(':')) return -1;
+            const parts = timeStr.split(':');
+            return parseInt(parts[0]) * 60 + parseInt(parts[1]);
+        }
+
+        function getCurrentMinutes() {
+            const now = new Date();
+            return now.getHours() * 60 + now.getMinutes();
+        }
+
+        function isMarketActive(market) {
+            const today = new Date();
+            const day = today.getDay();
+            const schedule = market.schedule.toLowerCase();
+            if (market.hourly) return true;
+            if (schedule.includes('selasa') && schedule.includes('jumat')) return day === 2 || day === 5;
+            if (schedule.includes('rabu') && schedule.includes('sabtu')) return day === 3 || day === 6 || day === 0;
+            if (schedule.includes('minggu tutup')) return day !== 0;
+            return true;
+        }
+
+        function getApprovalKey(market) {
+            const now = new Date();
+            const today = now.toDateString();
+            if (market.hourly) {
+                const hour = now.getHours();
+                return `${market.name}_${today}_${hour}`;
+            }
+            return `${market.name}_${today}`;
+        }
+
+        function getMarketStatus(market) {
+            const key = getApprovalKey(market);
+            if (approvedMarkets[key]) return { type: 'approved', label: 'Selesai', alert: false };
+            if (!isMarketActive(market)) return { type: 'inactive', label: 'Tutup', alert: false };
+            if (market.hourly) {
+                const now = new Date();
+                const min = now.getMinutes();
+                if (min >= 10 && min < 40) return { type: 'result', label: 'Result!', alert: true, urgent: true };
+                if (min < 10) return { type: 'result', label: `Result ${10 - min}m`, alert: true, urgent: false };
+                if (min >= 55) return { type: 'betclose', label: `Betclose ${60 - min}m`, alert: true };
+                return { type: 'waiting', label: 'Menunggu', alert: false };
+            }
+            const currentMins = getCurrentMinutes();
+            const betcloseMins = parseTimeToMinutes(market.betclose);
+            const resultMins = parseTimeToMinutes(market.result);
+            const alertStart = betcloseMins - 5;
+            const alertEnd = resultMins + 30;
+            if (currentMins >= alertStart && currentMins < betcloseMins) return { type: 'betclose', label: `Betclose ${betcloseMins - currentMins}m`, alert: true };
+            if (currentMins >= betcloseMins && currentMins < resultMins) return { type: 'result', label: 'Menunggu Result', alert: true, urgent: true };
+            if (currentMins >= resultMins && currentMins < alertEnd) return { type: 'result', label: 'Result!', alert: true, urgent: true };
+            return { type: 'waiting', label: 'Menunggu', alert: false };
+        }
+
+        function getSortPriority(market) {
+            const status = getMarketStatus(market);
+            if (status.type === 'approved') return 10000;
+            if (status.type === 'inactive') return 8000;
+            if (market.hourly) {
+                const now = new Date();
+                const min = now.getMinutes();
+                if (min >= 10 && min < 40) return 500;
+                if (min < 10) return 500 + (10 - min);
+                if (min >= 55) return 1000 + (60 - min);
+                return 5000 + (55 - min);
+            }
+            const currentMins = getCurrentMinutes();
+            const betcloseMins = parseTimeToMinutes(market.betclose);
+            const resultMins = parseTimeToMinutes(market.result);
+            let priority = 0;
+            if (status.type === 'waiting') priority = 5000;
+            else if (status.type === 'betclose') priority = 1000;
+            else if (status.type === 'result') priority = 500;
+            let timeRemaining = 0;
+            if (betcloseMins !== -1) {
+                if (currentMins < betcloseMins) timeRemaining = betcloseMins - currentMins;
+                else if (currentMins < resultMins) timeRemaining = resultMins - currentMins;
+            }
+            return priority + timeRemaining;
+        }
+
+        function getMinutesUntilNext(market) {
+            if (market.hourly) {
+                const now = new Date();
+                const min = now.getMinutes();
+                if (min < 55) return { mins: 55 - min, event: 'betclose' };
+                return { mins: 60 - min, event: 'result' };
+            }
+            const currentMins = getCurrentMinutes();
+            const betcloseMins = parseTimeToMinutes(market.betclose);
+            const resultMins = parseTimeToMinutes(market.result);
+            if (currentMins < betcloseMins) return { mins: betcloseMins - currentMins, event: 'betclose' };
+            if (currentMins < resultMins) return { mins: resultMins - currentMins, event: 'result' };
+            return { mins: 0, event: 'done' };
+        }
+
+        // Viewer Functions
+        function openViewer(url, title) {
+            viewerTitle.textContent = title || "Live Viewer";
+            viewerUrlDisplay.textContent = url;
+            newTabLink.href = url;
+            viewerIframe.src = url;
+            viewerSection.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeViewer() {
+            viewerSection.classList.remove('active');
+            viewerIframe.src = "about:blank";
+            document.body.style.overflow = 'auto';
+        }
+
+        function renderTable() {
+            const today = new Date().toDateString();
+            const sortedMarkets = [...marketsData].sort((a, b) => getSortPriority(a) - getSortPriority(b));
+            let html = '';
+            
+            sortedMarkets.forEach((market, index) => {
+                const globalIndex = index + 1;
+                const status = getMarketStatus(market);
+                const key = getApprovalKey(market);
+                const isApproved = approvedMarkets[key];
+                const nextEvent = getMinutesUntilNext(market);
+
+                let rowClass = '';
+                if (isApproved) rowClass = 'row-approved';
+                else if (status.type === 'betclose') rowClass = 'row-alert';
+                else if (status.type === 'result') rowClass = 'row-result';
+
+                let badgeClass = 'status-waiting';
+                let dotPulse = '';
+                if (status.type === 'approved') badgeClass = 'status-approved';
+                else if (status.type === 'betclose') { badgeClass = 'status-betclose'; dotPulse = 'pulse'; }
+                else if (status.type === 'result') { badgeClass = 'status-result'; dotPulse = 'pulse'; }
+                else if (status.type === 'inactive') badgeClass = 'status-inactive';
+
+                let countdownHtml = '';
+                if (!isApproved && status.type === 'waiting' && nextEvent.mins > 0 && nextEvent.mins <= 60) {
+                    const urgencyClass = nextEvent.mins <= 15 ? 'countdown-urgent' : 'countdown-soon';
+                    countdownHtml = `<span class="countdown-indicator ${urgencyClass}">${nextEvent.mins}m</span>`;
+                }
+
+                // Buttons Logic
+                let actionHtml = isApproved 
+                    ? `<span class="approved-badge"><svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>Done</span>`
+                    : `<button class="btn-approve" onclick="approveMarket('${market.name}')" ${!status.alert ? 'disabled' : ''}>Approve</button>`;
+
+                let liveDrawBtn = market.liveDraw 
+                    ? `<button class="btn-open-link" onclick="openViewer('${market.liveDraw}', 'Live Draw - ${market.name}')">Buka</button>`
+                    : `<button class="btn-open-link disabled">-</button>`;
+
+                let liveYtBtn = market.liveYt 
+                    ? `<button class="btn-open-link" onclick="openViewer('${market.liveYt}', 'Live YouTube - ${market.name}')">Buka</button>`
+                    : `<button class="btn-open-link disabled">-</button>`;
+
+                html += `
+                    <tr class="${rowClass}">
+                        <td class="font-mono" style="color:#9ca3af;">${globalIndex}</td>
+                        <td><span class="market-name">${market.name}</span>${countdownHtml}</td>
+                        <td style="color:#6b7280;">${market.schedule}</td>
+                        <td class="time-cell time-betclose">${market.betclose}</td>
+                        <td class="time-cell time-result">${market.result}</td>
+                        <td><span class="status-badge ${badgeClass}"><span class="status-dot ${dotPulse}"></span>${status.label}</span></td>
+                        <td>${actionHtml}</td>
+                        <td style="text-align:center;">${liveDrawBtn}</td>
+                        <td style="text-align:center;">${liveYtBtn}</td>
+                    </tr>
+                `;
+            });
+
+            tableBody.innerHTML = html;
+            updateStats();
+        }
+
+        function updateStats() {
+            const today = new Date().toDateString();
+            let alertCount = 0, approvedCount = 0, waitingCount = 0;
+            marketsData.forEach(market => {
+                const status = getMarketStatus(market);
+                const key = getApprovalKey(market);
+                if (approvedMarkets[key]) approvedCount++;
+                else if (status.alert) alertCount++;
+                else waitingCount++;
+            });
+            document.getElementById('statTotal').textContent = marketsData.length;
+            document.getElementById('statAlert').textContent = alertCount;
+            document.getElementById('statApproved').textContent = approvedCount;
+            document.getElementById('statWaiting').textContent = waitingCount;
+            document.getElementById('tableCount').textContent = `${marketsData.length} data`;
+        }
+
+        function approveMarket(name) {
+            const market = marketsData.find(m => m.name === name);
+            if (!market) return;
+            const key = getApprovalKey(market);
+            approvedMarkets[key] = { timestamp: new Date().toISOString(), date: new Date().toDateString() };
+            saveApproved();
+            renderTable();
+            showAlertBanner('Berhasil', `${name} telah di-approve`, false);
+        }
+
+        function showAlertBanner(title, message, urgent = true) {
+            alertTitle.textContent = title;
+            alertMessage.textContent = message;
+            alertBanner.classList.remove('hidden');
+            if (!urgent) setTimeout(() => alertBanner.classList.add('hidden'), 3000);
+        }
+
+        function hideAlertBanner() { alertBanner.classList.add('hidden'); }
+
+        function checkAlerts() {
+            const alertMarkets = marketsData.filter(m => {
+                const status = getMarketStatus(m);
+                return status.alert && status.urgent;
+            });
+            if (alertMarkets.length > 0) {
+                const names = alertMarkets.slice(0, 2).map(m => m.name).join(', ');
+                showAlertBanner('Perlu Crosscheck', `${names} sedang result dan perlu dicrosscheck`);
+            }
+        }
+
+        function updateClock() {
+            const now = new Date();
+            clockEl.textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+        }
+
+        function init() {
+            loadApproved();
+            updateClock();
+            renderTable();
+            setInterval(updateClock, 1000);
+            setInterval(() => { renderTable(); checkAlerts(); }, 10000);
+            setTimeout(checkAlerts, 1000);
+        }
+
+        init();
+    </script>
+</body>
+</html>

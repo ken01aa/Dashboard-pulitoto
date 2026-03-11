@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Bukti Kemenangan PULITOTO - V2 Pagination</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Tampilan Aplikasi Generator - DISELARASKAN DENGAN PREDIKSI BOLA */
+        :root {
+            --gold: #FFD700;
+            --gold-dark: #FFA500;
+            --dark-bg: #000;
+            --card-bg: rgba(0, 0, 0, 0.85);
+            --text-main: #ffffff;
+            --text-muted: #cccccc;
+            --border: #FFD700;
+            --input-bg: rgba(26, 26, 26, 0.9);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .app-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.2);
+            border: 2px solid var(--border);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header img {
+            max-width: 180px;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .form-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 12px;
+            border: 2px solid var(--gold);
+        }
+
+        .form-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--gold);
+            margin-bottom: 5px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .input-group label {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        input[type="text"], textarea {
+            background: var(--input-bg);
+            border: 2px solid #555;
+            border-radius: 10px;
+            padding: 12px;
+            color: var(--text-main);
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s;
+            resize: vertical;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+        }
+
+        textarea { min-height: 100px; }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-generate {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: #000;
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, #333, #555);
+            color: var(--gold);
+            border: 2px solid var(--gold);
+        }
+
+        .btn-reset:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn-copy {
+            background: linear-gradient(135deg, #333, #555);
+            color: var(--gold);
+            border: 2px solid var(--gold);
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .btn-copy:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .output-section { margin-top: 25px; }
+
+        .output-section label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--gold);
+        }
+
+        #outputHtml {
+            background: rgba(26, 26, 26, 0.95);
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            min-height: 200px;
+            border: 1px solid #444;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--gold);
+            color: #000;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        @media (max-width: 600px) {
+            .app-container { padding: 15px; }
+            .btn-group { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="header">
+            <img src="https://pulitoto.com/resources/images/logo.png" alt="PULITOTO Logo">
+            <h1>Generator Bukti Kemenangan</h1>
+            <p style="font-size: 12px; color: #666; margin-top: 5px;">Versi Pagination (10 Item/Halaman)</p>
+        </div>
+
+        <div class="form-section">
+            <div class="form-title">📝 Input Data Kemenangan Baru</div>
+            
+            <div class="input-group">
+                <label>Judul Kemenangan</label>
+                <input type="text" id="inputJudul" placeholder="Contoh: JACKPOT SWEET BONANZA">
+            </div>
+
+            <div class="input-group">
+                <label>Link Gambar</label>
+                <input type="text" id="inputGambar" placeholder="https://contoh-gambar.jpg">
+            </div>
+
+            <div class="input-group">
+                <label>Teks Kemenangan (Bisa pakai HTML seperti &lt;br&gt;)</label>
+                <textarea id="inputTeks" placeholder="Selamat kepada userid... berhadiah Rp..."></textarea>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-reset" onclick="resetInput()">🔄 Reset Data Baru</button>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>📂 Tempel HTML Lama (Paste di sini)</label>
+            <textarea id="inputHtmlLama" placeholder="Tempel kode HTML lama Anda di sini..."></textarea>
+        </div>
+
+        <div class="btn-group" style="margin-top: 20px;">
+            <button class="btn-generate" onclick="generateHtml()">⚡ GENERATE HTML</button>
+        </div>
+
+        <div class="output-section">
+            <label>✅ Hasil HTML Baru (Salin kode di bawah ini)</label>
+            <textarea id="outputHtml" readonly></textarea>
+            <button class="btn-copy" onclick="copyOutput()">📋 Salin Kode HTML</button>
+        </div>
+    </div>
+
+    <div id="notif" class="notification">Berhasil!</div>
+
+    <script>
+        function generateHtml() {
+            const judul = document.getElementById('inputJudul').value.trim();
+            const gambar = document.getElementById('inputGambar').value.trim();
+            const teks = document.getElementById('inputTeks').value.trim();
+            const htmlLama = document.getElementById('inputHtmlLama').value.trim();
+
+            if (!judul || !gambar || !teks) {
+                showNotif("Harap isi semua data kemenangan!");
+                return;
+            }
+
+            // Template Kartu Baru - DISELARASKAN DENGAN TEMA EMAS
+            const newCard = `
+  <div class="card-kemenangan">
+    <div class="judul">${escapeHtml(judul)}</div>
+    <div class="img-wrap">
+      <img src="${escapeHtml(gambar)}" alt="${escapeHtml(judul)}" onerror="this.src='https://via.placeholder.com/400x200/0a0a0a/FFD700?text=Gambar+Tidak+Tersedia'" />
+    </div>
+    <div class="deskripsi">${teks}</div>
+  </div>`;
+
+            let finalHtml = "";
+            const parser = new DOMParser();
+            
+            // CSS dan JS untuk Pagination - DISELARASKAN DENGAN TEMA EMAS
+            const paginationAssets = `
+  <style>
+    /* CSS Pagination - Tema Emas */
+    .pagination-nav {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+    .pag-btn {
+      background: rgba(26, 26, 26, 0.9);
+      border: 2px solid #FFD700;
+      color: #FFD700;
+      padding: 8px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.3s;
+      text-decoration: none;
+    }
+    .pag-btn:hover:not(.disabled) {
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+      color: #000;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+    }
+    .pag-btn.active {
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+      color: #000;
+      font-weight: bold;
+      border-color: #FFD700;
+    }
+    .pag-btn.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      border-color: #555;
+      color: #555;
+    }
+    .page-info {
+        color: #FFD700;
+        font-size: 12px;
+        margin-top: 10px;
+        text-align: center;
+    }
+  </style>
+
+  <script>
+    (function() {
+        const wrapper = document.querySelector('.kemenangan-wrapper');
+        if (!wrapper) return;
+
+        // Cek apakah sudah diinisialisasi
+        if (wrapper.classList.contains('paginated')) return;
+        wrapper.classList.add('paginated');
+
+        let paginationDiv = wrapper.querySelector('.pagination-nav');
+        if (!paginationDiv) {
+            paginationDiv = document.createElement('div');
+            paginationDiv.className = 'pagination-nav';
+            wrapper.appendChild(paginationDiv);
+        }
+
+        const cards = Array.from(wrapper.querySelectorAll('.card-kemenangan'));
+        const itemsPerPage = 10;
+        let currentPage = 1;
+        const totalPages = Math.ceil(cards.length / itemsPerPage);
+
+        function showPage(page) {
+            if (page < 1) page = 1;
+            if (page > totalPages) page = totalPages;
+            currentPage = page;
+
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+
+            cards.forEach((card, index) => {
+                if (index >= start && index < end) {
+                    card.style.display = 'block';
+                    // Trigger animasi lagi jika perlu
+                    card.style.animation = 'none';
+                    card.offsetHeight; /* trigger reflow */
+                    card.style.animation = null; 
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            renderPagination();
+            
+            // Scroll ke atas wrapper
+            // wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function renderPagination() {
+            let html = '';
+            
+            // Tombol Prev
+            html += '<button class="pag-btn ' + (currentPage === 1 ? 'disabled' : '') + '" onclick="window.paginateKemenangan(' + (currentPage - 1) + ')">« Prev</button>';
+            
+            // Nomor Halaman
+            // Logika: Tampil 1 ... 3 4 5 ... 10
+            if (totalPages <= 7) {
+                for (let i = 1; i <= totalPages; i++) {
+                    html += '<button class="pag-btn ' + (i === currentPage ? 'active' : '') + '" onclick="window.paginateKemenangan(' + i + ')">' + i + '</button>';
+                }
+            } else {
+                // Halaman pertama selalu tampil
+                html += '<button class="pag-btn ' + (1 === currentPage ? 'active' : '') + '" onclick="window.paginateKemenangan(1)">1</button>';
+
+                if (currentPage > 3) {
+                    html += '<span style="color:#FFD700">...</span>';
+                }
+
+                // Rentang tengah
+                let startPage = Math.max(2, currentPage - 1);
+                let endPage = Math.min(totalPages - 1, currentPage + 1);
+
+                if (currentPage === 1) endPage = 3; // Khusus halaman 1
+                if (currentPage === totalPages) startPage = totalPages - 2; // Khusus halaman akhir
+
+                for (let i = startPage; i <= endPage; i++) {
+                    html += '<button class="pag-btn ' + (i === currentPage ? 'active' : '') + '" onclick="window.paginateKemenangan(' + i + ')">' + i + '</button>';
+                }
+
+                if (currentPage < totalPages - 2) {
+                    html += '<span style="color:#FFD700">...</span>';
+                }
+
+                // Halaman terakhir selalu tampil
+                html += '<button class="pag-btn ' + (totalPages === currentPage ? 'active' : '') + '" onclick="window.paginateKemenangan(' + totalPages + ')">' + totalPages + '</button>';
+            }
+
+            // Tombol Next
+            html += '<button class="pag-btn ' + (currentPage === totalPages || totalPages === 0 ? 'disabled' : '') + '" onclick="window.paginateKemenangan(' + (currentPage + 1) + ')">Next »</button>';
+            
+            paginationDiv.innerHTML = html;
+            
+            // Info tambahan
+            if(totalPages > 0) {
+                const startItem = (currentPage - 1) * itemsPerPage + 1;
+                const endItem = Math.min(currentPage * itemsPerPage, cards.length);
+                const infoDivId = 'page-info-div';
+                let infoDiv = document.getElementById(infoDivId);
+                if(!infoDiv) {
+                    infoDiv = document.createElement('div');
+                    infoDiv.id = infoDivId;
+                    infoDiv.className = 'page-info';
+                    wrapper.appendChild(infoDiv);
+                }
+                infoDiv.innerText = 'Menampilkan ' + startItem + ' - ' + endItem + ' dari ' + cards.length + ' kemenangan';
+            }
+        }
+
+        // Fungsi global untuk dipanggil onclick
+        window.paginateKemenangan = function(page) {
+            showPage(page);
+        };
+
+        // Inisialisasi pertama kali
+        if (cards.length > itemsPerPage) {
+            showPage(1);
+        } else {
+            // Jika item sedikit,sembunyikan pagination
+            paginationDiv.style.display = 'none';
+        }
+    })();
+  <\/script>`;
+
+            if (htmlLama) {
+                const doc = parser.parseFromString(htmlLama, 'text/html');
+                const wrapper = doc.querySelector('.kemenangan-wrapper');
+
+                if (wrapper) {
+                    // Hapus script pagination lama jika ada (untuk mencegah duplikasi)
+                    const oldScripts = wrapper.querySelectorAll('script');
+                    oldScripts.forEach(s => s.remove());
+                    
+                    // Hapus nav pagination lama
+                    const oldNav = wrapper.querySelector('.pagination-nav');
+                    if(oldNav) oldNav.remove();
+                    
+                    // Hapus info page lama
+                    const oldInfo = wrapper.querySelector('.page-info');
+                    if(oldInfo) oldInfo.remove();
+
+                    // Sisipkan kartu baru
+                    const marquee = wrapper.querySelector('.marquee-banner');
+                    const firstCard = wrapper.querySelector('.card-kemenangan');
+                    const tempDiv = doc.createElement('div');
+                    tempDiv.innerHTML = newCard;
+                    const newCardNode = tempDiv.firstElementChild;
+
+                    if (marquee) {
+                        marquee.after(newCardNode);
+                    } else if (firstCard) {
+                        firstCard.before(newCardNode);
+                    } else {
+                        wrapper.appendChild(newCardNode);
+                    }
+
+                    // Sisipkan CSS & JS Pagination
+                    // Kita append setelah wrapper selesai dibangun
+                    const finalWrapperHtml = wrapper.outerHTML;
+                    
+                    // Masukkan assets di dalam wrapper sebelum penutup div terakhir
+                    // Cara paling mudah: replace </div> terakhir dengan assets + </div>
+                    // Tapi karena outerHTML sudah string, kita parse ulang sebentar
+                    const tempWrapperDiv = doc.createElement('div');
+                    tempWrapperDiv.innerHTML = finalWrapperHtml;
+                    const targetWrapper = tempWrapperDiv.querySelector('.kemenangan-wrapper');
+                    
+                    // Inject assets
+                    const scriptEl = doc.createElement('div');
+                    scriptEl.innerHTML = paginationAssets; // Berisi style dan script
+                    targetWrapper.appendChild(scriptEl.firstElementChild); // style
+                    targetWrapper.appendChild(scriptEl.firstElementChild); // script
+
+                    finalHtml = targetWrapper.outerHTML;
+
+                } else {
+                    finalHtml = newCard + "\n\n" + htmlLama;
+                }
+            } else {
+                finalHtml = `<div class="kemenangan-wrapper">
+  <!-- Marquee bisa ditambahkan manual -->
+  ${newCard}
+  ${paginationAssets}
+</div>`;
+            }
+
+            document.getElementById('outputHtml').value = finalHtml;
+            showNotif("HTML Berhasil Di-generate dengan Pagination!");
+        }
+
+        function escapeHtml(text) {
+            if (!text) return text;
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function resetInput() {
+            document.getElementById('inputJudul').value = '';
+            document.getElementById('inputGambar').value = '';
+            document.getElementById('inputTeks').value = '';
+            showNotif("Form Input Direset!");
+        }
+
+        function copyOutput() {
+            const outputText = document.getElementById('outputHtml');
+            outputText.select();
+            outputText.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(outputText.value)
+                .then(() => {
+                    showNotif("Kode HTML Disalin!");
+                })
+                .catch(err => {
+                    showNotif("Gagal menyalin.");
+                });
+        }
+
+        function showNotif(message) {
+            const notif = document.getElementById('notif');
+            notif.textContent = message;
+            notif.classList.add('show');
+            setTimeout(() => {
+                notif.classList.remove('show');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

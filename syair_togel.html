@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Kode Syair PULITOTO</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: #000; 
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container { 
+            max-width: 700px; 
+            margin: auto; 
+            background: rgba(0, 0, 0, 0.85);
+            padding: 30px; 
+            border-radius: 16px; 
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.2);
+            border: 2px solid #FFD700;
+        }
+
+        /* Logo di Header Aplikasi */
+        .app-header { 
+            text-align: center; 
+            margin-bottom: 20px; 
+        }
+        .app-header img { 
+            max-width: 200px; 
+            height: auto; 
+            display: inline-block; 
+        }
+
+        h2 { 
+            color: #FFD700; 
+            text-align: center; 
+            margin-top: 10px; 
+            margin-bottom: 10px;
+            font-size: 24px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .input-box { 
+            margin-bottom: 15px; 
+        }
+
+        label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: bold; 
+            font-size: 14px;
+            color: #FFD700;
+        }
+
+        input[type="text"] { 
+            width: 100%; 
+            padding: 12px 15px; 
+            border: 2px solid #555;
+            border-radius: 10px; 
+            box-sizing: border-box;
+            background: rgba(26, 26, 26, 0.9);
+            color: #fff;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+        }
+
+        input[type="text"]::placeholder {
+            color: #666;
+        }
+
+        /* Tombol Generate */
+        .btn-generate { 
+            width: 100%; 
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #000; 
+            border: none; 
+            padding: 15px; 
+            font-size: 16px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+
+        .btn-generate:hover { 
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+        }
+
+        /* Tombol Copy */
+        .btn-copy { 
+            width: 100%; 
+            background: linear-gradient(135deg, #333, #555);
+            color: #FFD700; 
+            border: 2px solid #FFD700; 
+            padding: 12px; 
+            font-size: 15px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+
+        .btn-copy:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        #outputArea { 
+            margin-top: 25px; 
+            display: none; 
+        }
+
+        #outputArea h3 {
+            color: #FFD700;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        textarea { 
+            width: 100%; 
+            height: 300px; 
+            font-family: 'Courier New', monospace; 
+            font-size: 13px; 
+            padding: 15px; 
+            border: 1px solid #444;
+            background: rgba(26, 26, 26, 0.95);
+            color: #00ff00;
+            box-sizing: border-box; 
+            border-radius: 10px;
+            resize: vertical;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #FFD700;
+        }
+
+        .info { 
+            font-size: 13px; 
+            color: #888; 
+            text-align: center; 
+            margin-bottom: 20px; 
+        }
+
+        /* STYLE NOTIFIKASI POJOK BAWAH */
+        #toast-notification {
+            visibility: hidden;
+            min-width: 280px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #000;
+            text-align: left;
+            border-radius: 8px;
+            padding: 15px 20px;
+            position: fixed;
+            z-index: 9999;
+            right: 20px;
+            bottom: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        #toast-notification.show {
+            visibility: visible;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        #toast-notification button {
+            background: #000;
+            color: #FFD700;
+            border: none;
+            padding: 6px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 12px;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        #toast-notification button:hover {
+            background: #222;
+            transform: scale(1.05);
+        }
+
+        @keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 20px; opacity: 1;}
+        }
+
+        @keyframes fadeout {
+            from {bottom: 20px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            body {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- LOGO APLIKASI DI TENGAH ATAS -->
+    <div class="app-header">
+        <img src="https://pulitoto.com/resources/images/logo.png" alt="Logo PULITOTO">
+    </div>
+    
+    <h2>Generator Syair</h2>
+    <p class="info">Masukkan Link URL Gambar, lalu klik Generate.</p>
+
+    <div class="input-box">
+        <label>URL Gambar 1:</label>
+        <input type="text" id="url1" placeholder="https://contoh.com/gambar1.jpg">
+    </div>
+    <div class="input-box">
+        <label>URL Gambar 2:</label>
+        <input type="text" id="url2" placeholder="https://contoh.com/gambar2.jpg">
+    </div>
+    <div class="input-box">
+        <label>URL Gambar 3:</label>
+        <input type="text" id="url3" placeholder="https://contoh.com/gambar3.jpg">
+    </div>
+    <div class="input-box">
+        <label>URL Gambar 4:</label>
+        <input type="text" id="url4" placeholder="https://contoh.com/gambar4.jpg">
+    </div>
+    <div class="input-box">
+        <label>URL Gambar 5:</label>
+        <input type="text" id="url5" placeholder="https://contoh.com/gambar5.jpg">
+    </div>
+
+    <button class="btn-generate" onclick="generateCode()">Generate Kode HTML</button>
+
+    <div id="outputArea">
+        <h3>Kode HTML (Copy & Paste ke Blog):</h3>
+        <textarea id="htmlOutput"></textarea>
+        <button class="btn-copy" onclick="copyCode()">Copy Kode HTML</button>
+    </div>
+</div>
+
+<!-- ELEMEN NOTIFIKASI -->
+<div id="toast-notification">
+    <span id="toast-message">Pesan berhasil!</span>
+    <button onclick="closeToast()">OK</button>
+</div>
+
+<script>
+    // Fungsi untuk menampilkan notifikasi
+    function showToast(message) {
+        const x = document.getElementById("toast-notification");
+        document.getElementById("toast-message").innerText = message;
+        x.className = "show";
+        // Auto hide setelah 3 detik
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+    }
+
+    // Fungsi menutup notifikasi manual
+    function closeToast() {
+        const x = document.getElementById("toast-notification");
+        x.className = x.className.replace("show", "");
+    }
+
+    function generateCode() {
+        let imagesHtml = '';
+
+        // Loop untuk mengambil URL gambar
+        for (let i = 1; i <= 5; i++) {
+            const url = document.getElementById('url' + i).value.trim();
+            if (url) {
+                imagesHtml += `<img src="${url}" alt="Syair ${i+9}" />\n`;
+            }
+        }
+
+        // Artikel
+        const articleContent = `
+<div class="article-section">
+    <h3>SYAIR TOGEL PULITOTO</h3>
+    <p>Halaman Syair Togel PULITOTO menyediakan kumpulan syair angka terbaru yang diperbarui setiap hari sebagai referensi tambahan bagi para pemain togel online. Syair togel berisi simbol, kode angka, serta petunjuk shio yang sering digunakan untuk membantu analisa angka main secara lebih terarah.</p>
+    <p>Melalui tampilan yang rapi dan mudah dibaca, pemain dapat memahami arti syair dengan cepat untuk menentukan angka favorit, BBFS, maupun kombinasi angka harian. PULITOTO menghadirkan syair dari berbagai pasaran populer dengan update rutin agar informasi selalu akurat dan terpercaya.</p>
+    <p>Gunakan syair togel sebagai referensi tambahan dan padukan dengan strategi bermain Anda untuk mendapatkan pengalaman bermain yang lebih maksimal bersama PULITOTO.</p>
+</div>`;
+
+        // Template HTML Final dengan !important untuk mencegah perubahan warna/ukuran dari script lain
+        // OUTPUT HTML TIDAK DIUBAH - TETAP WARNA ASLI
+        const finalCode = `<div class="syair-blog-wrapper">
+<style>
+.syair-blog-wrapper {
+font-family: Arial, sans-serif !important;
+background-color: transparent !important;
+color: #fff !important;
+padding: 20px 10px !important;
+max-width: 600px !important;
+margin: auto !important;
+text-align: center !important;
+}
+
+.syair-blog-wrapper .marquee {
+background-color: #C19A5B !important;
+overflow: hidden !important;
+white-space: nowrap !important;
+margin-bottom: 30px !important;
+padding: 10px 0 !important;
+border-radius: 5px !important;
+}
+
+.syair-blog-wrapper .marquee span {
+display: inline-block !important;
+padding-left: 100% !important;
+animation: syair-marquee 20s linear infinite !important;
+color: #000000 !important;
+font-weight: bold !important;
+}
+
+@keyframes syair-marquee {
+0% { transform: translate(0); }
+100% { transform: translate(-100%); }
+}
+
+.syair-blog-wrapper img {
+display: block !important;
+width: 100% !important;
+height: auto !important;
+margin-bottom: 20px !important;
+margin-left: auto !important;
+margin-right: auto !important;
+border-radius: 10px !important;
+box-shadow: 0 4px 12px rgba(0,0,0,0.4) !important;
+border: none !important;
+}
+
+/* Style untuk Artikel */
+.syair-blog-wrapper .article-section {
+padding: 25px 0 !important;
+margin-top: 30px !important;
+text-align: left !important;
+color: #fff !important;
+font-size: 14px !important;
+line-height: 1.7 !important;
+border-top: 1px dashed rgba(255,255,255,0.3) !important;
+background: transparent !important;
+}
+
+.syair-blog-wrapper .article-section h3 {
+text-align: center !important;
+color: #C19A5B !important;
+margin-bottom: 20px !important;
+font-size: 20px !important;
+letter-spacing: 1px !important;
+background: transparent !important;
+}
+
+.syair-blog-wrapper .article-section p {
+margin-bottom: 15px !important;
+text-align: justify !important;
+color: #fff !important;
+}
+
+@media screen and (max-width: 480px) {
+.syair-blog-wrapper { padding: 10px 5px !important; }
+.syair-blog-wrapper .marquee span { font-size: 14px !important; }
+.syair-blog-wrapper .article-section { padding: 20px 0 !important; font-size: 13px !important; }
+.syair-blog-wrapper .article-section h3 { font-size: 18px !important; }
+}
+</style>
+<div class="marquee"><span>PULITOTO &mdash; Bukan syair biasa, melainkan bahasa angka yang menyimpan rahasia. Temukan makna di dalamnya, ikuti alurnya, dan wujudkan mimpi JP hanya di PULITOTO!</span></div>
+
+ ${imagesHtml}
+
+ ${articleContent}
+</div>`;
+
+        document.getElementById('htmlOutput').value = finalCode;
+        document.getElementById('outputArea').style.display = 'block';
+        
+        // NOTIF
+        showToast("Berhasil Generate!");
+    }
+
+    // Fungsi untuk Copy
+    function copyCode() {
+        const copyText = document.getElementById("htmlOutput");
+        copyText.select();
+        copyText.setSelectionRange(0, 99999);
+        document.execCommand("copy");
+        
+        // NOTIF
+        showToast("Berhasil di Copy!");
+    }
+</script>
+
+</body>
+</html>
