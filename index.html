@@ -125,15 +125,17 @@
                     
                     <!-- Cards Statistik -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                        <!-- Card Total Akses -->
-                        <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
+                        
+                        <!-- Card Total Akses PC (Unik) -->
+                        <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white col-span-1 md:col-span-2 lg:col-span-1">
                             <div class="flex items-center justify-between">
                                 <div>
-                                    <p class="text-sm uppercase font-semibold opacity-80">Total Akses</p>
-                                    <p class="text-4xl font-bold mt-2" id="stat-total">0</p>
+                                    <p class="text-sm uppercase font-semibold opacity-80">Total PC Akses</p>
+                                    <p class="text-4xl font-bold mt-2" id="stat-total-pc">0</p>
+                                    <p class="text-xs mt-1 opacity-70">Perangkat Unik</p>
                                 </div>
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 opacity-25" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                 </svg>
                             </div>
                         </div>
@@ -245,39 +247,70 @@
     </div>
 
     <script>
-        // Inisialisasi Data Statistik
-        const stats = JSON.parse(localStorage.getItem('app_stats')) || {
+        // === Konfigurasi LocalStorage Keys ===
+        const STATS_KEY = 'app_stats_v2';
+        const PC_ID_KEY = 'pc_unique_id_v2';
+
+        // === Inisialisasi ID PC Unik ===
+        function getOrCreatePcId() {
+            let pcId = localStorage.getItem(PC_ID_KEY);
+            if (!pcId) {
+                // Membuat ID sederhana dari timestamp + random
+                pcId = 'PC-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substr(2, 5).toUpperCase();
+                localStorage.setItem(PC_ID_KEY, pcId);
+            }
+            return pcId;
+        }
+
+        // === Inisialisasi Data Statistik ===
+        const currentPcId = getOrCreatePcId();
+        let stats = JSON.parse(localStorage.getItem(STATS_KEY)) || {
             prediksi: 0,
             bukti_jp: 0,
             syair: 0,
             result: 0,
             saldo: 0,
             link_prediksi: 0,
-            total: 0,
+            totalPc: 0,
+            pcList: [], // Array untuk menyimpan ID PC unik
             logs: []
         };
 
-        // Fungsi untuk update tampilan statistik
+        // === Fungsi untuk merekam PC baru jika belum ada ===
+        function registerPcAccess() {
+            if (!stats.pcList.includes(currentPcId)) {
+                stats.pcList.push(currentPcId);
+                stats.totalPc = stats.pcList.length;
+                saveStats();
+            }
+        }
+
+        // === Fungsi Simpan Stats ===
+        function saveStats() {
+            localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+        }
+
+        // === Fungsi untuk update tampilan statistik ===
         function updateStatsView() {
+            // Update angka
             document.getElementById('stat-prediksi').innerText = stats.prediksi;
             document.getElementById('stat-bukti_jp').innerText = stats.bukti_jp;
             document.getElementById('stat-syair').innerText = stats.syair;
             document.getElementById('stat-result').innerText = stats.result;
             document.getElementById('stat-saldo').innerText = stats.saldo;
-            document.getElementById('stat-total').innerText = stats.total;
+            document.getElementById('stat-total-pc').innerText = stats.totalPc;
 
+            // Update Log
             const logBody = document.getElementById('log-body');
             const noLogs = document.getElementById('no-logs');
             
-            // Hapus isi lama
             logBody.innerHTML = '';
 
             if (stats.logs.length === 0) {
                 noLogs.classList.remove('hidden');
             } else {
                 noLogs.classList.add('hidden');
-                // Tampilkan 5 log terakhir (dari belakang)
-                const recentLogs = stats.logs.slice(-5).reverse();
+                const recentLogs = stats.logs.slice(-10).reverse(); // 10 log terakhir
                 recentLogs.forEach(log => {
                     const row = document.createElement('tr');
                     row.className = "bg-white border-b hover:bg-gray-50";
@@ -293,52 +326,52 @@
             }
         }
 
-        // Fungsi untuk menambah statistik
+        // === Fungsi untuk menambah statistik penggunaan menu ===
         function addStat(menuKey, appName) {
+            // Jangan rekam jika menu dashboard
             if (menuKey !== 'dashboard') {
+                // Tambah hitungan menu spesifik
                 stats[menuKey] = (stats[menuKey] || 0) + 1;
-                stats.total++;
                 
+                // Tambah log
                 const now = new Date();
                 const timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' ' + now.toLocaleDateString('id-ID');
                 
                 stats.logs.push({
                     app: appName,
-                    time: timeString
+                    time: timeString,
+                    pc: currentPcId
                 });
 
-                // Simpan ke Local Storage
-                localStorage.setItem('app_stats', JSON.stringify(stats));
+                saveStats();
             }
         }
 
-        // Fungsi untuk memuat halaman
+        // === Fungsi untuk memuat halaman ===
         function loadPage(page, element) {
             const contentDashboard = document.getElementById('content-dashboard');
             const contentFrame = document.getElementById('content-frame');
             const allMenus = document.querySelectorAll('.menu-item');
 
-            // 1. Reset warna semua menu jadi tidak aktif
+            // Reset warna menu
             allMenus.forEach(menu => {
                 menu.classList.remove('bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-500/30');
                 menu.classList.add('text-slate-300', 'hover:bg-slate-800');
             });
 
-            // 2. Aktifkan warna menu yang diklik
+            // Aktifkan menu yang diklik
             element.classList.remove('text-slate-300', 'hover:bg-slate-800');
             element.classList.add('bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-500/30');
 
-            // 3. Ambil Judul dan Key Menu
             const title = element.getAttribute('data-title');
             const menuKey = element.getAttribute('data-menu');
             
-            // 4. Logika tampil konten
             if (page === 'dashboard') {
                 contentDashboard.classList.remove('hidden');
                 contentFrame.classList.add('hidden');
                 contentFrame.src = "";
             } else {
-                // Rekam statistik sebelum pindah halaman
+                // Rekam statistik
                 addStat(menuKey, title);
                 
                 contentDashboard.classList.add('hidden');
@@ -347,9 +380,11 @@
             }
         }
 
-        // Load stats saat halaman dibuka
-        document.addEventListener('DOMContentLoaded', updateStatsView);
+        // === Jalankan saat halaman dimuat ===
+        document.addEventListener('DOMContentLoaded', () => {
+            registerPcAccess();      // Catat PC ini jika baru pertama kali
+            updateStatsView();       // Tampilkan statistik
+        });
     </script>
 </body>
 </html>
-
