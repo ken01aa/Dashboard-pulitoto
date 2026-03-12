@@ -71,7 +71,7 @@
     </div>
     
     <script>
-        // Fungsi ambil data otomatis via Proxy (Cloudflare Friendly)
+        // Fungsi ambil data otomatis via Proxy cadangan
         async function ambilDataSekarang() {
             const icon = document.getElementById('iconRefresh');
             const spin = document.getElementById('spinRefresh');
@@ -83,28 +83,50 @@
             spin.classList.remove('hidden');
             btnText.textContent = "Mengambil data...";
             
-            try {
-                // Gunakan AllOrigins Proxy
-                const response = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://shortq.info/prediksibola'));
-                const data = await response.json();
+            const targetUrl = 'https://shortq.info/prediksibola';
+            
+            // Daftar Proxy Pengganti (Jika satu error, coba yang lain)
+            const proxies = [
+                `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`,
+                `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`
+            ];
+
+            let success = false;
+
+            // Coba proxy satu per satu
+            for (let i = 0; i < proxies.length; i++) {
+                if(success) break;
                 
-                if(data.contents) {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(data.contents, 'text/html');
-                    const prediksiDiv = doc.querySelector('#accordion_2209_content_1 .card-body');
+                try {
+                    const response = await fetch(proxies[i]);
+                    if (!response.ok) continue; // Jika gagal, lanjut proxy berikutnya
                     
-                    if(prediksiDiv) {
-                        let teks = prediksiDiv.innerText;
-                        dataArea.value = teks;
-                        alert('Data berhasil diperbarui! Kamu sudah bisa Copy.');
-                    } else {
-                        alert('Format data berubah, cek manual di Buka Situs.');
+                    const htmlText = await response.text();
+                    
+                    if(htmlText) {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(htmlText, 'text/html');
+                        
+                        // Cari ID yang spesifik
+                        const prediksiDiv = doc.querySelector('#accordion_2209_content_1 .card-body');
+                        
+                        if(prediksiDiv) {
+                            let teks = prediksiDiv.innerText;
+                            dataArea.value = teks;
+                            success = true;
+                            alert('Data berhasil diperbarui! Klik Copy sekarang.');
+                        } else {
+                            // Jika format berubah, coba cari cara lain atau lewati
+                            console.log("Format tidak ditemukan di proxy " + i);
+                        }
                     }
-                } else {
-                    alert('Gagal ambil data.');
+                } catch (error) {
+                    console.log("Proxy " + i + " error: " + error);
                 }
-            } catch (error) {
-                alert('Error koneksi.');
+            }
+            
+            if(!success) {
+                alert('Gagal mengambil data otomatis.\n\nSolusi:\n1. Klik "Buka Situs".\n2. Copy prediksi manual dari sana.\n3. Paste ke mana saja.');
             }
             
             // Kembalikan tombol normal
@@ -117,20 +139,30 @@
             var data = document.getElementById('dataPrediksi').value;
             
             if (!data.trim()) {
-                alert("Data masih kosong. Klik tombol 'Refresh' dulu untuk mengambil prediksi terbaru.");
+                alert("Data masih kosong. Klik tombol 'Refresh' dulu.");
                 return;
             }
 
             var tempInput = document.createElement("textarea");
             tempInput.value = data;
+            // Styling agar tidak kelihatan di layar
+            tempInput.style.position = "fixed";
+            tempInput.style.left = "-9999px";
             document.body.appendChild(tempInput);
             tempInput.select();
+            tempInput.setSelectionRange(0, 99999); // Untuk mobile
+            
             try {
-                document.execCommand('copy');
-                showToast();
+                var successful = document.execCommand('copy');
+                if (successful) {
+                    showToast();
+                } else {
+                    alert('Gagal menyalin otomatis. Tekan Ctrl+C manual.');
+                }
             } catch (err) {
-                alert('Gagal menyalin. Gunakan Ctrl+C manual.');
+                alert('Gagal menyalin. Browser tidak mendukung.');
             }
+            
             document.body.removeChild(tempInput);
         }
 
