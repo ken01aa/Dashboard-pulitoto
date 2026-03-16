@@ -3,1079 +3,399 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hasil Result Togel</title>
+    <title>CS LINE PULITOTO - Management System</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-primary: #ffffff;
-            --bg-secondary: #f8fafc;
-            --bg-card: #ffffff;
-            --cover-color: #0F172A;
-            --accent-success: #10b981;
-            --accent-danger: #ef4444;
-            --accent-warning: #f59e0b;
-            --accent-info: #3b82f6;
-            --text-primary: #0F172A;
-            --text-secondary: #475569;
-            --text-muted: #94a3b8;
-            --border: #e2e8f0;
-            --border-dark: #cbd5e1;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        .font-display {
-            font-family: 'Space Grotesk', sans-serif;
-        }
-
-        /* Background Pattern */
-        .bg-pattern {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 320px;
-            background: var(--cover-color);
-            pointer-events: none;
-            z-index: 0;
-            clip-path: ellipse(120% 100% at 50% 0%);
-        }
-
-        .bg-pattern::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: 
-                radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255, 255, 255, 0.05), transparent 70%),
-                linear-gradient(180deg, transparent 60%, rgba(255, 255, 255, 0.02) 100%);
-        }
-
-        /* Card Styling */
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            position: relative;
+        body { font-family: 'Inter', sans-serif; }
+        iframe { border: none; }
+        .menu-item { transition: all 0.2s ease-in-out; }
+        
+        /* Animasi Marquee yang lebih halus */
+        .marquee-container {
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+            white-space: nowrap;
         }
-
-        .card-header {
-            background: var(--cover-color);
-            padding: 18px 24px;
-            border-bottom: none;
-        }
-
-        /* Toggle Switch Styling */
-        .toggle-container {
-            display: flex;
-            background: var(--bg-secondary);
-            border-radius: 10px;
-            padding: 4px;
-            gap: 4px;
-        }
-
-        .toggle-btn {
-            flex: 1;
-            padding: 10px 16px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            border: none;
-            background: transparent;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
-
-        .toggle-btn.active {
-            background: var(--cover-color);
-            color: white;
-            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
-        }
-
-        .toggle-btn:hover:not(.active) {
-            background: rgba(15, 23, 42, 0.05);
-            color: var(--text-primary);
-        }
-
-        /* Input Styling */
-        .input-field {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            color: var(--text-primary);
-            padding: 14px 16px;
-            font-size: 15px;
-            width: 100%;
-            transition: all 0.25s ease;
-            outline: none;
-        }
-
-        .input-field:focus {
-            border-color: var(--cover-color);
-            box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
-            background: var(--bg-primary);
-        }
-
-        .input-field::placeholder {
-            color: var(--text-muted);
-        }
-
-        select.input-field {
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%230F172A' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
-            padding-right: 40px;
-        }
-
-        select.input-field option {
-            background: var(--bg-primary);
-            color: var(--text-primary);
-        }
-
-        /* Label */
-        .input-label {
-            display: block;
-            font-weight: 600;
-            color: var(--text-secondary);
-            margin-bottom: 6px;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* Single Prize Input */
-        .single-prize-input {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            color: var(--text-primary);
-            padding: 14px 16px;
-            font-size: 18px;
-            font-weight: 700;
-            width: 100%;
-            text-align: center;
-            transition: all 0.25s ease;
-            outline: none;
-            letter-spacing: 3px;
-        }
-
-        .single-prize-input:focus {
-            border-color: var(--cover-color);
-            box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
-            background: var(--bg-primary);
-        }
-
-        /* Prize Input Group (3 Prize) */
-        .prize-group {
-            display: flex;
-            gap: 8px;
-        }
-
-        .prize-input-wrapper {
-            flex: 1;
-        }
-
-        .prize-label {
-            font-size: 10px;
-            font-weight: 600;
-            color: var(--cover-color);
-            text-align: center;
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        .prize-input {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text-primary);
-            padding: 12px 8px;
-            font-size: 16px;
-            font-weight: 600;
-            width: 100%;
-            text-align: center;
-            transition: all 0.25s ease;
-            outline: none;
-            letter-spacing: 2px;
-        }
-
-        .prize-input:focus {
-            border-color: var(--cover-color);
-            box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
-            background: var(--bg-primary);
-        }
-
-        .prize-input::placeholder {
-            color: var(--text-muted);
-            font-weight: 400;
-            letter-spacing: 0;
-            font-size: 12px;
-        }
-
-        /* Button Styling */
-        .btn {
-            padding: 14px 28px;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-generate {
-            background: var(--cover-color);
-            color: white;
-            box-shadow: 0 4px 15px rgba(15, 23, 42, 0.25);
-        }
-
-        .btn-generate:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(15, 23, 42, 0.35);
-        }
-
-        .btn-generate:active {
-            transform: translateY(0);
-        }
-
-        .btn-copy {
-            background: var(--accent-success);
-            color: white;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25);
-        }
-
-        .btn-copy:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.35);
-        }
-
-        .btn-reset {
-            background: var(--accent-danger);
-            color: white;
-            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.25);
-        }
-
-        .btn-reset:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.35);
-        }
-
-        /* Result Box */
-        .result-box {
-            background: linear-gradient(145deg, rgba(15, 23, 42, 0.02), rgba(15, 23, 42, 0.05));
-            border: 2px solid var(--cover-color);
-            border-radius: 12px;
-            padding: 20px 24px;
-            line-height: 1.8;
-            position: relative;
-            overflow: hidden;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.4s ease;
-        }
-
-        .result-box.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .result-box::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 5px;
-            height: 100%;
-            background: var(--cover-color);
-        }
-
-        .result-line {
-            opacity: 0;
-            transform: translateX(-10px);
-            transition: all 0.3s ease;
-        }
-
-        .result-line.show {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        .result-label {
-            color: var(--text-secondary);
-            font-size: 13px;
-        }
-
-        .result-value {
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-
-        .result-number {
-            color: var(--cover-color);
-            font-size: 1.2em;
-            font-weight: 700;
-            letter-spacing: 2px;
-        }
-
-        .result-shio {
-            color: var(--accent-warning);
-            font-weight: 700;
-        }
-
-        .result-footer {
-            color: var(--cover-color);
-            font-weight: 600;
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px dashed var(--border-dark);
-        }
-
-        /* Toast Notification */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: var(--cover-color);
-            color: white;
-            padding: 14px 28px;
-            border-radius: 10px;
-            font-weight: 500;
-            box-shadow: 0 10px 40px rgba(15, 23, 42, 0.3);
-            z-index: 1000;
-            opacity: 0;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-        }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate-in {
-            animation: fadeInUp 0.5s ease forwards;
-        }
-
-        .delay-1 { animation-delay: 0.1s; opacity: 0; }
-        .delay-2 { animation-delay: 0.2s; opacity: 0; }
-        .delay-3 { animation-delay: 0.3s; opacity: 0; }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .input-grid {
-                grid-template-columns: 1fr;
-            }
-            .prize-group {
-                flex-direction: row;
-            }
-        }
-
-        /* Shio Table */
-        .shio-table-container {
-            overflow-x: auto;
-        }
-
-        .shio-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-
-        .shio-table th {
-            background: var(--cover-color);
-            color: white;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 12px 16px;
-            text-align: left;
-        }
-
-        .shio-table th:first-child {
-            border-radius: 8px 0 0 0;
-        }
-
-        .shio-table th:last-child {
-            border-radius: 0 8px 0 0;
-        }
-
-        .shio-table td {
-            padding: 10px 16px;
-            border-bottom: 1px solid var(--border);
-            transition: background 0.2s ease;
-        }
-
-        .shio-table tr:hover td {
-            background: rgba(15, 23, 42, 0.03);
-        }
-
-        .shio-table .shio-name {
-            color: var(--cover-color);
-            font-weight: 600;
-        }
-
-        .shio-table .shio-numbers {
-            color: var(--text-secondary);
-            font-family: 'Plus Jakarta Sans', monospace;
-            letter-spacing: 0.3px;
-        }
-
-        /* Header Title on Cover */
-        .header-title {
-            color: white;
-        }
-
-        .header-divider {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        /* Logo Styling */
-        .logo-img {
-            height: 44px;
-            width: auto;
-            object-fit: contain;
-        }
-
-        @media (max-width: 768px) {
-            .logo-img {
-                height: 38px;
-            }
-        }
-
-        /* Hide elements */
-        .hidden {
-            display: none !important;
-        }
-
-        /* Badge for 5D */
-        .badge-5d {
+        .marquee-content {
             display: inline-block;
-            background: var(--accent-info);
-            color: white;
-            font-size: 9px;
-            font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin-left: 6px;
-            vertical-align: middle;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            animation: marquee 25s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
         }
     </style>
 </head>
-<body>
-    <!-- Background Pattern / Cover -->
-    <div class="bg-pattern"></div>
+<body class="bg-gray-100">
 
-    <!-- Main Container -->
-    <div class="relative z-10 min-h-screen flex items-center justify-center p-4 py-8">
-        <div class="w-full max-w-4xl">
-            <!-- Header -->
-            <header class="text-center mb-6 animate-in delay-1">
-                <div class="flex justify-center mb-3">
-                    <img src="https://puli32217.com/resources/images/logo.png" alt="Logo" class="logo-img">
+    <div class="flex h-screen overflow-hidden">
+        
+        <!-- SIDEBAR -->
+        <aside class="w-64 bg-slate-900 text-white flex-shrink-0 flex flex-col">
+            <div class="p-6 border-b border-slate-700">
+                <!-- Logo Ukuran Sedang (h-12) -->
+                <div class="flex justify-center mb-4">
+                    <img src="https://puli32217.com/resources/images/logo.png" alt="Logo PULITOTO" class="h-12 w-auto">
                 </div>
-                <h1 class="font-display text-2xl md:text-3xl font-bold tracking-wide mb-2 header-title">
-                    HASIL RESULT TOGEL
-                </h1>
-                <div class="w-20 h-1 mx-auto rounded header-divider"></div>
+                <h1 class="text-xl font-bold text-white tracking-wide">CS LINE PULITOTO</h1>
+                <p class="text-xs text-slate-400 mt-1">Management System v1.0</p>
+            </div>
+
+            <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+                
+                <!-- Menu 1: Dashboard -->
+                <a href="#" onclick="loadPage('dashboard', this)" data-title="Dashboard Overview" data-menu="dashboard" class="menu-item flex items-center gap-3 px-4 py-3 bg-blue-600 rounded-lg text-white font-medium shadow-lg shadow-blue-500/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                    </svg>
+                    Dashboard
+                </a>
+
+                <!-- Menu 2: PREDIKSI BOLA -->
+                <a href="#" onclick="loadPage('prediksi_bola.html', this)" data-title="Prediksi Bola" data-menu="prediksi" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+                    </svg>
+                    PREDIKSI BOLA
+                </a>
+
+                <!-- Menu 3: BUKTI JP -->
+                <a href="#" onclick="loadPage('bukti_jp.html', this)" data-title="Bukti Jackpot" data-menu="bukti_jp" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+                    </svg>
+                    BUKTI JP
+                </a>
+
+                <!-- Menu 4: SYAIR TOGEL -->
+                <a href="#" onclick="loadPage('syair_togel.html', this)" data-title="Syair Togel" data-menu="syair" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+                    </svg>
+                    SYAIR TOGEL
+                </a>
+              
+                <!-- Menu 5: RESULT TOGEL -->
+                <a href="#" onclick="loadPage('RESULT_TOGEL.html', this)" data-title="Result Togel" data-menu="result" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
+                        <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd" />
+                    </svg>
+                    RESULT TOGEL
+                </a>   
+
+                <!-- Menu 6: CEK SALDO -->
+                <a href="#" onclick="loadPage('CEK_SALDO.HTML', this)" data-title="Cek Saldo" data-menu="saldo" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd" />
+                    </svg>
+                    CEK SALDO
+                </a>
+
+                <!-- Menu 7: LINK PREDIKSI BOLA -->
+                <a href="#" onclick="loadPage('LinkPrediksiBola.html', this)" data-title="Link Prediksi Bola" data-menu="link_prediksi" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clip-rule="evenodd" />
+                    </svg>
+                    LINK PREDIKSI BOLA
+                </a>
+                <!-- Menu 8: HASIL RESULT -->
+                <a href="#" onclick="loadPage('HASIL_RESULT.HTML', this)" data-title="HASIL RESULT" data-menu="saldo" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd" />
+                    </svg>
+                    HASIL RESULT
+                </a>
+            </nav>
+
+            <div class="p-4 border-t border-slate-700">
+                <p class="text-xs text-slate-500 text-center">© 2024 Tool App</p>
+            </div>
+        </aside>
+
+        <!-- AREA KANAN -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            
+            <!-- HEADER dengan MARQUEE -->
+            <header class="bg-white shadow-sm border-b border-gray-200 px-8 py-4 flex items-center">
+                <div class="w-full marquee-container">
+                    <div class="marquee-content text-lg font-semibold text-gray-700">
+                        Selamat Datang di Dashboard Tools PULITOTO — Aplikasi ini dirancang untuk membantu pekerjaan Anda lebih cepat, praktis, dan terorganisir. Gunakan menu di sebelah kiri untuk mengakses Prediksi Bola, Syair Togel, Result, Bukti JP, dan berbagai fitur lainnya dengan mudah.
+                    </div>
+                </div>
             </header>
 
-            <!-- Main Card -->
-            <div class="card animate-in delay-2">
-                <div class="card-header">
-                    <div class="flex items-center justify-between">
-                        <h2 class="font-semibold text-base text-white">Generate Result</h2>
-                        <span class="text-xs text-gray-300">System v2.4</span>
-                    </div>
-                </div>
+            <!-- KONTEN UTAMA -->
+            <main class="flex-1 overflow-hidden bg-gray-50 relative">
                 
-                <div class="p-5">
-                    <!-- Toggle Switch -->
-                    <div class="flex justify-center mb-5">
-                        <div class="toggle-container">
-                            <button type="button" id="togglePrize1" class="toggle-btn active" onclick="switchMode('1')">
-                                1 Prize
-                            </button>
-                            <button type="button" id="togglePrize3" class="toggle-btn" onclick="switchMode('3')">
-                                3 Prize
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Input Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5 input-grid">
-                        <!-- Kolom 1: Pasaran -->
-                        <div>
-                            <label class="input-label" for="pasaran">Pilih Pasaran</label>
-                            <select id="pasaran" class="input-field" onchange="onPasaranChange()">
-                                <!-- Options will be populated by JavaScript -->
-                            </select>
-                        </div>
-
-                        <!-- Kolom 2: Input Prize (Mode 1 Prize) -->
-                        <div id="mode1Input">
-                            <label class="input-label" for="prize1Single">
-                                Input Nomor Prize 1
-                                <span id="badge5D" class="badge-5d hidden">5 Digit</span>
-                            </label>
-                            <input type="text" id="prize1Single" class="single-prize-input" placeholder="Contoh: 1234" maxlength="4" inputmode="numeric">
-                        </div>
-
-                        <!-- Kolom 2: Input Prize (Mode 3 Prize) -->
-                        <div id="mode3Input" class="hidden">
-                            <label class="input-label">Input Nomor Prize</label>
-                            <div class="prize-group">
-                                <div class="prize-input-wrapper">
-                                    <span class="prize-label">Prize 1</span>
-                                    <input type="text" id="prize1Multi" class="prize-input" placeholder="0000" maxlength="4" inputmode="numeric">
+                <!-- Konten Default Dashboard -->
+                <div id="content-dashboard" class="p-8 h-full overflow-y-auto">
+                    
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Rekap Total Penggunaan Aplikasi</h2>
+                    
+                    <!-- Cards Statistik -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        
+                        <!-- Card Total Akses PC (Unik) -->
+                        <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white col-span-1 md:col-span-2 lg:col-span-1">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm uppercase font-semibold opacity-80">Total PC Akses</p>
+                                    <p class="text-4xl font-bold mt-2" id="stat-total-pc">0</p>
+                                    <p class="text-xs mt-1 opacity-70">Perangkat Unik</p>
                                 </div>
-                                <div class="prize-input-wrapper">
-                                    <span class="prize-label">Prize 2</span>
-                                    <input type="text" id="prize2Multi" class="prize-input" placeholder="0000" maxlength="4" inputmode="numeric">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 opacity-25" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Card Prediksi Bola -->
+                        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-500 font-medium">Prediksi Bola</p>
+                                    <p class="text-3xl font-bold text-gray-800 mt-1" id="stat-prediksi">0</p>
                                 </div>
-                                <div class="prize-input-wrapper">
-                                    <span class="prize-label">Prize 3</span>
-                                    <input type="text" id="prize3Multi" class="prize-input" placeholder="0000" maxlength="4" inputmode="numeric">
+                                <div class="bg-green-100 p-3 rounded-full">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                    </svg>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Kolom 3: Tanggal -->
-                        <div>
-                            <label class="input-label" for="tanggal">Pilih Tanggal</label>
-                            <input type="date" id="tanggal" class="input-field">
+                        <!-- Card Bukti JP -->
+                        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-yellow-500">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-500 font-medium">Bukti JP</p>
+                                    <p class="text-3xl font-bold text-gray-800 mt-1" id="stat-bukti_jp">0</p>
+                                </div>
+                                <div class="bg-yellow-100 p-3 rounded-full">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Syair Togel -->
+                        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-purple-500">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-500 font-medium">Syair Togel</p>
+                                    <p class="text-3xl font-bold text-gray-800 mt-1" id="stat-syair">0</p>
+                                </div>
+                                <div class="bg-purple-100 p-3 rounded-full">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Result Togel -->
+                        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-red-500">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-500 font-medium">Result Togel</p>
+                                    <p class="text-3xl font-bold text-gray-800 mt-1" id="stat-result">0</p>
+                                </div>
+                                <div class="bg-red-100 p-3 rounded-full">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                         <!-- Card Cek Saldo -->
+                         <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-teal-500">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-500 font-medium">Cek Saldo</p>
+                                    <p class="text-3xl font-bold text-gray-800 mt-1" id="stat-saldo">0</p>
+                                </div>
+                                <div class="bg-teal-100 p-3 rounded-full">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Tabel Log Aktivitas Terbaru -->
+                    <div class="bg-white rounded-xl shadow-md p-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">Log Aktivitas Terbaru</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full text-sm text-left text-gray-500">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3">Waktu</th>
+                                        <th scope="col" class="px-6 py-3">Aplikasi</th>
+                                        <th scope="col" class="px-6 py-3">Tipe</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="log-body">
+                                    <!-- Isi oleh JS -->
+                                </tbody>
+                            </table>
+                            <p id="no-logs" class="text-center text-gray-400 py-8 hidden">Belum ada aktivitas tercatat.</p>
                         </div>
                     </div>
 
-                    <!-- Generate Button -->
-                    <div class="flex justify-center mb-5">
-                        <button id="btnGenerate" class="btn btn-generate px-8 py-3">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.6 5.6l2.1 2.1m8.6 8.6l2.1 2.1M5.6 18.4l2.1-2.1m8.6-8.6l2.1-2.1"/>
-                            </svg>
-                            Generate Result
-                        </button>
-                    </div>
-
-                    <!-- Result Box Mode 1 Prize -->
-                    <div id="resultBox1" class="result-box mb-4">
-                        <div class="result-line" data-line="1">
-                            <span class="result-label">Hasil Pengeluaran</span>
-                            <span class="result-value" id="resultPasaran1"></span>
-                        </div>
-                        <div class="result-line" data-line="2">
-                            <span class="result-label">Hari </span>
-                            <span class="result-value" id="resultTanggal1"></span>
-                        </div>
-                        <div class="result-line" data-line="3">
-                            <span class="result-label">Hasil Pengeluaran : </span>
-                            <span class="result-number" id="resultNomor1"></span>
-                        </div>
-                        <div class="result-line" data-line="4">
-                            <span class="result-label">SHIO : </span>
-                            <span class="result-shio" id="resultShio1"></span>
-                        </div>
-                        <div class="result-line result-footer" data-line="5">
-                            Selamat Kepada Pemenang, Salam JP
-                        </div>
-                    </div>
-
-                    <!-- Result Box Mode 3 Prize -->
-                    <div id="resultBox3" class="result-box mb-4 hidden">
-                        <div class="result-line" data-line="1">
-                            <span class="result-label">Hasil Pengeluaran</span>
-                            <span class="result-value" id="resultPasaran3"></span>
-                        </div>
-                        <div class="result-line" data-line="2">
-                            <span class="result-label">Hari </span>
-                            <span class="result-value" id="resultTanggal3"></span>
-                        </div>
-                        <div class="result-line" data-line="3">
-                            <span class="result-label">Prize 1 : </span>
-                            <span class="result-number" id="resultPrize1Multi"></span>
-                        </div>
-                        <div class="result-line" data-line="4">
-                            <span class="result-label">Prize 2 : </span>
-                            <span class="result-number" id="resultPrize2Multi"></span>
-                        </div>
-                        <div class="result-line" data-line="5">
-                            <span class="result-label">Prize 3 : </span>
-                            <span class="result-number" id="resultPrize3Multi"></span>
-                        </div>
-                        <div class="result-line" data-line="6">
-                            <span class="result-label">SHIO : </span>
-                            <span class="result-shio" id="resultShio3"></span>
-                        </div>
-                        <div class="result-line result-footer" data-line="7">
-                            Selamat Kepada Pemenang, Salam JP
-                        </div>
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div id="actionButtons" class="flex flex-wrap gap-3 justify-center" style="display: none;">
-                        <button id="btnCopy" class="btn btn-copy">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
-                                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
-                            </svg>
-                            Copy Result
-                        </button>
-                        <button id="btnReset" class="btn btn-reset">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-                                <path d="M3 3v5h5"/>
-                            </svg>
-                            Reset
-                        </button>
-                    </div>
                 </div>
-            </div>
 
-            <!-- Shio Reference Table -->
-            <div class="card mt-5 animate-in delay-3">
-                <div class="card-header">
-                    <h3 class="font-semibold text-white">Tabel Shio</h3>
-                </div>
-                <div class="p-4">
-                    <div class="shio-table-container">
-                        <table class="shio-table">
-                            <thead>
-                                <tr>
-                                    <th>Nama Shio</th>
-                                    <th>Nomor Terkait</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr><td class="shio-name">Kuda</td><td class="shio-numbers">01, 13, 25, 37, 49, 61, 73, 85, 97</td></tr>
-                                <tr><td class="shio-name">Ular</td><td class="shio-numbers">02, 14, 26, 38, 50, 62, 74, 86, 98</td></tr>
-                                <tr><td class="shio-name">Naga</td><td class="shio-numbers">03, 15, 27, 39, 51, 63, 75, 87, 99</td></tr>
-                                <tr><td class="shio-name">Kelinci</td><td class="shio-numbers">04, 16, 28, 40, 52, 64, 76, 88, 00</td></tr>
-                                <tr><td class="shio-name">Harimau</td><td class="shio-numbers">05, 17, 29, 41, 53, 65, 77, 89</td></tr>
-                                <tr><td class="shio-name">Kerbau</td><td class="shio-numbers">06, 18, 30, 42, 54, 66, 78, 90</td></tr>
-                                <tr><td class="shio-name">Tikus</td><td class="shio-numbers">07, 19, 31, 43, 55, 67, 79, 91</td></tr>
-                                <tr><td class="shio-name">Babi</td><td class="shio-numbers">08, 20, 32, 44, 56, 68, 80, 92</td></tr>
-                                <tr><td class="shio-name">Anjing</td><td class="shio-numbers">09, 21, 33, 45, 57, 69, 81, 93</td></tr>
-                                <tr><td class="shio-name">Ayam</td><td class="shio-numbers">10, 22, 34, 46, 58, 70, 82, 94</td></tr>
-                                <tr><td class="shio-name">Monyet</td><td class="shio-numbers">11, 23, 35, 47, 59, 71, 83, 95</td></tr>
-                                <tr><td class="shio-name">Kambing</td><td class="shio-numbers">12, 24, 36, 48, 60, 72, 84, 96</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+                <!-- Iframe untuk Memuat Aplikasi Lain -->
+                <iframe id="content-frame" class="w-full h-full absolute top-0 left-0 hidden bg-white" src=""></iframe>
+
+            </main>
         </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="toast">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20 6 9 17l-5-5"/>
-        </svg>
-        <span id="toastMessage">Berhasil disalin!</span>
-    </div>
-
     <script>
-        // Current mode: '1' or '3'
-        let currentMode = '1';
-        let is5DMode = false;
+        // === Konfigurasi LocalStorage Keys ===
+        const STATS_KEY = 'app_stats_v2';
+        const PC_ID_KEY = 'pc_unique_id_v2';
 
-        // Pasaran Lists
-        const pasaran1Prize = [
-            'TOTOMACAU PAGI', 'TOTOMACAU SIANG', 'TOTOMACAU SORE', 'TOTOMACAU MALAM', 'TOTOMACAU MALAI',
-            'OREGON03', 'OREGON06', 'OREGON09', 'OREGON12',
-            'HOKI DRAW 5D', 'BULLSEYE',
-            'KING KONG4D SORE', 'KING KONG4D MALAM',
-            'PCSO', 'KENTUCKY MIDDAY', 'KENTUCKY EVENING',
-            'FLORIDA MIDDAY', 'FLORIDA EVENING',
-            'NEW YORK MIDDAY', 'NEW YORK EVENING',
-            'NORTH CAROLINA D', 'CALIFORNIA',
-            'CAROLINA DAY', 'CAROLINA EVENING',
-            'SINGAPORE TOTO'
-        ];
+        // === Inisialisasi ID PC Unik ===
+        function getOrCreatePcId() {
+            let pcId = localStorage.getItem(PC_ID_KEY);
+            if (!pcId) {
+                // Membuat ID sederhana dari timestamp + random
+                pcId = 'PC-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substr(2, 5).toUpperCase();
+                localStorage.setItem(PC_ID_KEY, pcId);
+            }
+            return pcId;
+        }
 
-        const pasaran3Prize = [
-            'CHELSEA 11', 'CHELSEA 15', 'CHELSEA 19', 'CHELSEA 21',
-            'POIPET 12', 'POIPET 15', 'POIPET 19', 'POIPET 22',
-            'SYDNEY LOTTO', 'BRUNEI 02', 'BRUNEI 14', 'BRUNEI 21',
-            'TOTOMALI 1530', 'TOTOMALI 2030', 'TOTOMALI 2330',
-            'HUAHIN 0100', 'HUAHIN 1630', 'HUAHIN 2100',
-            'NEVADA', 'HONGKONG LOTTO',
-            'BANGKOK 0130', 'BANGKOK 0930',
-            'MAGNUM4D', 'TOTO CAMBODIA LIVE', 'SINGAPORE 4D'
-        ];
-
-        // Shio Data
-        const shioData = {
-            'Kuda': ['01', '13', '25', '37', '49', '61', '73', '85', '97'],
-            'Ular': ['02', '14', '26', '38', '50', '62', '74', '86', '98'],
-            'Naga': ['03', '15', '27', '39', '51', '63', '75', '87', '99'],
-            'Kelinci': ['04', '16', '28', '40', '52', '64', '76', '88', '00'],
-            'Harimau': ['05', '17', '29', '41', '53', '65', '77', '89'],
-            'Kerbau': ['06', '18', '30', '42', '54', '66', '78', '90'],
-            'Tikus': ['07', '19', '31', '43', '55', '67', '79', '91'],
-            'Babi': ['08', '20', '32', '44', '56', '68', '80', '92'],
-            'Anjing': ['09', '21', '33', '45', '57', '69', '81', '93'],
-            'Ayam': ['10', '22', '34', '46', '58', '70', '82', '94'],
-            'Monyet': ['11', '23', '35', '47', '59', '71', '83', '95'],
-            'Kambing': ['12', '24', '36', '48', '60', '72', '84', '96']
+        // === Inisialisasi Data Statistik ===
+        const currentPcId = getOrCreatePcId();
+        let stats = JSON.parse(localStorage.getItem(STATS_KEY)) || {
+            prediksi: 0,
+            bukti_jp: 0,
+            syair: 0,
+            result: 0,
+            saldo: 0,
+            link_prediksi: 0,
+            totalPc: 0,
+            pcList: [], // Array untuk menyimpan ID PC unik
+            logs: []
         };
 
-        const namaHari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-        const namaBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-
-        // DOM Elements
-        const pasaranSelect = document.getElementById('pasaran');
-        const tanggalInput = document.getElementById('tanggal');
-        const btnGenerate = document.getElementById('btnGenerate');
-        const btnCopy = document.getElementById('btnCopy');
-        const btnReset = document.getElementById('btnReset');
-        const actionButtons = document.getElementById('actionButtons');
-        const toast = document.getElementById('toast');
-        const toastMessage = document.getElementById('toastMessage');
-
-        // Mode 1 Prize Elements
-        const mode1Input = document.getElementById('mode1Input');
-        const prize1Single = document.getElementById('prize1Single');
-        const resultBox1 = document.getElementById('resultBox1');
-        const badge5D = document.getElementById('badge5D');
-
-        // Mode 3 Prize Elements
-        const mode3Input = document.getElementById('mode3Input');
-        const prize1Multi = document.getElementById('prize1Multi');
-        const prize2Multi = document.getElementById('prize2Multi');
-        const prize3Multi = document.getElementById('prize3Multi');
-        const resultBox3 = document.getElementById('resultBox3');
-
-        // Toggle Buttons
-        const togglePrize1 = document.getElementById('togglePrize1');
-        const togglePrize3 = document.getElementById('togglePrize3');
-
-        // Set default date
-        const today = new Date();
-        tanggalInput.value = today.toISOString().split('T')[0];
-
-        // Populate Pasaran Select
-        function populatePasaran(pasaranList) {
-            pasaranSelect.innerHTML = '<option value="">-- Pilih Pasaran --</option>';
-            pasaranList.forEach(pasaran => {
-                const option = document.createElement('option');
-                option.value = pasaran;
-                option.textContent = pasaran;
-                pasaranSelect.appendChild(option);
-            });
+        // === Fungsi untuk merekam PC baru jika belum ada ===
+        function registerPcAccess() {
+            if (!stats.pcList.includes(currentPcId)) {
+                stats.pcList.push(currentPcId);
+                stats.totalPc = stats.pcList.length;
+                saveStats();
+            }
         }
 
-        // Initialize with 1 Prize pasaran
-        populatePasaran(pasaran1Prize);
-
-        // Input validation - only numbers
-        function validateNumberInput(input) {
-            input.addEventListener('input', function(e) {
-                this.value = this.value.replace(/[^0-9]/g, '');
-            });
+        // === Fungsi Simpan Stats ===
+        function saveStats() {
+            localStorage.setItem(STATS_KEY, JSON.stringify(stats));
         }
 
-        validateNumberInput(prize1Single);
-        validateNumberInput(prize1Multi);
-        validateNumberInput(prize2Multi);
-        validateNumberInput(prize3Multi);
+        // === Fungsi untuk update tampilan statistik ===
+        function updateStatsView() {
+            // Update angka
+            document.getElementById('stat-prediksi').innerText = stats.prediksi;
+            document.getElementById('stat-bukti_jp').innerText = stats.bukti_jp;
+            document.getElementById('stat-syair').innerText = stats.syair;
+            document.getElementById('stat-result').innerText = stats.result;
+            document.getElementById('stat-saldo').innerText = stats.saldo;
+            document.getElementById('stat-total-pc').innerText = stats.totalPc;
 
-        // On Pasaran Change - Handle 5D Mode
-        function onPasaranChange() {
-            const selectedPasaran = pasaranSelect.value;
+            // Update Log
+            const logBody = document.getElementById('log-body');
+            const noLogs = document.getElementById('no-logs');
             
-            if (selectedPasaran === 'HOKI DRAW 5D') {
-                is5DMode = true;
-                prize1Single.maxLength = 5;
-                prize1Single.placeholder = 'Contoh: 12345';
-                badge5D.classList.remove('hidden');
+            logBody.innerHTML = '';
+
+            if (stats.logs.length === 0) {
+                noLogs.classList.remove('hidden');
             } else {
-                is5DMode = false;
-                prize1Single.maxLength = 4;
-                prize1Single.placeholder = 'Contoh: 1234';
-                badge5D.classList.add('hidden');
+                noLogs.classList.add('hidden');
+                const recentLogs = stats.logs.slice(-10).reverse(); // 10 log terakhir
+                recentLogs.forEach(log => {
+                    const row = document.createElement('tr');
+                    row.className = "bg-white border-b hover:bg-gray-50";
+                    row.innerHTML = `
+                        <td class="px-6 py-4">${log.time}</td>
+                        <td class="px-6 py-4 font-medium text-gray-900">${log.app}</td>
+                        <td class="px-6 py-4">
+                            <span class="px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">Akses</span>
+                        </td>
+                    `;
+                    logBody.appendChild(row);
+                });
             }
         }
 
-        // Switch Mode Function
-        function switchMode(mode) {
-            currentMode = mode;
+        // === Fungsi untuk menambah statistik penggunaan menu ===
+        function addStat(menuKey, appName) {
+            // Jangan rekam jika menu dashboard
+            if (menuKey !== 'dashboard') {
+                // Tambah hitungan menu spesifik
+                stats[menuKey] = (stats[menuKey] || 0) + 1;
+                
+                // Tambah log
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' ' + now.toLocaleDateString('id-ID');
+                
+                stats.logs.push({
+                    app: appName,
+                    time: timeString,
+                    pc: currentPcId
+                });
 
-            // Update toggle buttons
-            if (mode === '1') {
-                togglePrize1.classList.add('active');
-                togglePrize3.classList.remove('active');
-                mode1Input.classList.remove('hidden');
-                mode3Input.classList.add('hidden');
-                resultBox1.classList.remove('hidden');
-                resultBox3.classList.add('hidden');
-                populatePasaran(pasaran1Prize);
-                is5DMode = false;
-                prize1Single.maxLength = 4;
-                prize1Single.placeholder = 'Contoh: 1234';
-                badge5D.classList.add('hidden');
-            } else {
-                togglePrize1.classList.remove('active');
-                togglePrize3.classList.add('active');
-                mode1Input.classList.add('hidden');
-                mode3Input.classList.remove('hidden');
-                resultBox1.classList.add('hidden');
-                resultBox3.classList.remove('hidden');
-                populatePasaran(pasaran3Prize);
+                saveStats();
             }
-
-            // Hide results
-            resultBox1.classList.remove('show');
-            resultBox3.classList.remove('show');
-            actionButtons.style.display = 'none';
-
-            // Reset line animations
-            document.querySelectorAll('.result-line').forEach(line => {
-                line.classList.remove('show');
-            });
         }
 
-        // Get Shio from last 2 digits
-        function getShio(nomor) {
-            const lastTwoDigits = nomor.slice(-2).padStart(2, '0');
-            for (const [shio, numbers] of Object.entries(shioData)) {
-                if (numbers.includes(lastTwoDigits)) {
-                    return shio;
-                }
-            }
-            return 'Tidak Ditemukan';
-        }
+        // === Fungsi untuk memuat halaman ===
+        function loadPage(page, element) {
+            const contentDashboard = document.getElementById('content-dashboard');
+            const contentFrame = document.getElementById('content-frame');
+            const allMenus = document.querySelectorAll('.menu-item');
 
-        // Format date to Indonesian
-        function formatTanggal(dateString) {
-            const date = new Date(dateString);
-            const hari = namaHari[date.getDay()];
-            const tanggal = date.getDate();
-            const bulan = namaBulan[date.getMonth()];
-            const tahun = date.getFullYear();
-            return `${hari}, ${tanggal.toString().padStart(2, '0')} ${bulan} ${tahun}`;
-        }
-
-        // Show toast
-        function showToast(message) {
-            toastMessage.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
-
-        // Show result with animation
-        function showResult(resultBox) {
-            resultBox.classList.add('show');
-            const lines = resultBox.querySelectorAll('.result-line');
-            lines.forEach((line, index) => {
-                setTimeout(() => {
-                    line.classList.add('show');
-                }, 80 + (index * 70));
+            // Reset warna menu
+            allMenus.forEach(menu => {
+                menu.classList.remove('bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-500/30');
+                menu.classList.add('text-slate-300', 'hover:bg-slate-800');
             });
 
-            setTimeout(() => {
-                actionButtons.style.display = 'flex';
-            }, 350);
-        }
+            // Aktifkan menu yang diklik
+            element.classList.remove('text-slate-300', 'hover:bg-slate-800');
+            element.classList.add('bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-500/30');
 
-        // Generate Result Mode 1
-        function generateResultMode1() {
-            const pasaran = pasaranSelect.value;
-            const expectedLength = is5DMode ? 5 : 4;
-            const prize1 = prize1Single.value.padStart(expectedLength, '0');
-            const tanggal = tanggalInput.value;
-
-            if (!pasaran) {
-                showToast('Silakan pilih pasaran terlebih dahulu');
-                return;
-            }
-            if (!prize1Single.value) {
-                showToast('Silakan input nomor Prize 1');
-                return;
-            }
-            if (!tanggal) {
-                showToast('Silakan pilih tanggal');
-                return;
-            }
-
-            const shio = getShio(prize1);
-            const formattedTanggal = formatTanggal(tanggal);
-
-            document.getElementById('resultPasaran1').textContent = ` ${pasaran}`;
-            document.getElementById('resultTanggal1').textContent = formattedTanggal;
-            document.getElementById('resultNomor1').textContent = prize1;
-            document.getElementById('resultShio1').textContent = shio;
-
-            showResult(resultBox1);
-        }
-
-        // Generate Result Mode 3
-        function generateResultMode3() {
-            const pasaran = pasaranSelect.value;
-            const prize1 = prize1Multi.value.padStart(4, '0');
-            const prize2 = prize2Multi.value.padStart(4, '0');
-            const prize3 = prize3Multi.value.padStart(4, '0');
-            const tanggal = tanggalInput.value;
-
-            if (!pasaran) {
-                showToast('Silakan pilih pasaran terlebih dahulu');
-                return;
-            }
-            if (!prize1Multi.value) {
-                showToast('Silakan input nomor Prize 1');
-                return;
-            }
-            if (!tanggal) {
-                showToast('Silakan pilih tanggal');
-                return;
-            }
-
-            const shio = getShio(prize1);
-            const formattedTanggal = formatTanggal(tanggal);
-
-            document.getElementById('resultPasaran3').textContent = ` ${pasaran}`;
-            document.getElementById('resultTanggal3').textContent = formattedTanggal;
-            document.getElementById('resultPrize1Multi').textContent = prize1;
-            document.getElementById('resultPrize2Multi').textContent = prize2;
-            document.getElementById('resultPrize3Multi').textContent = prize3;
-            document.getElementById('resultShio3').textContent = shio;
-
-            showResult(resultBox3);
-        }
-
-        // Generate Result
-        function generateResult() {
-            if (currentMode === '1') {
-                generateResultMode1();
-            } else {
-                generateResultMode3();
-            }
-        }
-
-        // Copy Result
-        function copyResult() {
-            let resultText = '';
-            const pasaran = pasaranSelect.value;
-            const tanggal = formatTanggal(tanggalInput.value);
-
-            if (currentMode === '1') {
-                const nomor = document.getElementById('resultNomor1').textContent;
-                const shio = document.getElementById('resultShio1').textContent;
-
-                resultText = `Hasil Pengeluaran ${pasaran}
-Hari ${tanggal}
-Hasil Pengeluaran : ${nomor}
-SHIO : ${shio}
-Selamat Kepada Pemenang, Salam JP`;
-            } else {
-                const prize1 = document.getElementById('resultPrize1Multi').textContent;
-                const prize2 = document.getElementById('resultPrize2Multi').textContent;
-                const prize3 = document.getElementById('resultPrize3Multi').textContent;
-                const shio = document.getElementById('resultShio3').textContent;
-
-                resultText = `Hasil Pengeluaran ${pasaran}
-Hari ${tanggal}
-Prize 1 : ${prize1}
-Prize 2 : ${prize2}
-Prize 3 : ${prize3}
-SHIO : ${shio}
-Selamat Kepada Pemenang, Salam JP`;
-            }
-
-            navigator.clipboard.writeText(resultText).then(() => {
-                showToast('Result berhasil disalin ke clipboard!');
-            }).catch(() => {
-                const textArea = document.createElement('textarea');
-                textArea.value = resultText;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-                showToast('Result berhasil disalin ke clipboard!');
-            });
-        }
-
-        // Reset Form
-        function resetForm() {
-            pasaranSelect.value = '';
-            prize1Single.value = '';
-            prize1Multi.value = '';
-            prize2Multi.value = '';
-            prize3Multi.value = '';
-            tanggalInput.value = today.toISOString().split('T')[0];
+            const title = element.getAttribute('data-title');
+            const menuKey = element.getAttribute('data-menu');
             
-            // Reset 5D mode
-            is5DMode = false;
-            prize1Single.maxLength = 4;
-            prize1Single.placeholder = 'Contoh: 1234';
-            badge5D.classList.add('hidden');
-
-            resultBox1.classList.remove('show');
-            resultBox3.classList.remove('show');
-            document.querySelectorAll('.result-line').forEach(line => {
-                line.classList.remove('show');
-            });
-            
-            setTimeout(() => {
-                actionButtons.style.display = 'none';
-            }, 300);
-
-            showToast('Form berhasil direset');
+            if (page === 'dashboard') {
+                contentDashboard.classList.remove('hidden');
+                contentFrame.classList.add('hidden');
+                contentFrame.src = "";
+            } else {
+                // Rekam statistik
+                addStat(menuKey, title);
+                
+                contentDashboard.classList.add('hidden');
+                contentFrame.classList.remove('hidden');
+                contentFrame.src = page;
+            }
         }
 
-        // Event Listeners
-        btnGenerate.addEventListener('click', generateResult);
-        btnCopy.addEventListener('click', copyResult);
-        btnReset.addEventListener('click', resetForm);
-
-        // Enter key to generate
-        [prize1Single, prize1Multi, prize2Multi, prize3Multi].forEach(input => {
-            input.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    generateResult();
-                }
-            });
+        // === Jalankan saat halaman dimuat ===
+        document.addEventListener('DOMContentLoaded', () => {
+            registerPcAccess();      // Catat PC ini jika baru pertama kali
+            updateStatsView();       // Tampilkan statistik
         });
     </script>
 </body>
