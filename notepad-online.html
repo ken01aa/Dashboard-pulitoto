@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Note Pad Report Online</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-card: #ffffff;
+            --cover-color: #0F172A;
+            --accent-success: #10b981;
+            --accent-danger: #ef4444;
+            --accent-info: #3b82f6;
+            --text-primary: #0F172A;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .font-display { font-family: 'Space Grotesk', sans-serif; }
+
+        .bg-pattern {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 260px;
+            background: var(--cover-color);
+            z-index: 0;
+            clip-path: ellipse(120% 100% at 50% 0%);
+        }
+
+        .card-note {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .card-note.loading { opacity: 0.6; pointer-events: none; }
+
+        .card-note:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+            border-color: var(--cover-color);
+        }
+
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 1400px) { .notes-grid { grid-template-columns: repeat(4, 1fr); } }
+        @media (max-width: 1100px) { .notes-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 768px) { .notes-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 480px) { .notes-grid { grid-template-columns: 1fr; } }
+
+        .input-clean {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 14px;
+            width: 100%;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .input-clean:focus {
+            border-color: var(--cover-color);
+            background: white;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: var(--cover-color); color: white; }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-danger { background: transparent; color: var(--accent-danger); border: 1px solid var(--accent-danger); }
+        .btn-danger:hover { background: var(--accent-danger); color: white; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Modal */
+        .modal-backdrop {
+            position: fixed; inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 50;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-backdrop.show { display: flex; }
+        .modal-content {
+            background: white;
+            width: 100%; max-width: 500px;
+            border-radius: 16px;
+            overflow: hidden;
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .note-content { white-space: pre-wrap; word-break: break-word; }
+        .content-scroll { max-height: 400px; overflow-y: auto; }
+        .content-scroll::-webkit-scrollbar { width: 4px; }
+        .content-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        
+        /* Loading Spinner */
+        .spinner {
+            border: 2px solid #f3f3f3; border-top: 2px solid var(--cover-color);
+            border-radius: 50%; width: 16px; height: 16px;
+            animation: spin 1s linear infinite; display: inline-block;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div class="bg-pattern"></div>
+
+    <div class="relative z-10 max-w-[1600px] mx-auto p-6">
+        
+        <!-- Header -->
+        <header class="mb-8 pt-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <h1 class="font-display text-3xl font-bold text-white mb-1">NOTE PAD REPORT ONLINE</h1>
+                    <p class="text-gray-300 text-sm">Data tersimpan otomatis di Google Sheet</p>
+                </div>
+                <button onclick="openModal()" class="btn btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14m-7-7h14"/></svg>
+                    Tambah Baru
+                </button>
+            </div>
+
+            <!-- Search -->
+            <div class="mt-6 bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+                <div class="flex gap-3">
+                    <div class="relative flex-1">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                        </span>
+                        <input type="text" id="searchInput" class="input-clean pl-10" placeholder="Cari judul atau isi..." onkeyup="searchNotes()">
+                    </div>
+                    <div class="flex items-center gap-2 text-sm text-gray-500 bg-gray-50 px-4 rounded-lg">
+                        Total: <span id="totalNotes" class="font-bold text-gray-700">0</span> Data
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Grid -->
+        <div id="notesContainer" class="notes-grid">
+            <p class="col-span-5 text-center text-gray-400 py-10">Memuat data...</p>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="formModal" class="modal-backdrop">
+        <div class="modal-content">
+            <div class="p-5 border-b border-gray-200 bg-gray-50">
+                <h3 id="modalTitle" class="font-display font-bold text-lg">Tambah Report Baru</h3>
+            </div>
+            <div class="p-5">
+                <input type="hidden" id="noteId">
+                <div class="mb-4">
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Judul</label>
+                    <input type="text" id="noteTitle" class="input-clean font-semibold" placeholder="Masukkan judul...">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Isi Teks</label>
+                    <textarea id="noteContent" rows="8" class="input-clean content-scroll" placeholder="Tulis isi report..."></textarea>
+                </div>
+            </div>
+            <div class="p-4 bg-gray-50 border-t border-gray-200 flex justify-end gap-2">
+                <button onclick="closeModal()" class="btn bg-gray-200 text-gray-700">Batal</button>
+                <button id="saveBtn" onclick="saveNote()" class="btn btn-primary">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // KONFIGURASI - PASTE URL GOOGLE SCRIPT DI BAWAH INI
+        // ==========================================
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyWkcD74bV_774BkcDKvz7vexplS2x7teEa1nnPHxjPUgSewYsGu6xeYFyAxyDozTyQ/exec'; 
+        
+        let notes = [];
+
+        // === DOM ELEMENTS ===
+        const notesContainer = document.getElementById('notesContainer');
+        const totalNotesEl = document.getElementById('totalNotes');
+        const searchInput = document.getElementById('searchInput');
+        const formModal = document.getElementById('formModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const noteIdInput = document.getElementById('noteId');
+        const noteTitleInput = document.getElementById('noteTitle');
+        const noteContentInput = document.getElementById('noteContent');
+        const saveBtn = document.getElementById('saveBtn');
+
+        // === LOAD DATA DARI GOOGLE SHEET ===
+        async function loadNotes() {
+            if(SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbyWkcD74bV_774BkcDKvz7vexplS2x7teEa1nnPHxjPUgSewYsGu6xeYFyAxyDozTyQ/exec') {
+                notesContainer.innerHTML = '<p class="col-span-5 text-center text-red-500 py-10">Error: URL Script belum diisi!</p>';
+                return;
+            }
+            
+            try {
+                const response = await fetch(SCRIPT_URL);
+                const result = await response.json();
+                
+                if(result.status === 'success') {
+                    // Mapping data agar formatnya konsisten
+                    notes = result.data.map(n => ({
+                        id: n.id,
+                        title: n.judul,
+                        content: n.isi,
+                        date: n.tanggal
+                    }));
+                } else {
+                    console.error("Gagal memuat data");
+                    notes = [];
+                }
+            } catch (error) {
+                console.error("Error koneksi:", error);
+                notesContainer.innerHTML = '<p class="col-span-5 text-center text-red-500 py-10">Gagal terhubung ke Server. Cek koneksi atau URL.</p>';
+                return;
+            }
+            renderNotes();
+        }
+
+        // === SIMPAN / UPDATE DATA ===
+        async function saveNote() {
+            const title = noteTitleInput.value.trim();
+            const content = noteContentInput.value.trim();
+            const id = noteIdInput.value;
+
+            if (!title) { alert('Judul tidak boleh kosong!'); return; }
+
+            saveBtn.innerHTML = '<span class="spinner"></span> Menyimpan...';
+            saveBtn.disabled = true;
+
+            const payload = {
+                action: id ? 'update' : 'create',
+                id: id || Date.now().toString(),
+                title: title,
+                content: content
+            };
+
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // Google Script membutuhkan no-cors untuk POST sederhana
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                // Karena no-cors, kita tidak bisa baca response. Anggap sukses.
+                // Refresh data dari server
+                await loadNotes(); 
+                closeModal();
+            } catch (error) {
+                console.error("Error simpan:", error);
+                alert('Gagal menyimpan data. Coba lagi.');
+            }
+            
+            saveBtn.innerHTML = 'Simpan';
+            saveBtn.disabled = false;
+        }
+
+        // === HAPUS DATA ===
+        async function deleteNote(id) {
+            if (!confirm('Yakin mau hapus report ini?')) return;
+
+            try {
+                const payload = { action: 'delete', id: id };
+                
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                await loadNotes();
+            } catch (error) {
+                console.error("Error hapus:", error);
+                alert('Gagal menghapus data.');
+            }
+        }
+
+        // === UI FUNCTIONS ===
+        function openModal(id = null) {
+            noteIdInput.value = '';
+            noteTitleInput.value = '';
+            noteContentInput.value = '';
+
+            if (id) {
+                const note = notes.find(n => n.id === id);
+                if (note) {
+                    modalTitle.textContent = 'Edit Report';
+                    noteIdInput.value = note.id;
+                    noteTitleInput.value = note.title;
+                    noteContentInput.value = note.content;
+                }
+            } else {
+                modalTitle.textContent = 'Tambah Report Baru';
+            }
+            
+            formModal.classList.add('show');
+            noteTitleInput.focus();
+        }
+
+        function closeModal() {
+            formModal.classList.remove('show');
+        }
+
+        function renderNotes(filteredNotes = null) {
+            const data = filteredNotes || notes;
+            totalNotesEl.textContent = notes.length;
+
+            if (data.length === 0) {
+                notesContainer.innerHTML = '<p class="col-span-5 text-center text-gray-400 py-10">Belum ada data.</p>';
+                return;
+            }
+
+            notesContainer.innerHTML = data.map(note => `
+                <div class="card-note">
+                    <div class="p-4 border-b border-gray-100 bg-gray-50/50">
+                        <h3 class="font-bold text-sm text-gray-800 truncate">${note.title}</h3>
+                        <p class="text-[10px] text-gray-400 mt-1">${note.date || '-'}</p>
+                    </div>
+                    <div class="p-4 flex-1 content-scroll">
+                        <p class="text-sm text-gray-600 note-content line-clamp-6">${note.content || '-'}</p>
+                    </div>
+                    <div class="p-3 border-t border-gray-100 flex justify-end gap-2 bg-white">
+                        <button onclick="openModal('${note.id}')" class="btn bg-gray-100 text-gray-600 hover:bg-gray-200 py-1 px-3 text-xs">Edit</button>
+                        <button onclick="deleteNote('${note.id}')" class="btn btn-danger py-1 px-3 text-xs">Hapus</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function searchNotes() {
+            const query = searchInput.value.toLowerCase().trim();
+            if (!query) { renderNotes(); return; }
+            const filtered = notes.filter(n => 
+                n.title.toLowerCase().includes(query) || 
+                n.content.toLowerCase().includes(query)
+            );
+            renderNotes(filtered);
+        }
+
+        // Close modal if click outside
+        formModal.addEventListener('click', function(e) {
+            if (e.target === formModal) closeModal();
+        });
+
+        // INIT
+        loadNotes();
+
+    </script>
+</body>
+</html>
