@@ -50,23 +50,15 @@
             display: flex;
             flex-direction: column;
             position: relative;
-            overflow: hidden;
         }
+
+        .card-note.loading { opacity: 0.6; pointer-events: none; }
 
         .card-note:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.1);
-            border-color: #cbd5e1;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+            border-color: var(--cover-color);
         }
-
-        /* Header Card dengan Warna #0F172A */
-        .card-header-dark {
-            background: var(--cover-color);
-            padding: 12px 16px;
-            border-bottom: none;
-        }
-        .card-header-dark h3 { color: white; font-weight: 600; font-size: 14px; }
-        .card-header-dark p { color: rgba(255,255,255,0.6); font-size: 10px; margin-top: 2px; }
 
         .notes-grid {
             display: grid;
@@ -87,7 +79,6 @@
             width: 100%;
             outline: none;
             transition: all 0.2s;
-            font-family: inherit;
         }
         .input-clean:focus {
             border-color: var(--cover-color);
@@ -95,25 +86,21 @@
         }
 
         .btn {
-            padding: 8px 12px;
-            border-radius: 6px;
+            padding: 10px 18px;
+            border-radius: 8px;
             font-weight: 600;
-            font-size: 12px;
+            font-size: 13px;
             cursor: pointer;
             border: none;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
             transition: all 0.2s;
         }
         .btn-primary { background: var(--cover-color); color: white; }
-        .btn-primary:hover { opacity: 0.9; }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
         .btn-danger { background: transparent; color: var(--accent-danger); border: 1px solid var(--accent-danger); }
         .btn-danger:hover { background: var(--accent-danger); color: white; }
-        .btn-success { background: transparent; color: var(--accent-success); border: 1px solid var(--accent-success); }
-        .btn-success:hover { background: var(--accent-success); color: white; }
-        .btn-edit { background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border); }
-        .btn-edit:hover { background: var(--cover-color); color: white; border-color: var(--cover-color); }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
         /* Modal */
@@ -138,31 +125,25 @@
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
         .note-content { white-space: pre-wrap; word-break: break-word; }
-        .content-scroll { max-height: 300px; overflow-y: auto; }
+        .content-scroll { max-height: 400px; overflow-y: auto; }
         .content-scroll::-webkit-scrollbar { width: 4px; }
         .content-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 30px; left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: var(--cover-color); color: white;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 500;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            z-index: 1000; opacity: 0;
-            transition: all 0.3s ease;
-        }
-        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
         
+        /* Loading Spinner */
         .spinner {
-            border: 2px solid #f3f3f3; border-top: 2px solid white;
-            border-radius: 50%; width: 14px; height: 14px;
+            border: 2px solid #f3f3f3; border-top: 2px solid var(--cover-color);
+            border-radius: 50%; width: 16px; height: 16px;
             animation: spin 1s linear infinite; display: inline-block;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Line clamp */
+        .line-clamp-6 {
+            display: -webkit-box;
+            -webkit-line-clamp: 6;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
     </style>
 </head>
 <body>
@@ -178,7 +159,7 @@
                     <h1 class="font-display text-3xl font-bold text-white mb-1">NOTE PAD REPORT ONLINE</h1>
                     <p class="text-gray-300 text-sm">Data tersimpan otomatis di Google Sheet</p>
                 </div>
-                <button onclick="openModal()" class="btn btn-primary" style="padding: 12px 20px;">
+                <button onclick="openModal()" class="btn btn-primary">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14m-7-7h14"/></svg>
                     Tambah Baru
                 </button>
@@ -193,7 +174,7 @@
                         </span>
                         <input type="text" id="searchInput" class="input-clean pl-10" placeholder="Cari judul atau isi..." onkeyup="searchNotes()">
                     </div>
-                    <div class="flex items-center gap-2 text-sm text-gray-500 bg-gray-50 px-4 rounded-lg whitespace-nowrap">
+                    <div class="flex items-center gap-2 text-sm text-gray-500 bg-gray-50 px-4 rounded-lg">
                         Total: <span id="totalNotes" class="font-bold text-gray-700">0</span> Data
                     </div>
                 </div>
@@ -230,14 +211,11 @@
         </div>
     </div>
 
-    <!-- Toast -->
-    <div id="toast" class="toast">Berhasil disalin!</div>
-
     <script>
         // ==========================================
-        // KONFIGURASI - PASTE URL GOOGLE SCRIPT DI BAWAH INI
+        // KONFIGURASI - URL SUDAH TERISI OTOMATIS
         // ==========================================
-        const SCRIPT_URL = 'PASTE_URL_WEB_APP_DISINI'; 
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyWkcD74bV_774BkcDKvz7vexplS2x7teEa1nnPHxjPUgSewYsGu6xeYFyAxyDozTyQ/exec'; 
         
         let notes = [];
 
@@ -251,46 +229,36 @@
         const noteTitleInput = document.getElementById('noteTitle');
         const noteContentInput = document.getElementById('noteContent');
         const saveBtn = document.getElementById('saveBtn');
-        const toast = document.getElementById('toast');
 
-        // === SHOW TOAST ===
-        function showToast(message) {
-            toast.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => { toast.classList.remove('show'); }, 3000);
-        }
-
-        // === LOAD DATA ===
+        // === LOAD DATA DARI GOOGLE SHEET ===
         async function loadNotes() {
-            if(SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbyWkcD74bV_774BkcDKvz7vexplS2x7teEa1nnPHxjPUgSewYsGu6xeYFyAxyDozTyQ/exec' || SCRIPT_URL === '') {
-                notesContainer.innerHTML = '<p class="col-span-5 text-center text-red-500 py-10">Error: URL Script belum diisi!</p>';
-                return;
-            }
+            // KODE VALIDASI YANG MENGGANGGU SUDAH DIHAPUS DI SINI
             
             try {
                 const response = await fetch(SCRIPT_URL);
                 const result = await response.json();
                 
-                if(result.status === 'success' && result.data) {
-                    // Mapping: Pastikan key sesuai dengan header Sheet (id, tanggal, judul, isi)
+                if(result.status === 'success') {
+                    // Mapping data agar formatnya konsisten
                     notes = result.data.map(n => ({
                         id: n.id,
-                        title: n.judul || n.title, // Fallback jika key berbeda
-                        content: n.isi || n.content,
-                        date: n.tanggal || n.date
+                        title: n.judul,
+                        content: n.isi,
+                        date: n.tanggal
                     }));
                 } else {
+                    console.error("Gagal memuat data:", result);
                     notes = [];
                 }
             } catch (error) {
                 console.error("Error koneksi:", error);
-                notesContainer.innerHTML = '<p class="col-span-5 text-center text-red-500 py-10">Gagal terhubung ke Server.</p>';
+                notesContainer.innerHTML = '<p class="col-span-5 text-center text-red-500 py-10">Gagal terhubung ke Server. Pastikan URL Script benar dan sudah di-deploy dengan benar.</p>';
                 return;
             }
             renderNotes();
         }
 
-        // === SIMPAN / UPDATE ===
+        // === SIMPAN / UPDATE DATA ===
         async function saveNote() {
             const title = noteTitleInput.value.trim();
             const content = noteContentInput.value.trim();
@@ -311,28 +279,25 @@
             try {
                 await fetch(SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'no-cors',
+                    mode: 'no-cors', // Google Script membutuhkan no-cors untuk POST sederhana
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
                 
-                // Delay sedikit agar Google Sheet proses
-                setTimeout(async () => {
-                    await loadNotes(); 
-                    closeModal();
-                    saveBtn.innerHTML = 'Simpan';
-                    saveBtn.disabled = false;
-                }, 1000);
-                
+                // Karena no-cors, kita tidak bisa baca response. Anggap sukses.
+                // Refresh data dari server
+                await loadNotes(); 
+                closeModal();
             } catch (error) {
                 console.error("Error simpan:", error);
-                alert('Gagal menyimpan data.');
-                saveBtn.innerHTML = 'Simpan';
-                saveBtn.disabled = false;
+                alert('Gagal menyimpan data. Coba lagi.');
             }
+            
+            saveBtn.innerHTML = 'Simpan';
+            saveBtn.disabled = false;
         }
 
-        // === HAPUS ===
+        // === HAPUS DATA ===
         async function deleteNote(id) {
             if (!confirm('Yakin mau hapus report ini?')) return;
 
@@ -346,42 +311,14 @@
                     body: JSON.stringify(payload)
                 });
 
-                setTimeout(async () => {
-                    await loadNotes();
-                }, 500);
-                
+                await loadNotes();
             } catch (error) {
                 console.error("Error hapus:", error);
                 alert('Gagal menghapus data.');
             }
         }
 
-        // === COPY ===
-        function copyText(id) {
-            // Cari data berdasarkan ID
-            const note = notes.find(n => n.id === id);
-            if (!note) {
-                alert('Data tidak ditemukan');
-                return;
-            }
-            
-            const textToCopy = `Judul: ${note.title}\n\n${note.content}`;
-            
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                showToast('Berhasil disalin ke clipboard!');
-            }).catch(err => {
-                // Fallback
-                const textArea = document.createElement('textarea');
-                textArea.value = textToCopy;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-                showToast('Berhasil disalin!');
-            });
-        }
-
-        // === MODAL CONTROL ===
+        // === UI FUNCTIONS ===
         function openModal(id = null) {
             noteIdInput.value = '';
             noteTitleInput.value = '';
@@ -407,7 +344,6 @@
             formModal.classList.remove('show');
         }
 
-        // === RENDER ===
         function renderNotes(filteredNotes = null) {
             const data = filteredNotes || notes;
             totalNotesEl.textContent = notes.length;
@@ -419,20 +355,16 @@
 
             notesContainer.innerHTML = data.map(note => `
                 <div class="card-note">
-                    <div class="card-header-dark">
-                        <h3 class="truncate">${note.title}</h3>
-                        <p>${note.date || '-'}</p>
+                    <div class="p-4 border-b border-gray-100 bg-gray-50/50">
+                        <h3 class="font-bold text-sm text-gray-800 truncate">${note.title}</h3>
+                        <p class="text-[10px] text-gray-400 mt-1">${note.date || '-'}</p>
                     </div>
-                    <div class="p-4 flex-1 content-scroll bg-white">
-                        <p class="text-sm text-gray-600 note-content">${note.content || '-'}</p>
+                    <div class="p-4 flex-1 content-scroll">
+                        <p class="text-sm text-gray-600 note-content line-clamp-6">${note.content || '-'}</p>
                     </div>
-                    <div class="p-3 border-t border-gray-100 flex justify-end gap-2 bg-gray-50">
-                        <button onclick="copyText('${note.id}')" class="btn btn-success">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                            Copy
-                        </button>
-                        <button onclick="openModal('${note.id}')" class="btn btn-edit">Edit</button>
-                        <button onclick="deleteNote('${note.id}')" class="btn btn-danger">Hapus</button>
+                    <div class="p-3 border-t border-gray-100 flex justify-end gap-2 bg-white">
+                        <button onclick="openModal('${note.id}')" class="btn bg-gray-100 text-gray-600 hover:bg-gray-200 py-1 px-3 text-xs">Edit</button>
+                        <button onclick="deleteNote('${note.id}')" class="btn btn-danger py-1 px-3 text-xs">Hapus</button>
                     </div>
                 </div>
             `).join('');
@@ -442,8 +374,8 @@
             const query = searchInput.value.toLowerCase().trim();
             if (!query) { renderNotes(); return; }
             const filtered = notes.filter(n => 
-                (n.title && n.title.toLowerCase().includes(query)) || 
-                (n.content && n.content.toLowerCase().includes(query))
+                n.title.toLowerCase().includes(query) || 
+                n.content.toLowerCase().includes(query)
             );
             renderNotes(filtered);
         }
