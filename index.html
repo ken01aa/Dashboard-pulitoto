@@ -11,6 +11,7 @@
         iframe { border: none; }
         .menu-item { transition: all 0.2s ease-in-out; }
         
+        /* Animasi Marquee yang lebih halus */
         .marquee-container {
             overflow: hidden;
             white-space: nowrap;
@@ -32,6 +33,7 @@
         <!-- SIDEBAR -->
         <aside class="w-64 bg-slate-900 text-white flex-shrink-0 flex flex-col">
             <div class="p-6 border-b border-slate-700">
+                <!-- Logo Ukuran Sedang (h-12) -->
                 <div class="flex justify-center mb-4">
                     <img src="https://puli32217.com/resources/images/logo.png" alt="Logo PULITOTO" class="h-12 w-auto">
                 </div>
@@ -97,14 +99,6 @@
                         <path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clip-rule="evenodd" />
                     </svg>
                     LINK PREDIKSI BOLA
-                </a>
-
-                <!-- Menu 8: HASIL RESULT -->
-                <a href="#" onclick="loadPage('HASIL_RESULT.html', this)" data-title="Hasil Result" data-menu="hasil_result" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm2 10a1 1 0 10-2 0v3a1 1 0 102 0v-3zm2-3a1 1 0 011 1v5a1 1 0 11-2 0v-5a1 1 0 011-1zm4-1a1 1 0 10-2 0v7a1 1 0 102 0V8z" clip-rule="evenodd" />
-                    </svg>
-                    HASIL RESULT
                 </a>
             </nav>
 
@@ -265,6 +259,7 @@
         function getOrCreatePcId() {
             let pcId = localStorage.getItem(PC_ID_KEY);
             if (!pcId) {
+                // Membuat ID sederhana dari timestamp + random
                 pcId = 'PC-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substr(2, 5).toUpperCase();
                 localStorage.setItem(PC_ID_KEY, pcId);
             }
@@ -280,9 +275,8 @@
             result: 0,
             saldo: 0,
             link_prediksi: 0,
-            hasil_result: 0,
             totalPc: 0,
-            pcList: [],
+            pcList: [], // Array untuk menyimpan ID PC unik
             logs: []
         };
 
@@ -302,6 +296,7 @@
 
         // === Fungsi untuk update tampilan statistik ===
         function updateStatsView() {
+            // Update angka
             document.getElementById('stat-prediksi').innerText = stats.prediksi;
             document.getElementById('stat-bukti_jp').innerText = stats.bukti_jp;
             document.getElementById('stat-syair').innerText = stats.syair;
@@ -309,6 +304,7 @@
             document.getElementById('stat-saldo').innerText = stats.saldo;
             document.getElementById('stat-total-pc').innerText = stats.totalPc;
 
+            // Update Log
             const logBody = document.getElementById('log-body');
             const noLogs = document.getElementById('no-logs');
             
@@ -318,7 +314,7 @@
                 noLogs.classList.remove('hidden');
             } else {
                 noLogs.classList.add('hidden');
-                const recentLogs = stats.logs.slice(-10).reverse();
+                const recentLogs = stats.logs.slice(-10).reverse(); // 10 log terakhir
                 recentLogs.forEach(log => {
                     const row = document.createElement('tr');
                     row.className = "bg-white border-b hover:bg-gray-50";
@@ -336,9 +332,12 @@
 
         // === Fungsi untuk menambah statistik penggunaan menu ===
         function addStat(menuKey, appName) {
+            // Jangan rekam jika menu dashboard
             if (menuKey !== 'dashboard') {
+                // Tambah hitungan menu spesifik
                 stats[menuKey] = (stats[menuKey] || 0) + 1;
                 
+                // Tambah log
                 const now = new Date();
                 const timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' ' + now.toLocaleDateString('id-ID');
                 
@@ -376,6 +375,7 @@
                 contentFrame.classList.add('hidden');
                 contentFrame.src = "";
             } else {
+                // Rekam statistik
                 addStat(menuKey, title);
                 
                 contentDashboard.classList.add('hidden');
@@ -386,8 +386,8 @@
 
         // === Jalankan saat halaman dimuat ===
         document.addEventListener('DOMContentLoaded', () => {
-            registerPcAccess();
-            updateStatsView();
+            registerPcAccess();      // Catat PC ini jika baru pertama kali
+            updateStatsView();       // Tampilkan statistik
         });
     </script>
 </body>
