@@ -100,6 +100,14 @@
                     </svg>
                     LINK PREDIKSI BOLA
                 </a>
+
+                <!-- Menu 8: HASIL RESULT -->
+                <a href="#" onclick="loadPage('generator-result.html', this)" data-title="Hasil Result" data-menu="hasil_result" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2H6zm1 2a1 1 0 000 2h6a1 1 0 100-2H7zm6 7a1 1 0 011 1v3a1 1 0 11-2 0v-3a1 1 0 011-1zm-3 3a1 1 0 100 2h.01a1 1 0 100-2H10zm-4 1a1 1 0 011-1h.01a1 1 0 110 2H7a1 1 0 01-1-1zm1-4a1 1 0 100 2h.01a1 1 0 100-2H7zm2 1a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1zm4-4a1 1 0 100 2h.01a1 1 0 100-2H13zM9 9a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd" />
+                    </svg>
+                    HASIL RESULT
+                </a>
             </nav>
 
             <div class="p-4 border-t border-slate-700">
@@ -219,6 +227,21 @@
                             </div>
                         </div>
 
+                        <!-- Card Hasil Result -->
+                        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-indigo-500">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-500 font-medium">Hasil Result</p>
+                                    <p class="text-3xl font-bold text-gray-800 mt-1" id="stat-hasil_result">0</p>
+                                </div>
+                                <div class="bg-indigo-100 p-3 rounded-full">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
                     <!-- Tabel Log Aktivitas Terbaru -->
@@ -275,6 +298,7 @@
             result: 0,
             saldo: 0,
             link_prediksi: 0,
+            hasil_result: 0,
             totalPc: 0,
             pcList: [], // Array untuk menyimpan ID PC unik
             logs: []
@@ -302,6 +326,7 @@
             document.getElementById('stat-syair').innerText = stats.syair;
             document.getElementById('stat-result').innerText = stats.result;
             document.getElementById('stat-saldo').innerText = stats.saldo;
+            document.getElementById('stat-hasil_result').innerText = stats.hasil_result;
             document.getElementById('stat-total-pc').innerText = stats.totalPc;
 
             // Update Log
