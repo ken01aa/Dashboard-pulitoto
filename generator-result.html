@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hasil Result Togel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-card: #ffffff;
+            --cover-color: #0F172A;
+            --accent-success: #10b981;
+            --accent-danger: #ef4444;
+            --accent-warning: #f59e0b;
+            --accent-info: #3b82f6;
+            --text-primary: #0F172A;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border: #e2e8f0;
+            --border-dark: #cbd5e1;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .font-display {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 320px;
+            background: var(--cover-color);
+            pointer-events: none;
+            z-index: 0;
+            clip-path: ellipse(120% 100% at 50% 0%);
+        }
+
+        .bg-pattern::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: 
+                radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255, 255, 255, 0.05), transparent 70%),
+                linear-gradient(180deg, transparent 60%, rgba(255, 255, 255, 0.02) 100%);
+        }
+
+        /* Card Styling */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+        }
+
+        .card-header {
+            background: var(--cover-color);
+            padding: 18px 24px;
+            border-bottom: none;
+        }
+
+        /* Toggle Switch Styling */
+        .toggle-container {
+            display: flex;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            padding: 4px;
+            gap: 4px;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .toggle-btn.active {
+            background: var(--cover-color);
+            color: white;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
+        }
+
+        .toggle-btn:hover:not(.active) {
+            background: rgba(15, 23, 42, 0.05);
+            color: var(--text-primary);
+        }
+
+        /* Input Styling */
+        .input-field {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            padding: 14px 16px;
+            font-size: 15px;
+            width: 100%;
+            transition: all 0.25s ease;
+            outline: none;
+        }
+
+        .input-field:focus {
+            border-color: var(--cover-color);
+            box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
+            background: var(--bg-primary);
+        }
+
+        .input-field::placeholder {
+            color: var(--text-muted);
+        }
+
+        select.input-field {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%230F172A' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 40px;
+        }
+
+        select.input-field option {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        /* Label */
+        .input-label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Single Prize Input */
+        .single-prize-input {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            padding: 14px 16px;
+            font-size: 18px;
+            font-weight: 700;
+            width: 100%;
+            text-align: center;
+            transition: all 0.25s ease;
+            outline: none;
+            letter-spacing: 3px;
+        }
+
+        .single-prize-input:focus {
+            border-color: var(--cover-color);
+            box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
+            background: var(--bg-primary);
+        }
+
+        /* Prize Input Group (3 Prize) */
+        .prize-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .prize-input-wrapper {
+            flex: 1;
+        }
+
+        .prize-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--cover-color);
+            text-align: center;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .prize-input {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            padding: 12px 8px;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            text-align: center;
+            transition: all 0.25s ease;
+            outline: none;
+            letter-spacing: 2px;
+        }
+
+        .prize-input:focus {
+            border-color: var(--cover-color);
+            box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
+            background: var(--bg-primary);
+        }
+
+        .prize-input::placeholder {
+            color: var(--text-muted);
+            font-weight: 400;
+            letter-spacing: 0;
+            font-size: 12px;
+        }
+
+        /* Button Styling */
+        .btn {
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-generate {
+            background: var(--cover-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(15, 23, 42, 0.25);
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(15, 23, 42, 0.35);
+        }
+
+        .btn-generate:active {
+            transform: translateY(0);
+        }
+
+        .btn-copy {
+            background: var(--accent-success);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25);
+        }
+
+        .btn-copy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.35);
+        }
+
+        .btn-reset {
+            background: var(--accent-danger);
+            color: white;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.25);
+        }
+
+        .btn-reset:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.35);
+        }
+
+        /* Result Box */
+        .result-box {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.02), rgba(15, 23, 42, 0.05));
+            border: 2px solid var(--cover-color);
+            border-radius: 12px;
+            padding: 20px 24px;
+            line-height: 1.8;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+        }
+
+        .result-box.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .result-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--cover-color);
+        }
+
+        .result-line {
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .result-line.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .result-label {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .result-value {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .result-number {
+            color: var(--cover-color);
+            font-size: 1.2em;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .result-shio {
+            color: var(--accent-warning);
+            font-weight: 700;
+        }
+
+        .result-footer {
+            color: var(--cover-color);
+            font-weight: 600;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px dashed var(--border-dark);
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--cover-color);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-weight: 500;
+            box-shadow: 0 10px 40px rgba(15, 23, 42, 0.3);
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; opacity: 0; }
+        .delay-2 { animation-delay: 0.2s; opacity: 0; }
+        .delay-3 { animation-delay: 0.3s; opacity: 0; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+            .prize-group {
+                flex-direction: row;
+            }
+        }
+
+        /* Shio Table */
+        .shio-table-container {
+            overflow-x: auto;
+        }
+
+        .shio-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .shio-table th {
+            background: var(--cover-color);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 12px 16px;
+            text-align: left;
+        }
+
+        .shio-table th:first-child {
+            border-radius: 8px 0 0 0;
+        }
+
+        .shio-table th:last-child {
+            border-radius: 0 8px 0 0;
+        }
+
+        .shio-table td {
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s ease;
+        }
+
+        .shio-table tr:hover td {
+            background: rgba(15, 23, 42, 0.03);
+        }
+
+        .shio-table .shio-name {
+            color: var(--cover-color);
+            font-weight: 600;
+        }
+
+        .shio-table .shio-numbers {
+            color: var(--text-secondary);
+            font-family: 'Plus Jakarta Sans', monospace;
+            letter-spacing: 0.3px;
+        }
+
+        /* Header Title on Cover */
+        .header-title {
+            color: white;
+        }
+
+        .header-divider {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Logo Styling */
+        .logo-img {
+            height: 44px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        @media (max-width: 768px) {
+            .logo-img {
+                height: 38px;
+            }
+        }
+
+        /* Hide elements */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Badge for 5D */
+        .badge-5d {
+            display: inline-block;
+            background: var(--accent-info);
+            color: white;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 6px;
+            vertical-align: middle;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Pattern / Cover -->
+    <div class="bg-pattern"></div>
+
+    <!-- Main Container -->
+    <div class="relative z-10 min-h-screen flex items-center justify-center p-4 py-8">
+        <div class="w-full max-w-4xl">
+            <!-- Header -->
+            <header class="text-center mb-6 animate-in delay-1">
+                <div class="flex justify-center mb-3">
+                    <img src="https://puli32217.com/resources/images/logo.png" alt="Logo" class="logo-img">
+                </div>
+                <h1 class="font-display text-2xl md:text-3xl font-bold tracking-wide mb-2 header-title">
+                    HASIL RESULT TOGEL
+                </h1>
+                <div class="w-20 h-1 mx-auto rounded header-divider"></div>
+            </header>
+
+            <!-- Main Card -->
+            <div class="card animate-in delay-2">
+                <div class="card-header">
+                    <div class="flex items-center justify-between">
+                        <h2 class="font-semibold text-base text-white">Generate Result</h2>
+                        <span class="text-xs text-gray-300">System v2.4</span>
+                    </div>
+                </div>
+                
+                <div class="p-5">
+                    <!-- Toggle Switch -->
+                    <div class="flex justify-center mb-5">
+                        <div class="toggle-container">
+                            <button type="button" id="togglePrize1" class="toggle-btn active" onclick="switchMode('1')">
+                                1 Prize
+                            </button>
+                            <button type="button" id="togglePrize3" class="toggle-btn" onclick="switchMode('3')">
+                                3 Prize
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Input Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5 input-grid">
+                        <!-- Kolom 1: Pasaran -->
+                        <div>
+                            <label class="input-label" for="pasaran">Pilih Pasaran</label>
+                            <select id="pasaran" class="input-field" onchange="onPasaranChange()">
+                                <!-- Options will be populated by JavaScript -->
+                            </select>
+                        </div>
+
+                        <!-- Kolom 2: Input Prize (Mode 1 Prize) -->
+                        <div id="mode1Input">
+                            <label class="input-label" for="prize1Single">
+                                Input Nomor Prize 1
+                                <span id="badge5D" class="badge-5d hidden">5 Digit</span>
+                            </label>
+                            <input type="text" id="prize1Single" class="single-prize-input" placeholder="Contoh: 1234" maxlength="4" inputmode="numeric">
+                        </div>
+
+                        <!-- Kolom 2: Input Prize (Mode 3 Prize) -->
+                        <div id="mode3Input" class="hidden">
+                            <label class="input-label">Input Nomor Prize</label>
+                            <div class="prize-group">
+                                <div class="prize-input-wrapper">
+                                    <span class="prize-label">Prize 1</span>
+                                    <input type="text" id="prize1Multi" class="prize-input" placeholder="0000" maxlength="4" inputmode="numeric">
+                                </div>
+                                <div class="prize-input-wrapper">
+                                    <span class="prize-label">Prize 2</span>
+                                    <input type="text" id="prize2Multi" class="prize-input" placeholder="0000" maxlength="4" inputmode="numeric">
+                                </div>
+                                <div class="prize-input-wrapper">
+                                    <span class="prize-label">Prize 3</span>
+                                    <input type="text" id="prize3Multi" class="prize-input" placeholder="0000" maxlength="4" inputmode="numeric">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Kolom 3: Tanggal -->
+                        <div>
+                            <label class="input-label" for="tanggal">Pilih Tanggal</label>
+                            <input type="date" id="tanggal" class="input-field">
+                        </div>
+                    </div>
+
+                    <!-- Generate Button -->
+                    <div class="flex justify-center mb-5">
+                        <button id="btnGenerate" class="btn btn-generate px-8 py-3">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.6 5.6l2.1 2.1m8.6 8.6l2.1 2.1M5.6 18.4l2.1-2.1m8.6-8.6l2.1-2.1"/>
+                            </svg>
+                            Generate Result
+                        </button>
+                    </div>
+
+                    <!-- Result Box Mode 1 Prize -->
+                    <div id="resultBox1" class="result-box mb-4">
+                        <div class="result-line" data-line="1">
+                            <span class="result-label">Hasil Pengeluaran</span>
+                            <span class="result-value" id="resultPasaran1"></span>
+                        </div>
+                        <div class="result-line" data-line="2">
+                            <span class="result-label">Hari </span>
+                            <span class="result-value" id="resultTanggal1"></span>
+                        </div>
+                        <div class="result-line" data-line="3">
+                            <span class="result-label">Hasil Pengeluaran : </span>
+                            <span class="result-number" id="resultNomor1"></span>
+                        </div>
+                        <div class="result-line" data-line="4">
+                            <span class="result-label">SHIO : </span>
+                            <span class="result-shio" id="resultShio1"></span>
+                        </div>
+                        <div class="result-line result-footer" data-line="5">
+                            Selamat Kepada Pemenang, Salam JP
+                        </div>
+                    </div>
+
+                    <!-- Result Box Mode 3 Prize -->
+                    <div id="resultBox3" class="result-box mb-4 hidden">
+                        <div class="result-line" data-line="1">
+                            <span class="result-label">Hasil Pengeluaran</span>
+                            <span class="result-value" id="resultPasaran3"></span>
+                        </div>
+                        <div class="result-line" data-line="2">
+                            <span class="result-label">Hari </span>
+                            <span class="result-value" id="resultTanggal3"></span>
+                        </div>
+                        <div class="result-line" data-line="3">
+                            <span class="result-label">Prize 1 : </span>
+                            <span class="result-number" id="resultPrize1Multi"></span>
+                        </div>
+                        <div class="result-line" data-line="4">
+                            <span class="result-label">Prize 2 : </span>
+                            <span class="result-number" id="resultPrize2Multi"></span>
+                        </div>
+                        <div class="result-line" data-line="5">
+                            <span class="result-label">Prize 3 : </span>
+                            <span class="result-number" id="resultPrize3Multi"></span>
+                        </div>
+                        <div class="result-line" data-line="6">
+                            <span class="result-label">SHIO : </span>
+                            <span class="result-shio" id="resultShio3"></span>
+                        </div>
+                        <div class="result-line result-footer" data-line="7">
+                            Selamat Kepada Pemenang, Salam JP
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div id="actionButtons" class="flex flex-wrap gap-3 justify-center" style="display: none;">
+                        <button id="btnCopy" class="btn btn-copy">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                            </svg>
+                            Copy Result
+                        </button>
+                        <button id="btnReset" class="btn btn-reset">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                                <path d="M3 3v5h5"/>
+                            </svg>
+                            Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shio Reference Table -->
+            <div class="card mt-5 animate-in delay-3">
+                <div class="card-header">
+                    <h3 class="font-semibold text-white">Tabel Shio</h3>
+                </div>
+                <div class="p-4">
+                    <div class="shio-table-container">
+                        <table class="shio-table">
+                            <thead>
+                                <tr>
+                                    <th>Nama Shio</th>
+                                    <th>Nomor Terkait</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="shio-name">Kuda</td><td class="shio-numbers">01, 13, 25, 37, 49, 61, 73, 85, 97</td></tr>
+                                <tr><td class="shio-name">Ular</td><td class="shio-numbers">02, 14, 26, 38, 50, 62, 74, 86, 98</td></tr>
+                                <tr><td class="shio-name">Naga</td><td class="shio-numbers">03, 15, 27, 39, 51, 63, 75, 87, 99</td></tr>
+                                <tr><td class="shio-name">Kelinci</td><td class="shio-numbers">04, 16, 28, 40, 52, 64, 76, 88, 00</td></tr>
+                                <tr><td class="shio-name">Harimau</td><td class="shio-numbers">05, 17, 29, 41, 53, 65, 77, 89</td></tr>
+                                <tr><td class="shio-name">Kerbau</td><td class="shio-numbers">06, 18, 30, 42, 54, 66, 78, 90</td></tr>
+                                <tr><td class="shio-name">Tikus</td><td class="shio-numbers">07, 19, 31, 43, 55, 67, 79, 91</td></tr>
+                                <tr><td class="shio-name">Babi</td><td class="shio-numbers">08, 20, 32, 44, 56, 68, 80, 92</td></tr>
+                                <tr><td class="shio-name">Anjing</td><td class="shio-numbers">09, 21, 33, 45, 57, 69, 81, 93</td></tr>
+                                <tr><td class="shio-name">Ayam</td><td class="shio-numbers">10, 22, 34, 46, 58, 70, 82, 94</td></tr>
+                                <tr><td class="shio-name">Monyet</td><td class="shio-numbers">11, 23, 35, 47, 59, 71, 83, 95</td></tr>
+                                <tr><td class="shio-name">Kambing</td><td class="shio-numbers">12, 24, 36, 48, 60, 72, 84, 96</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 6 9 17l-5-5"/>
+        </svg>
+        <span id="toastMessage">Berhasil disalin!</span>
+    </div>
+
+    <script>
+        // Current mode: '1' or '3'
+        let currentMode = '1';
+        let is5DMode = false;
+
+        // Pasaran Lists
+        const pasaran1Prize = [
+            'TOTOMACAU PAGI', 'TOTOMACAU SIANG', 'TOTOMACAU SORE', 'TOTOMACAU MALAM', 'TOTOMACAU MALAI',
+            'OREGON03', 'OREGON06', 'OREGON09', 'OREGON12',
+            'HOKI DRAW 5D', 'BULLSEYE',
+            'KING KONG4D SORE', 'KING KONG4D MALAM',
+            'PCSO', 'KENTUCKY MIDDAY', 'KENTUCKY EVENING',
+            'FLORIDA MIDDAY', 'FLORIDA EVENING',
+            'NEW YORK MIDDAY', 'NEW YORK EVENING',
+            'NORTH CAROLINA D', 'CALIFORNIA',
+            'CAROLINA DAY', 'CAROLINA EVENING',
+            'SINGAPORE TOTO'
+        ];
+
+        const pasaran3Prize = [
+            'CHELSEA 11', 'CHELSEA 15', 'CHELSEA 19', 'CHELSEA 21',
+            'POIPET 12', 'POIPET 15', 'POIPET 19', 'POIPET 22',
+            'SYDNEY LOTTO', 'BRUNEI 02', 'BRUNEI 14', 'BRUNEI 21',
+            'TOTOMALI 1530', 'TOTOMALI 2030', 'TOTOMALI 2330',
+            'HUAHIN 0100', 'HUAHIN 1630', 'HUAHIN 2100',
+            'NEVADA', 'HONGKONG LOTTO',
+            'BANGKOK 0130', 'BANGKOK 0930',
+            'MAGNUM4D', 'TOTO CAMBODIA LIVE', 'SINGAPORE 4D'
+        ];
+
+        // Shio Data
+        const shioData = {
+            'Kuda': ['01', '13', '25', '37', '49', '61', '73', '85', '97'],
+            'Ular': ['02', '14', '26', '38', '50', '62', '74', '86', '98'],
+            'Naga': ['03', '15', '27', '39', '51', '63', '75', '87', '99'],
+            'Kelinci': ['04', '16', '28', '40', '52', '64', '76', '88', '00'],
+            'Harimau': ['05', '17', '29', '41', '53', '65', '77', '89'],
+            'Kerbau': ['06', '18', '30', '42', '54', '66', '78', '90'],
+            'Tikus': ['07', '19', '31', '43', '55', '67', '79', '91'],
+            'Babi': ['08', '20', '32', '44', '56', '68', '80', '92'],
+            'Anjing': ['09', '21', '33', '45', '57', '69', '81', '93'],
+            'Ayam': ['10', '22', '34', '46', '58', '70', '82', '94'],
+            'Monyet': ['11', '23', '35', '47', '59', '71', '83', '95'],
+            'Kambing': ['12', '24', '36', '48', '60', '72', '84', '96']
+        };
+
+        const namaHari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        const namaBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+        // DOM Elements
+        const pasaranSelect = document.getElementById('pasaran');
+        const tanggalInput = document.getElementById('tanggal');
+        const btnGenerate = document.getElementById('btnGenerate');
+        const btnCopy = document.getElementById('btnCopy');
+        const btnReset = document.getElementById('btnReset');
+        const actionButtons = document.getElementById('actionButtons');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+
+        // Mode 1 Prize Elements
+        const mode1Input = document.getElementById('mode1Input');
+        const prize1Single = document.getElementById('prize1Single');
+        const resultBox1 = document.getElementById('resultBox1');
+        const badge5D = document.getElementById('badge5D');
+
+        // Mode 3 Prize Elements
+        const mode3Input = document.getElementById('mode3Input');
+        const prize1Multi = document.getElementById('prize1Multi');
+        const prize2Multi = document.getElementById('prize2Multi');
+        const prize3Multi = document.getElementById('prize3Multi');
+        const resultBox3 = document.getElementById('resultBox3');
+
+        // Toggle Buttons
+        const togglePrize1 = document.getElementById('togglePrize1');
+        const togglePrize3 = document.getElementById('togglePrize3');
+
+        // Set default date
+        const today = new Date();
+        tanggalInput.value = today.toISOString().split('T')[0];
+
+        // Populate Pasaran Select
+        function populatePasaran(pasaranList) {
+            pasaranSelect.innerHTML = '<option value="">-- Pilih Pasaran --</option>';
+            pasaranList.forEach(pasaran => {
+                const option = document.createElement('option');
+                option.value = pasaran;
+                option.textContent = pasaran;
+                pasaranSelect.appendChild(option);
+            });
+        }
+
+        // Initialize with 1 Prize pasaran
+        populatePasaran(pasaran1Prize);
+
+        // Input validation - only numbers
+        function validateNumberInput(input) {
+            input.addEventListener('input', function(e) {
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+        }
+
+        validateNumberInput(prize1Single);
+        validateNumberInput(prize1Multi);
+        validateNumberInput(prize2Multi);
+        validateNumberInput(prize3Multi);
+
+        // On Pasaran Change - Handle 5D Mode
+        function onPasaranChange() {
+            const selectedPasaran = pasaranSelect.value;
+            
+            if (selectedPasaran === 'HOKI DRAW 5D') {
+                is5DMode = true;
+                prize1Single.maxLength = 5;
+                prize1Single.placeholder = 'Contoh: 12345';
+                badge5D.classList.remove('hidden');
+            } else {
+                is5DMode = false;
+                prize1Single.maxLength = 4;
+                prize1Single.placeholder = 'Contoh: 1234';
+                badge5D.classList.add('hidden');
+            }
+        }
+
+        // Switch Mode Function
+        function switchMode(mode) {
+            currentMode = mode;
+
+            // Update toggle buttons
+            if (mode === '1') {
+                togglePrize1.classList.add('active');
+                togglePrize3.classList.remove('active');
+                mode1Input.classList.remove('hidden');
+                mode3Input.classList.add('hidden');
+                resultBox1.classList.remove('hidden');
+                resultBox3.classList.add('hidden');
+                populatePasaran(pasaran1Prize);
+                is5DMode = false;
+                prize1Single.maxLength = 4;
+                prize1Single.placeholder = 'Contoh: 1234';
+                badge5D.classList.add('hidden');
+            } else {
+                togglePrize1.classList.remove('active');
+                togglePrize3.classList.add('active');
+                mode1Input.classList.add('hidden');
+                mode3Input.classList.remove('hidden');
+                resultBox1.classList.add('hidden');
+                resultBox3.classList.remove('hidden');
+                populatePasaran(pasaran3Prize);
+            }
+
+            // Hide results
+            resultBox1.classList.remove('show');
+            resultBox3.classList.remove('show');
+            actionButtons.style.display = 'none';
+
+            // Reset line animations
+            document.querySelectorAll('.result-line').forEach(line => {
+                line.classList.remove('show');
+            });
+        }
+
+        // Get Shio from last 2 digits
+        function getShio(nomor) {
+            const lastTwoDigits = nomor.slice(-2).padStart(2, '0');
+            for (const [shio, numbers] of Object.entries(shioData)) {
+                if (numbers.includes(lastTwoDigits)) {
+                    return shio;
+                }
+            }
+            return 'Tidak Ditemukan';
+        }
+
+        // Format date to Indonesian
+        function formatTanggal(dateString) {
+            const date = new Date(dateString);
+            const hari = namaHari[date.getDay()];
+            const tanggal = date.getDate();
+            const bulan = namaBulan[date.getMonth()];
+            const tahun = date.getFullYear();
+            return `${hari}, ${tanggal.toString().padStart(2, '0')} ${bulan} ${tahun}`;
+        }
+
+        // Show toast
+        function showToast(message) {
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Show result with animation
+        function showResult(resultBox) {
+            resultBox.classList.add('show');
+            const lines = resultBox.querySelectorAll('.result-line');
+            lines.forEach((line, index) => {
+                setTimeout(() => {
+                    line.classList.add('show');
+                }, 80 + (index * 70));
+            });
+
+            setTimeout(() => {
+                actionButtons.style.display = 'flex';
+            }, 350);
+        }
+
+        // Generate Result Mode 1
+        function generateResultMode1() {
+            const pasaran = pasaranSelect.value;
+            const expectedLength = is5DMode ? 5 : 4;
+            const prize1 = prize1Single.value.padStart(expectedLength, '0');
+            const tanggal = tanggalInput.value;
+
+            if (!pasaran) {
+                showToast('Silakan pilih pasaran terlebih dahulu');
+                return;
+            }
+            if (!prize1Single.value) {
+                showToast('Silakan input nomor Prize 1');
+                return;
+            }
+            if (!tanggal) {
+                showToast('Silakan pilih tanggal');
+                return;
+            }
+
+            const shio = getShio(prize1);
+            const formattedTanggal = formatTanggal(tanggal);
+
+            document.getElementById('resultPasaran1').textContent = ` ${pasaran}`;
+            document.getElementById('resultTanggal1').textContent = formattedTanggal;
+            document.getElementById('resultNomor1').textContent = prize1;
+            document.getElementById('resultShio1').textContent = shio;
+
+            showResult(resultBox1);
+        }
+
+        // Generate Result Mode 3
+        function generateResultMode3() {
+            const pasaran = pasaranSelect.value;
+            const prize1 = prize1Multi.value.padStart(4, '0');
+            const prize2 = prize2Multi.value.padStart(4, '0');
+            const prize3 = prize3Multi.value.padStart(4, '0');
+            const tanggal = tanggalInput.value;
+
+            if (!pasaran) {
+                showToast('Silakan pilih pasaran terlebih dahulu');
+                return;
+            }
+            if (!prize1Multi.value) {
+                showToast('Silakan input nomor Prize 1');
+                return;
+            }
+            if (!tanggal) {
+                showToast('Silakan pilih tanggal');
+                return;
+            }
+
+            const shio = getShio(prize1);
+            const formattedTanggal = formatTanggal(tanggal);
+
+            document.getElementById('resultPasaran3').textContent = ` ${pasaran}`;
+            document.getElementById('resultTanggal3').textContent = formattedTanggal;
+            document.getElementById('resultPrize1Multi').textContent = prize1;
+            document.getElementById('resultPrize2Multi').textContent = prize2;
+            document.getElementById('resultPrize3Multi').textContent = prize3;
+            document.getElementById('resultShio3').textContent = shio;
+
+            showResult(resultBox3);
+        }
+
+        // Generate Result
+        function generateResult() {
+            if (currentMode === '1') {
+                generateResultMode1();
+            } else {
+                generateResultMode3();
+            }
+        }
+
+        // Copy Result
+        function copyResult() {
+            let resultText = '';
+            const pasaran = pasaranSelect.value;
+            const tanggal = formatTanggal(tanggalInput.value);
+
+            if (currentMode === '1') {
+                const nomor = document.getElementById('resultNomor1').textContent;
+                const shio = document.getElementById('resultShio1').textContent;
+
+                resultText = `Hasil Pengeluaran ${pasaran}
+Hari ${tanggal}
+Hasil Pengeluaran : ${nomor}
+SHIO : ${shio}
+Selamat Kepada Pemenang, Salam JP`;
+            } else {
+                const prize1 = document.getElementById('resultPrize1Multi').textContent;
+                const prize2 = document.getElementById('resultPrize2Multi').textContent;
+                const prize3 = document.getElementById('resultPrize3Multi').textContent;
+                const shio = document.getElementById('resultShio3').textContent;
+
+                resultText = `Hasil Pengeluaran ${pasaran}
+Hari ${tanggal}
+Prize 1 : ${prize1}
+Prize 2 : ${prize2}
+Prize 3 : ${prize3}
+SHIO : ${shio}
+Selamat Kepada Pemenang, Salam JP`;
+            }
+
+            navigator.clipboard.writeText(resultText).then(() => {
+                showToast('Result berhasil disalin ke clipboard!');
+            }).catch(() => {
+                const textArea = document.createElement('textarea');
+                textArea.value = resultText;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showToast('Result berhasil disalin ke clipboard!');
+            });
+        }
+
+        // Reset Form
+        function resetForm() {
+            pasaranSelect.value = '';
+            prize1Single.value = '';
+            prize1Multi.value = '';
+            prize2Multi.value = '';
+            prize3Multi.value = '';
+            tanggalInput.value = today.toISOString().split('T')[0];
+            
+            // Reset 5D mode
+            is5DMode = false;
+            prize1Single.maxLength = 4;
+            prize1Single.placeholder = 'Contoh: 1234';
+            badge5D.classList.add('hidden');
+
+            resultBox1.classList.remove('show');
+            resultBox3.classList.remove('show');
+            document.querySelectorAll('.result-line').forEach(line => {
+                line.classList.remove('show');
+            });
+            
+            setTimeout(() => {
+                actionButtons.style.display = 'none';
+            }, 300);
+
+            showToast('Form berhasil direset');
+        }
+
+        // Event Listeners
+        btnGenerate.addEventListener('click', generateResult);
+        btnCopy.addEventListener('click', copyResult);
+        btnReset.addEventListener('click', resetForm);
+
+        // Enter key to generate
+        [prize1Single, prize1Multi, prize2Multi, prize3Multi].forEach(input => {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    generateResult();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
