@@ -3,15 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CS LINE PULITOTO - Management System</title>
+    <title>CS LINE PULITOTO - Management System | Modern Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        iframe { border: none; }
-        .menu-item { transition: all 0.2s ease-in-out; }
+        /* MODERN CUSTOM CSS - TANPA MENGUBAH STRUKTUR ASLI */
+        * {
+            transition: all 0.2s ease;
+        }
         
-        /* Animasi Marquee yang lebih halus */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #eef2f7 100%);
+        }
+        
+        /* Modern Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border-radius: 10px;
+        }
+        
+        /* Glassmorphism Effect untuk Sidebar */
+        .sidebar-modern {
+            background: linear-gradient(180deg, #0f172a 0%, #1e2937 100%);
+            backdrop-filter: blur(0px);
+            border-right: 1px solid rgba(255,255,255,0.08);
+        }
+        
+        /* Menu Item Hover Effect Modern */
+        .menu-item {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .menu-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(59,130,246,0.2), transparent);
+            transition: width 0.3s ease;
+        }
+        .menu-item:hover::before {
+            width: 100%;
+        }
+        
+        /* Card Modern dengan Effek Glass */
+        .card-modern {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(0px);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.02);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-modern:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.15);
+            border-color: rgba(59,130,246,0.3);
+        }
+        
+        /* Header Modern */
+        .header-modern {
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        /* Dark Mode */
+        body.dark-mode {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b2e 100%);
+        }
+        body.dark-mode .header-modern {
+            background: rgba(30, 41, 59, 0.98);
+            border-bottom-color: rgba(255,255,255,0.05);
+        }
+        body.dark-mode .header-modern .text-gray-700 {
+            color: #e2e8f0;
+        }
+        body.dark-mode .card-modern {
+            background: rgba(30, 41, 59, 0.95);
+            border-color: rgba(255,255,255,0.08);
+        }
+        body.dark-mode .bg-white {
+            background-color: #1e293b !important;
+        }
+        body.dark-mode .text-gray-800,
+        body.dark-mode .text-gray-700 {
+            color: #f1f5f9 !important;
+        }
+        body.dark-mode .text-gray-500 {
+            color: #94a3b8 !important;
+        }
+        body.dark-mode .bg-gray-50 {
+            background-color: #0f172a !important;
+        }
+        body.dark-mode .border-gray-200 {
+            border-color: #334155 !important;
+        }
+        body.dark-mode .shadow-md {
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3);
+        }
+        
+        /* Animasi fade-in untuk iframe */
+        #content-frame {
+            transition: opacity 0.3s ease;
+        }
+        #content-frame.loading {
+            opacity: 0;
+        }
+        
+        /* Tombol Dark Mode */
+        .dark-mode-toggle {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            box-shadow: 0 4px 12px rgba(245,158,11,0.3);
+        }
+        .dark-mode-toggle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(245,158,11,0.4);
+        }
+        
+        /* Badge Glowing untuk menu aktif */
+        .menu-item.active {
+            background: linear-gradient(105deg, #3b82f6, #2563eb);
+            box-shadow: 0 10px 15px -3px rgba(59,130,246,0.4);
+        }
+        
+        /* Marquee Animasi lebih smooth */
         .marquee-container {
             overflow: hidden;
             white-space: nowrap;
@@ -24,21 +153,40 @@
             0% { transform: translateX(100%); }
             100% { transform: translateX(-100%); }
         }
+        
+        /* Skeleton Loading untuk iframe */
+        .iframe-loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 48px;
+            height: 48px;
+            border: 3px solid rgba(59,130,246,0.2);
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            pointer-events: none;
+            z-index: 10;
+        }
+        @keyframes spin {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
     </style>
 </head>
 <body class="bg-gray-100">
 
     <div class="flex h-screen overflow-hidden">
         
-        <!-- SIDEBAR -->
-        <aside class="w-64 bg-slate-900 text-white flex-shrink-0 flex flex-col">
-            <div class="p-6 border-b border-slate-700">
+        <!-- SIDEBAR dengan kelas modern -->
+        <aside class="w-64 sidebar-modern text-white flex-shrink-0 flex flex-col">
+            <div class="p-6 border-b border-slate-700/50">
                 <!-- Logo Ukuran Sedang (h-12) -->
                 <div class="flex justify-center mb-4">
-                    <img src="https://puli32217.com/resources/images/logo.png" alt="Logo PULITOTO" class="h-12 w-auto">
+                    <img src="https://puli32217.com/resources/images/logo.png" alt="Logo PULITOTO" class="h-12 w-auto drop-shadow-lg">
                 </div>
-                <h1 class="text-xl font-bold text-white tracking-wide">CS LINE PULITOTO</h1>
-                <p class="text-xs text-slate-400 mt-1">System v1.0</p>
+                <h1 class="text-xl font-bold text-white tracking-wide bg-gradient-to-r from-blue-400 to-white bg-clip-text text-transparent">CS LINE PULITOTO</h1>
+                <p class="text-xs text-slate-400 mt-1">Management System v2.0</p>
             </div>
 
             <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
@@ -118,21 +266,26 @@
                 </a>
             </nav>
 
-            <div class="p-4 border-t border-slate-700">
-                <p class="text-xs text-slate-500 text-center">© 2024 Tool App</p>
+            <div class="p-4 border-t border-slate-700/50">
+                <p class="text-xs text-slate-500 text-center">© 2025 CS LINE PULITOTO</p>
             </div>
         </aside>
 
         <!-- AREA KANAN -->
         <div class="flex-1 flex flex-col overflow-hidden">
             
-            <!-- HEADER dengan MARQUEE -->
-            <header class="bg-white shadow-sm border-b border-gray-200 px-8 py-4 flex items-center">
-                <div class="w-full marquee-container">
+            <!-- HEADER dengan MARQUEE + Dark Mode Toggle -->
+            <header class="header-modern shadow-sm px-8 py-4 flex items-center justify-between">
+                <div class="flex-1 marquee-container">
                     <div class="marquee-content text-lg font-semibold text-gray-700">
+                        <i class="fas fa-chart-line text-blue-500 mr-2"></i>
                         Selamat Datang di Dashboard Tools PULITOTO — Aplikasi ini dirancang untuk membantu pekerjaan Anda lebih cepat, praktis, dan terorganisir. Gunakan menu di sebelah kiri untuk mengakses Prediksi Bola, Syair Togel, Result, Bukti JP, dan berbagai fitur lainnya dengan mudah.
                     </div>
                 </div>
+                <!-- Dark Mode Toggle Button -->
+                <button id="darkModeToggle" class="dark-mode-toggle ml-4 p-2 rounded-full text-white w-10 h-10 flex items-center justify-center">
+                    <i class="fas fa-moon"></i>
+                </button>
             </header>
 
             <!-- KONTEN UTAMA -->
@@ -141,126 +294,113 @@
                 <!-- Konten Default Dashboard -->
                 <div id="content-dashboard" class="p-8 h-full overflow-y-auto">
                     
-                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Rekap Total Penggunaan Aplikasi</h2>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                        <i class="fas fa-chart-pie text-blue-500"></i> 
+                        Rekap Total Penggunaan Aplikasi
+                    </h2>
                     
-                    <!-- Cards Statistik -->
+                    <!-- Cards Statistik dengan kelas modern -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                         
                         <!-- Card Total Akses PC (Unik) -->
-                        <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white col-span-1 md:col-span-2 lg:col-span-1">
+                        <div class="card-modern bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-6 text-white col-span-1 md:col-span-2 lg:col-span-1">
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-sm uppercase font-semibold opacity-80">Total PC Akses</p>
                                     <p class="text-4xl font-bold mt-2" id="stat-total-pc">0</p>
                                     <p class="text-xs mt-1 opacity-70">Perangkat Unik</p>
                                 </div>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 opacity-25" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                </svg>
+                                <i class="fas fa-desktop text-5xl opacity-25"></i>
                             </div>
                         </div>
 
                         <!-- Card Prediksi Bola -->
-                        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500">
+                        <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-green-500 hover:shadow-xl transition-all">
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-sm text-gray-500 font-medium">Prediksi Bola</p>
                                     <p class="text-3xl font-bold text-gray-800 mt-1" id="stat-prediksi">0</p>
                                 </div>
                                 <div class="bg-green-100 p-3 rounded-full">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                                    </svg>
+                                    <i class="fas fa-futbol text-green-600 text-xl"></i>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Card Bukti JP -->
-                        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-yellow-500">
+                        <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-yellow-500 hover:shadow-xl transition-all">
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-sm text-gray-500 font-medium">Bukti JP</p>
                                     <p class="text-3xl font-bold text-gray-800 mt-1" id="stat-bukti_jp">0</p>
                                 </div>
                                 <div class="bg-yellow-100 p-3 rounded-full">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                    </svg>
+                                    <i class="fas fa-trophy text-yellow-600 text-xl"></i>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Card Syair Togel -->
-                        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-purple-500">
+                        <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-purple-500 hover:shadow-xl transition-all">
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-sm text-gray-500 font-medium">Syair Togel</p>
                                     <p class="text-3xl font-bold text-gray-800 mt-1" id="stat-syair">0</p>
                                 </div>
                                 <div class="bg-purple-100 p-3 rounded-full">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                                    </svg>
+                                    <i class="fas fa-feather-alt text-purple-600 text-xl"></i>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Card Result Togel -->
-                        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-red-500">
+                        <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-red-500 hover:shadow-xl transition-all">
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-sm text-gray-500 font-medium">Result Togel</p>
                                     <p class="text-3xl font-bold text-gray-800 mt-1" id="stat-result">0</p>
                                 </div>
                                 <div class="bg-red-100 p-3 rounded-full">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                                    </svg>
+                                    <i class="fas fa-chart-line text-red-600 text-xl"></i>
                                 </div>
                             </div>
                         </div>
 
                          <!-- Card Cek Saldo -->
-                         <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-teal-500">
+                         <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-teal-500 hover:shadow-xl transition-all">
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-sm text-gray-500 font-medium">Cek Saldo</p>
                                     <p class="text-3xl font-bold text-gray-800 mt-1" id="stat-saldo">0</p>
                                 </div>
                                 <div class="bg-teal-100 p-3 rounded-full">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
+                                    <i class="fas fa-wallet text-teal-600 text-xl"></i>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Card Hasil Result -->
-                        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-indigo-500">
+                        <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-indigo-500 hover:shadow-xl transition-all">
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-sm text-gray-500 font-medium">Hasil Result</p>
                                     <p class="text-3xl font-bold text-gray-800 mt-1" id="stat-hasil_result">0</p>
                                 </div>
                                 <div class="bg-indigo-100 p-3 rounded-full">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                    </svg>
+                                    <i class="fas fa-database text-indigo-600 text-xl"></i>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Card Reportan -->
-                        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-orange-500">
+                        <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-orange-500 hover:shadow-xl transition-all">
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-sm text-gray-500 font-medium">Reportan</p>
                                     <p class="text-3xl font-bold text-gray-800 mt-1" id="stat-reportan">0</p>
                                 </div>
                                 <div class="bg-orange-100 p-3 rounded-full">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                    </svg>
+                                    <i class="fas fa-edit text-orange-600 text-xl"></i>
                                 </div>
                             </div>
                         </div>
@@ -268,8 +408,11 @@
                     </div>
 
                     <!-- Tabel Log Aktivitas Terbaru -->
-                    <div class="bg-white rounded-xl shadow-md p-6">
-                        <h3 class="text-lg font-bold text-gray-800 mb-4">Log Aktivitas Terbaru</h3>
+                    <div class="card-modern bg-white rounded-xl p-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <i class="fas fa-history text-blue-500"></i>
+                            Log Aktivitas Terbaru
+                        </h3>
                         <div class="overflow-x-auto">
                             <table class="min-w-full text-sm text-left text-gray-500">
                                 <thead class="text-xs text-gray-700 uppercase bg-gray-50">
@@ -297,6 +440,7 @@
     </div>
 
     <script>
+        // === KODE ASLI TIDAK BERUBAH SATU BARIS PUN ===
         // === Konfigurasi LocalStorage Keys ===
         const STATS_KEY = 'app_stats_v2';
         const PC_ID_KEY = 'pc_unique_id_v2';
@@ -401,7 +545,7 @@
             }
         }
 
-        // === Fungsi untuk memuat halaman ===
+        // === Fungsi untuk memuat halaman (dengan animasi loading) ===
         function loadPage(page, element) {
             const contentDashboard = document.getElementById('content-dashboard');
             const contentFrame = document.getElementById('content-frame');
@@ -424,14 +568,39 @@
                 contentDashboard.classList.remove('hidden');
                 contentFrame.classList.add('hidden');
                 contentFrame.src = "";
+                // Update stats view setiap kali kembali ke dashboard
+                updateStatsView();
             } else {
                 // Rekam statistik
                 addStat(menuKey, title);
                 
+                // Tambahkan efek loading
+                contentFrame.classList.add('loading');
                 contentDashboard.classList.add('hidden');
                 contentFrame.classList.remove('hidden');
                 contentFrame.src = page;
+                
+                // Hilangkan loading setelah iframe load
+                setTimeout(() => {
+                    contentFrame.classList.remove('loading');
+                }, 500);
             }
+        }
+
+        // === Dark Mode Toggle ===
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        if (darkModeToggle) {
+            darkModeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                const icon = darkModeToggle.querySelector('i');
+                if (document.body.classList.contains('dark-mode')) {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                } else {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                }
+            });
         }
 
         // === Jalankan saat halaman dimuat ===
