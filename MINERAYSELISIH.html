@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Cek Selisih Transaksi Keuangan</title>
+    <!-- Tailwind + Fonts (selaras dengan Note Pad) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- SheetJS untuk baca Excel -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+    <style>
+        /* custom override biar mirip Note Pad */
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-card: #ffffff;
+            --cover-color: #0F172A;
+            --accent-success: #10b981;
+            --accent-danger: #ef4444;
+            --accent-info: #3b82f6;
+            --text-primary: #0F172A;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border: #e2e8f0;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+        .font-display { font-family: 'Space Grotesk', sans-serif; }
+        .bg-pattern {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 260px;
+            background: var(--cover-color);
+            z-index: 0;
+            clip-path: ellipse(120% 100% at 50% 0%);
+        }
+        .card-note {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+        .card-note:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+            border-color: var(--cover-color);
+        }
+        .input-clean {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 14px;
+            width: 100%;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .input-clean:focus {
+            border-color: var(--cover-color);
+            background: white;
+        }
+        .btn {
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            border: none;
+        }
+        .btn-primary {
+            background: var(--cover-color);
+            color: white;
+        }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-success {
+            background: var(--accent-success);
+            color: white;
+        }
+        .btn-success:hover { opacity: 0.9; transform: translateY(-1px); }
+        .table-wrapper {
+            overflow-x: auto;
+            max-height: 300px;
+            overflow-y: auto;
+            border-radius: 12px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        th {
+            background: #f8fafc;
+            position: sticky;
+            top: 0;
+            font-weight: 600;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        .stat-value {
+            font-size: 32px;
+            font-weight: 800;
+            font-family: 'Space Grotesk', monospace;
+        }
+        .spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid var(--cover-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border-left: 4px solid #3b82f6;
+            padding: 12px 16px;
+            border-radius: 10px;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-pattern"></div>
+
+    <div class="relative z-10 max-w-[1400px] mx-auto p-6">
+        <!-- Header -->
+        <header class="mb-8 pt-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <h1 class="font-display text-3xl font-bold text-white mb-1">📊 Dashboard Cek Selisih</h1>
+                    <p class="text-gray-300 text-sm">Bandingkan data transaksi dengan data perbandingan berdasarkan Reference No / Nomor Rekening</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Upload Area (2 kolom) -->
+        <div class="grid md:grid-cols-2 gap-6 mb-6">
+            <div class="card-note p-5">
+                <h3 class="font-display font-bold text-lg mb-3 flex items-center gap-2">📄 File Transaksi Keuangan <span class="text-xs bg-gray-100 px-2 py-0.5 rounded-full">20 kolom</span></h3>
+                <input type="file" id="fileTransaksi" class="input-clean" accept=".xlsx, .xls, .csv">
+                <div id="infoTransaksi" class="text-xs text-gray-500 mt-2"></div>
+            </div>
+            <div class="card-note p-5">
+                <h3 class="font-display font-bold text-lg mb-3 flex items-center gap-2">🔄 File Perbandingan <span class="text-xs bg-gray-100 px-2 py-0.5 rounded-full">12 kolom</span></h3>
+                <input type="file" id="filePerbandingan" class="input-clean" accept=".xlsx, .xls, .csv">
+                <div id="infoPerbandingan" class="text-xs text-gray-500 mt-2"></div>
+            </div>
+        </div>
+
+        <!-- Tombol Cek -->
+        <button id="btnCek" class="btn btn-primary w-full justify-center mb-6" disabled>🔍 Mulai Pengecekan Selisih</button>
+
+        <!-- Loading -->
+        <div id="loading" style="display: none;">
+            <div class="text-center py-10">
+                <div class="spinner"></div>
+                <p class="mt-4 text-gray-500">Sedang memproses data...</p>
+            </div>
+        </div>
+
+        <!-- Hasil Container -->
+        <div id="hasilContainer"></div>
+
+        <footer>
+            Dashboard Pengecekkan Selisih Data Keuangan | Bandingkan reference_no ↔ Nomor Rekening Pembayar & amount ↔ Jumlah Operator
+        </footer>
+    </div>
+
+    <script>
+        let dataTransaksi = null;
+        let dataPerbandingan = null;
+        let hasilPengecekan = null;
+
+        function readFile(file, callback) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+                callback(jsonData);
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        document.getElementById('fileTransaksi').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('infoTransaksi').innerHTML = `📎 ${file.name} (${(file.size/1024).toFixed(2)} KB)`;
+                readFile(file, (data) => {
+                    dataTransaksi = data;
+                    document.getElementById('infoTransaksi').innerHTML += ` - ${data.length} baris data`;
+                    cekButtonStatus();
+                });
+            } else {
+                dataTransaksi = null;
+                document.getElementById('infoTransaksi').innerHTML = '';
+                cekButtonStatus();
+            }
+        });
+
+        document.getElementById('filePerbandingan').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('infoPerbandingan').innerHTML = `📎 ${file.name} (${(file.size/1024).toFixed(2)} KB)`;
+                readFile(file, (data) => {
+                    dataPerbandingan = data;
+                    document.getElementById('infoPerbandingan').innerHTML += ` - ${data.length} baris data`;
+                    cekButtonStatus();
+                });
+            } else {
+                dataPerbandingan = null;
+                document.getElementById('infoPerbandingan').innerHTML = '';
+                cekButtonStatus();
+            }
+        });
+
+        function cekButtonStatus() {
+            const btn = document.getElementById('btnCek');
+            btn.disabled = !(dataTransaksi && dataPerbandingan);
+        }
+
+        function renderPreview(data, title) {
+            if (!data || data.length === 0) return '';
+            const columns = Object.keys(data[0]);
+            const previewData = data.slice(0, 10);
+            let html = `<div class="card-note p-5 mb-6">
+                <h4 class="font-display font-bold text-md mb-3">📋 ${title} (Preview 10 baris pertama) <span class="text-xs text-gray-500">${data.length} total baris</span></h4>
+                <div class="table-wrapper">
+                    <table>
+                        <thead><tr>`;
+            columns.forEach(col => { html += `<th>${col}</th>`; });
+            html += `</tr></thead><tbody>`;
+            previewData.forEach(row => {
+                html += `<tr>`;
+                columns.forEach(col => {
+                    let val = row[col];
+                    if (val === undefined || val === null) val = '-';
+                    if (typeof val === 'object') val = JSON.stringify(val);
+                    html += `<td>${String(val).substring(0, 50)}${String(val).length > 50 ? '...' : ''}</td>`;
+                });
+                html += `</tr>`;
+            });
+            html += `</tbody></table>
+                </div>
+            </div>`;
+            return html;
+        }
+
+        function cekSelisih() {
+            const hasil = [];
+            const mapPerbandingan = {};
+            for (const row of dataPerbandingan) {
+                let nomorRekening = row['Nomor Rekening Pembayar'];
+                if (nomorRekening !== undefined && nomorRekening !== null) {
+                    nomorRekening = String(nomorRekening).trim();
+                    let jumlahOperator = row['Jumlah Operator'];
+                    if (jumlahOperator === undefined || jumlahOperator === null) jumlahOperator = 0;
+                    jumlahOperator = parseFloat(jumlahOperator) || 0;
+                    mapPerbandingan[nomorRekening] = jumlahOperator;
+                }
+            }
+            for (let i = 0; i < dataTransaksi.length; i++) {
+                const row = dataTransaksi[i];
+                let referenceNo = row['reference_no'];
+                if (referenceNo === undefined || referenceNo === null) referenceNo = '';
+                referenceNo = String(referenceNo).trim();
+                let amount = row['amount'];
+                if (amount === undefined || amount === null) amount = 0;
+                amount = parseFloat(amount) || 0;
+                const jumlahOperatorPerbandingan = mapPerbandingan[referenceNo];
+                let status = '';
+                let selisih = null;
+                if (jumlahOperatorPerbandingan === undefined) {
+                    status = '⚠️ Reference No tidak ditemukan';
+                    selisih = null;
+                } else {
+                    selisih = amount - jumlahOperatorPerbandingan;
+                    status = Math.abs(selisih) < 0.01 ? '✅ Cocok' : '❌ Tidak Cocok';
+                }
+                hasil.push({
+                    'reference_no': referenceNo,
+                    'amount (File Transaksi)': amount,
+                    'Jumlah Operator (File Perbandingan)': jumlahOperatorPerbandingan !== undefined ? jumlahOperatorPerbandingan : '-',
+                    'Selisih': selisih !== null ? selisih.toFixed(2) : '-',
+                    'Status': status
+                });
+            }
+            return hasil;
+        }
+
+        function renderStats(hasil) {
+            const total = hasil.length;
+            const cocok = hasil.filter(h => h.Status === '✅ Cocok').length;
+            const tidakCocok = hasil.filter(h => h.Status === '❌ Tidak Cocok').length;
+            const tidakDitemukan = hasil.filter(h => h.Status === '⚠️ Reference No tidak ditemukan').length;
+            return `
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="stat-value text-gray-800">${total}</div><div class="stat-label text-gray-500">Total Data Dicek</div></div>
+                    <div class="stat-card"><div class="stat-value text-emerald-600">${cocok}</div><div class="stat-label text-gray-500">✅ Data Cocok</div></div>
+                    <div class="stat-card"><div class="stat-value text-rose-600">${tidakCocok}</div><div class="stat-label text-gray-500">❌ Data Tidak Cocok</div></div>
+                    <div class="stat-card"><div class="stat-value text-amber-600">${tidakDitemukan}</div><div class="stat-label text-gray-500">⚠️ Reference Tidak Ditemukan</div></div>
+                </div>
+            `;
+        }
+
+        function renderHasilTabel(hasil, filter = 'Semua') {
+            let filtered = hasil;
+            if (filter !== 'Semua') filtered = hasil.filter(h => h.Status === filter);
+            let html = `
+                <div class="card-note p-5 mb-6">
+                    <div class="flex flex-wrap gap-4 items-center mb-4">
+                        <span class="font-semibold text-sm">🔍 Filter Status:</span>
+                        <select id="filterStatus" class="input-clean w-auto text-sm">
+                            <option value="Semua" ${filter === 'Semua' ? 'selected' : ''}>Semua</option>
+                            <option value="✅ Cocok" ${filter === '✅ Cocok' ? 'selected' : ''}>✅ Cocok</option>
+                            <option value="❌ Tidak Cocok" ${filter === '❌ Tidak Cocok' ? 'selected' : ''}>❌ Tidak Cocok</option>
+                            <option value="⚠️ Reference No tidak ditemukan" ${filter === '⚠️ Reference No tidak ditemukan' ? 'selected' : ''}>⚠️ Reference No tidak ditemukan</option>
+                        </select>
+                    </div>
+                    <h4 class="font-display font-bold text-md mb-3">📋 Detail Hasil Pengecekan (${filtered.length} baris)</h4>
+                    <div class="table-wrapper" style="max-height: 400px;">
+                        <table>
+                            <thead><tr><th>reference_no</th><th>amount (File Transaksi)</th><th>Jumlah Operator (File Perbandingan)</th><th>Selisih</th><th>Status</th></tr></thead>
+                            <tbody>`;
+            for (const row of filtered) {
+                let selisihStyle = (row.Selisih !== '-' && parseFloat(row.Selisih) !== 0) ? 'color:#ef4444;font-weight:bold' : '';
+                html += `<tr>
+                    <td>${row.reference_no}</td>
+                    <td>${row['amount (File Transaksi)']}</td>
+                    <td>${row['Jumlah Operator (File Perbandingan)']}</td>
+                    <td style="${selisihStyle}">${row.Selisih}</td>
+                    <td>${row.Status}</td>
+                </tr>`;
+            }
+            html += `</tbody></table></div>`;
+            const masalah = hasil.filter(h => h.Status !== '✅ Cocok');
+            if (masalah.length > 0) {
+                html += `<div class="mt-6"><h5 class="font-bold text-sm mb-2">⚠️ Data Bermasalah (${masalah.length} baris)</h5><div class="table-wrapper"><table><thead><tr><th>reference_no</th><th>amount</th><th>Jumlah Operator</th><th>Selisih</th><th>Status</th></tr></thead><tbody>`;
+                for (const row of masalah) {
+                    html += `<tr><td>${row.reference_no}</td><td>${row['amount (File Transaksi)']}</td><td>${row['Jumlah Operator (File Perbandingan)']}</td><td>${row.Selisih}</td><td>${row.Status}</td></tr>`;
+                }
+                html += `</tbody></table></div></div>`;
+            } else {
+                html += `<div class="alert-info mt-6">✅ Semua data cocok! Tidak ada data bermasalah.</div>`;
+            }
+            html += `<div class="mt-6"><button id="btnDownloadExcel" class="btn btn-success">💾 Download Hasil (Excel)</button></div></div>`;
+            return html;
+        }
+
+        function downloadExcel(hasil) {
+            const wsData = hasil.map(h => ({
+                'reference_no': h.reference_no,
+                'amount (File Transaksi)': h['amount (File Transaksi)'],
+                'Jumlah Operator (File Perbandingan)': h['Jumlah Operator (File Perbandingan)'],
+                'Selisih': h.Selisih,
+                'Status': h.Status
+            }));
+            const ws = XLSX.utils.json_to_sheet(wsData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Hasil Pengecekan');
+            const masalahData = hasil.filter(h => h.Status !== '✅ Cocok').map(h => ({
+                'reference_no': h.reference_no,
+                'amount (File Transaksi)': h['amount (File Transaksi)'],
+                'Jumlah Operator (File Perbandingan)': h['Jumlah Operator (File Perbandingan)'],
+                'Selisih': h.Selisih,
+                'Status': h.Status
+            }));
+            if (masalahData.length > 0) {
+                const wsMasalah = XLSX.utils.json_to_sheet(masalahData);
+                XLSX.utils.book_append_sheet(wb, wsMasalah, 'Data Bermasalah');
+            }
+            XLSX.writeFile(wb, `hasil_cek_selisih_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.xlsx`);
+        }
+
+        document.getElementById('btnCek').addEventListener('click', function() {
+            const loading = document.getElementById('loading');
+            const hasilContainer = document.getElementById('hasilContainer');
+            loading.style.display = 'block';
+            hasilContainer.innerHTML = '';
+            setTimeout(() => {
+                let html = '';
+                html += renderPreview(dataTransaksi, 'File Transaksi Keuangan (20 kolom)');
+                html += renderPreview(dataPerbandingan, 'File Perbandingan (12 kolom)');
+                hasilPengecekan = cekSelisih();
+                html += renderStats(hasilPengecekan);
+                html += renderHasilTabel(hasilPengecekan, 'Semua');
+                hasilContainer.innerHTML = html;
+                loading.style.display = 'none';
+                const filterSelect = document.getElementById('filterStatus');
+                if (filterSelect) {
+                    filterSelect.addEventListener('change', function() {
+                        const newHtml = renderStats(hasilPengecekan) + renderHasilTabel(hasilPengecekan, this.value);
+                        hasilContainer.innerHTML = newHtml;
+                        const newFilter = document.getElementById('filterStatus');
+                        if (newFilter) newFilter.addEventListener('change', arguments.callee);
+                        const downloadBtn = document.getElementById('btnDownloadExcel');
+                        if (downloadBtn) downloadBtn.addEventListener('click', () => downloadExcel(hasilPengecekan));
+                    });
+                }
+                const downloadBtn = document.getElementById('btnDownloadExcel');
+                if (downloadBtn) downloadBtn.addEventListener('click', () => downloadExcel(hasilPengecekan));
+            }, 100);
+        });
+    </script>
+</body>
+</html>
