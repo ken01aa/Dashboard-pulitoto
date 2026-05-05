@@ -52,7 +52,6 @@
             margin: 0 auto;
         }
 
-        /* Header Profesional */
         .header {
             margin-bottom: 32px;
             display: flex;
@@ -68,7 +67,7 @@
             font-weight: 700;
             letter-spacing: -0.3px;
             font-family: 'Space Grotesk', sans-serif;
-            color: #ffffff; /* WARNA PUTIH */
+            color: #ffffff;
         }
         .title-section p {
             color: var(--text-secondary);
@@ -98,19 +97,12 @@
             transition: opacity 0.3s;
             font-weight: 600;
         }
-        .save-indicator.saved {
-            opacity: 0.6;
-        }
-
-        /* Layout dua kolom */
         .shift-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 28px;
             margin-bottom: 48px;
         }
-
-        /* Card Shift */
         .shift-card {
             background: var(--bg-card);
             border-radius: 20px;
@@ -147,8 +139,6 @@
             display: flex;
             flex-direction: column;
         }
-
-        /* Efek KILAU (SHIMMER) pada tabel */
         .table-shimmer-wrapper {
             position: relative;
             overflow: hidden;
@@ -181,7 +171,6 @@
             0% { background-position: 150% 0; }
             100% { background-position: -150% 0; }
         }
-
         .task-table {
             width: 100%;
             border-collapse: collapse;
@@ -228,6 +217,18 @@
         .checkbox-custom:hover {
             transform: scale(1.15);
         }
+        .editable-task {
+            cursor: pointer;
+            transition: 0.1s;
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 8px;
+        }
+        .editable-task:hover {
+            background-color: #eef2ff;
+            text-decoration: underline;
+            color: var(--accent-info);
+        }
         .empty-message {
             text-align: center;
             padding: 32px 20px;
@@ -236,8 +237,6 @@
             font-size: 0.85rem;
             background: #ffffff;
         }
-
-        /* Tombol */
         .reset-btn-container {
             display: flex;
             justify-content: flex-end;
@@ -299,15 +298,14 @@
     <div class="header">
         <div class="title-section">
             <h1 class="font-display">◈ CS LINE</h1>
-            <p>Manajemen tugas shift · centang untuk menyelesaikan · 💾 Auto Save</p>
+            <p>Manajemen tugas shift · centang untuk menyelesaikan · ✏️ Klik tugas untuk edit · 💾 Auto Save</p>
         </div>
         <div class="badge-date" id="dateDisplay"></div>
     </div>
 
-    <!-- Tombol RESET + indikator -->
     <div class="reset-btn-container">
         <div id="saveIndicator" class="save-indicator saved">💾 Tersimpan otomatis</div>
-        <button id="resetAllTasksBtn" class="btn-reset-all">⟳ Reset Semua Tugas</button>
+        <button id="resetAllTasksBtn" class="btn-reset-all">⟳ Reset (Kembalikan semua tugas)</button>
     </div>
 
     <div class="shift-grid">
@@ -323,7 +321,7 @@
             <div class="table-shimmer-wrapper">
                 <div class="shimmer-overlay"></div>
                 <table class="task-table" id="tabelPagiActive">
-                    <thead><tr><th style="width: 50px;">✔</th><th>📋 Nama Tugas</th></tr></thead>
+                    <thead><tr><th style="width: 50px;">✔</th><th>📋 Nama Tugas (klik untuk edit)</th></tr></thead>
                     <tbody id="pagiActiveBody"></tbody>
                 </table>
             </div>
@@ -337,7 +335,6 @@
                         <tbody id="pagiCompletedBody"></tbody>
                     </table>
                 </div>
-                <div id="pagiEmptyMsg" class="empty-message" style="display: none;">Belum ada tugas selesai</div>
             </div>
         </div>
 
@@ -353,7 +350,7 @@
             <div class="table-shimmer-wrapper">
                 <div class="shimmer-overlay"></div>
                 <table class="task-table" id="tabelMalamActive">
-                    <thead><tr><th style="width: 50px;">✔</th><th>📋 Nama Tugas</th></tr></thead>
+                    <thead><tr><th style="width: 50px;">✔</th><th>📋 Nama Tugas (klik untuk edit)</th></tr></thead>
                     <tbody id="malamActiveBody"></tbody>
                 </table>
             </div>
@@ -367,14 +364,14 @@
                         <tbody id="malamCompletedBody"></tbody>
                     </table>
                 </div>
-                <div id="malamEmptyMsg" class="empty-message" style="display: none;">Belum ada tugas selesai</div>
             </div>
         </div>
     </div>
 
     <div class="note">
         ✨ Efek cahaya kilau pada setiap tabel · Centang untuk menyelesaikan → pindah ke daftar "Terselesaikan" <br>
-        💾 Data TERSIMPAN OTOMATIS di browser Anda (localStorage) — Tidak hilang meskipun refresh / tutup browser.
+        ✏️ <strong>Klik pada nama tugas</strong> untuk mengedit jobdesk · 💾 Data TERSIMPAN OTOMATIS <br>
+        ⟳ Tombol RESET akan <strong>mengembalikan semua tugas yang sudah selesai ke daftar aktif</strong>
     </div>
 </div>
 
@@ -387,18 +384,15 @@
         MALAM_COMPLETED: 'shiftflow_malam_completed'
     };
 
-    // State (semua data akan dimuat dari localStorage)
     let pagiTasksActive = [];
     let pagiTasksCompleted = [];
     let malamTasksActive = [];
     let malamTasksCompleted = [];
 
-    // Helper ID Generator
     function generateId(prefix = "task") {
         return prefix + "_" + Date.now() + "_" + Math.random().toString(36).substring(2, 10);
     }
 
-    // ========== FUNGSI SAVE ke localStorage (AUTO) ==========
     function persistToLocalStorage() {
         try {
             localStorage.setItem(STORAGE_KEYS.PAGI_ACTIVE, JSON.stringify(pagiTasksActive));
@@ -406,7 +400,6 @@
             localStorage.setItem(STORAGE_KEYS.MALAM_ACTIVE, JSON.stringify(malamTasksActive));
             localStorage.setItem(STORAGE_KEYS.MALAM_COMPLETED, JSON.stringify(malamTasksCompleted));
             
-            // Tampilkan indikator "tersimpan"
             const indicator = document.getElementById('saveIndicator');
             if (indicator) {
                 indicator.textContent = '💾 Tersimpan';
@@ -423,7 +416,6 @@
         } catch(e) { console.warn("Gagal menyimpan ke localStorage", e); }
     }
 
-    // ========== LOAD data dari localStorage ==========
     function loadFromLocalStorage() {
         try {
             const savedPagiActive = localStorage.getItem(STORAGE_KEYS.PAGI_ACTIVE);
@@ -436,7 +428,6 @@
             malamTasksActive = savedMalamActive ? JSON.parse(savedMalamActive) : [];
             malamTasksCompleted = savedMalamCompleted ? JSON.parse(savedMalamCompleted) : [];
             
-            // Validasi sederhana: pastikan setiap item punya properti id & name (fallback jika data rusak)
             [pagiTasksActive, pagiTasksCompleted, malamTasksActive, malamTasksCompleted].forEach(arr => {
                 if (Array.isArray(arr)) {
                     for (let i = 0; i < arr.length; i++) {
@@ -454,18 +445,26 @@
         }
     }
 
-    // Reset semua tugas (kosong total) lalu simpan otomatis
+    // RESET: mengembalikan semua tugas yang sudah selesai ke daftar aktif
     function resetAllTasks() {
-        pagiTasksActive = [];
+        // Pindahkan semua tugas yang terselesaikan (PAGI) kembali ke active
+        for (const task of pagiTasksCompleted) {
+            pagiTasksActive.push({ id: generateId('pagi'), name: task.name });
+        }
+        // Pindahkan semua tugas yang terselesaikan (MALAM) kembali ke active
+        for (const task of malamTasksCompleted) {
+            malamTasksActive.push({ id: generateId('malam'), name: task.name });
+        }
+        // Kosongkan daftar terselesaikan
         pagiTasksCompleted = [];
-        malamTasksActive = [];
         malamTasksCompleted = [];
+        
         renderAll();
         persistToLocalStorage();
-        // Tampilkan notifikasi kilat
+        
         const indicator = document.getElementById('saveIndicator');
         if (indicator) {
-            indicator.textContent = '⟳ Semua tugas direset';
+            indicator.textContent = '⟳ Semua tugas dikembalikan';
             indicator.style.opacity = '1';
             setTimeout(() => {
                 if (indicator) indicator.textContent = '💾 Tersimpan otomatis';
@@ -473,23 +472,49 @@
         }
     }
 
-    // Render All UI
+    // EDIT TUGAS
+    function editTask(shift, type, taskId, currentName) {
+        const newName = prompt("Edit jobdesk/tugas:", currentName);
+        if (newName !== null && newName.trim() !== "") {
+            if (shift === 'pagi') {
+                if (type === 'active') {
+                    const task = pagiTasksActive.find(t => t.id === taskId);
+                    if (task) task.name = newName.trim();
+                } else {
+                    const task = pagiTasksCompleted.find(t => t.id === taskId);
+                    if (task) task.name = newName.trim();
+                }
+            } else if (shift === 'malam') {
+                if (type === 'active') {
+                    const task = malamTasksActive.find(t => t.id === taskId);
+                    if (task) task.name = newName.trim();
+                } else {
+                    const task = malamTasksCompleted.find(t => t.id === taskId);
+                    if (task) task.name = newName.trim();
+                }
+            }
+            renderAll();
+            persistToLocalStorage();
+        } else if (newName !== null && newName.trim() === "") {
+            alert("Nama tugas tidak boleh kosong!");
+        }
+    }
+
     function renderAll() {
         renderPagi();
         renderMalam();
-        updateEmptyMessages();
     }
 
     function renderPagi() {
         const activeBody = document.getElementById("pagiActiveBody");
         if (activeBody) {
             if (pagiTasksActive.length === 0) {
-                activeBody.innerHTML = `</table><td colspan="2" class="empty-message" style="text-align:center; padding:32px;">✨ Belum ada tugas shift pagi. Silakan tambah tugas.</td></tr>`;
+                activeBody.innerHTML = `<tr><td colspan="2" class="empty-message" style="text-align:center; padding:32px;">✨ Belum ada tugas shift pagi. Silakan tambah tugas.</td></tr>`;
             } else {
                 activeBody.innerHTML = pagiTasksActive.map(task => `
-                    <tr data-task-id="${task.id}" data-shift="pagi">
+                    <tr data-task-id="${task.id}">
                         <td class="checkbox-cell"><input type="checkbox" class="checkbox-custom task-checkbox" data-id="${task.id}" data-shift="pagi" data-mode="active"></td>
-                        <td class="task-name">${escapeHtml(task.name)}</td>
+                        <td><span class="editable-task" onclick="editTask('pagi', 'active', '${task.id}', '${escapeHtml(task.name).replace(/'/g, "\\'")}')">✏️ ${escapeHtml(task.name)}</span></td>
                     </tr>
                 `).join('');
             }
@@ -501,7 +526,9 @@
                 completedBody.innerHTML = `<tr><td colspan="1" class="empty-message" style="text-align:center; padding:16px;">— Belum ada tugas terselesaikan —</td></tr>`;
             } else {
                 completedBody.innerHTML = pagiTasksCompleted.map(task => `
-                    <tr><td style="padding-left: 24px;">✓ ${escapeHtml(task.name)}</td></tr>
+                    <tr>
+                        <td style="padding-left: 24px;"><span class="editable-task" onclick="editTask('pagi', 'completed', '${task.id}', '${escapeHtml(task.name).replace(/'/g, "\\'")}')">✓ ✏️ ${escapeHtml(task.name)}</span></td>
+                    </tr>
                 `).join('');
             }
         }
@@ -514,9 +541,9 @@
                 activeBodyMalam.innerHTML = `<tr><td colspan="2" class="empty-message" style="text-align:center; padding:32px;">🌙 Belum ada tugas shift malam. Silakan tambah tugas.</td></tr>`;
             } else {
                 activeBodyMalam.innerHTML = malamTasksActive.map(task => `
-                    <tr data-task-id="${task.id}" data-shift="malam">
+                    <tr data-task-id="${task.id}">
                         <td class="checkbox-cell"><input type="checkbox" class="checkbox-custom task-checkbox" data-id="${task.id}" data-shift="malam" data-mode="active"></td>
-                        <td class="task-name">${escapeHtml(task.name)}</td>
+                        <td><span class="editable-task" onclick="editTask('malam', 'active', '${task.id}', '${escapeHtml(task.name).replace(/'/g, "\\'")}')">✏️ ${escapeHtml(task.name)}</span></td>
                     </tr>
                 `).join('');
             }
@@ -525,20 +552,15 @@
         const completedBodyMalam = document.getElementById("malamCompletedBody");
         if (completedBodyMalam) {
             if (malamTasksCompleted.length === 0) {
-                completedBodyMalam.innerHTML = `<tr><td colspan="1" class="empty-message" style="text-align:center; padding:16px;">— Belum ada tugas selesai —</td></td>`;
+                completedBodyMalam.innerHTML = `<tr><td colspan="1" class="empty-message" style="text-align:center; padding:16px;">— Belum ada tugas selesai —</td></tr>`;
             } else {
                 completedBodyMalam.innerHTML = malamTasksCompleted.map(task => `
-                    <tr><td style="padding-left: 24px;">✓ ${escapeHtml(task.name)}</td></tr>
+                    <tr>
+                        <td style="padding-left: 24px;"><span class="editable-task" onclick="editTask('malam', 'completed', '${task.id}', '${escapeHtml(task.name).replace(/'/g, "\\'")}')">✓ ✏️ ${escapeHtml(task.name)}</span></td>
+                    </tr>
                 `).join('');
             }
         }
-    }
-
-    function updateEmptyMessages() {
-        const pagiEmptyMsgDiv = document.getElementById("pagiEmptyMsg");
-        const malamEmptyMsgDiv = document.getElementById("malamEmptyMsg");
-        if (pagiEmptyMsgDiv) pagiEmptyMsgDiv.style.display = pagiTasksCompleted.length === 0 ? "block" : "none";
-        if (malamEmptyMsgDiv) malamEmptyMsgDiv.style.display = malamTasksCompleted.length === 0 ? "block" : "none";
     }
 
     function escapeHtml(str) {
@@ -551,7 +573,6 @@
         });
     }
 
-    // ========== LOGIKA CENTANG + AUTO SAVE ==========
     function setupGlobalCheckboxListener() {
         document.body.addEventListener('change', function(e) {
             const target = e.target;
@@ -568,7 +589,7 @@
                             pagiTasksActive.splice(taskIndex, 1);
                             pagiTasksCompleted.unshift({ id: generateId("done_p"), name: movedTask.name });
                             renderAll();
-                            persistToLocalStorage();  // AUTO SIMPAN
+                            persistToLocalStorage();
                         } else {
                             target.checked = false;
                         }
@@ -580,7 +601,7 @@
                             malamTasksActive.splice(taskIndex, 1);
                             malamTasksCompleted.unshift({ id: generateId("done_m"), name: movedTask.name });
                             renderAll();
-                            persistToLocalStorage();  // AUTO SIMPAN
+                            persistToLocalStorage();
                         } else {
                             target.checked = false;
                         }
@@ -590,7 +611,6 @@
         });
     }
 
-    // ========== TOMBOL TAMBAH TUGAS (dengan auto save) ==========
     function initAddButtons() {
         const addPagiBtn = document.getElementById("addPagiBtn");
         if (addPagiBtn) {
@@ -601,7 +621,7 @@
                 if (newTaskName && newTaskName.trim()) {
                     pagiTasksActive.push({ id: generateId("pagi_new"), name: newTaskName.trim() });
                     renderAll();
-                    persistToLocalStorage();  // AUTO SIMPAN
+                    persistToLocalStorage();
                 } else if (newTaskName !== null && newTaskName !== "") {
                     alert("Nama tugas tidak boleh kosong");
                 }
@@ -617,7 +637,7 @@
                 if (newTaskName && newTaskName.trim()) {
                     malamTasksActive.push({ id: generateId("malam_new"), name: newTaskName.trim() });
                     renderAll();
-                    persistToLocalStorage();  // AUTO SIMPAN
+                    persistToLocalStorage();
                 } else if (newTaskName !== null && newTaskName !== "") {
                     alert("Nama tugas wajib diisi");
                 }
@@ -625,21 +645,19 @@
         }
     }
 
-    // Tombol RESET ALL (dengan save)
     function initResetButton() {
         const resetBtn = document.getElementById("resetAllTasksBtn");
         if (resetBtn) {
             const newResetBtn = resetBtn.cloneNode(true);
             resetBtn.parentNode.replaceChild(newResetBtn, resetBtn);
             newResetBtn.addEventListener('click', () => {
-                if (confirm("⚠️ Reset semua tugas akan menghapus seluruh data aktif dan terselesaikan.\nData akan kembali kosong (tidak bisa dikembalikan).\nLanjutkan?")) {
+                if (confirm("⚠️ Reset akan mengembalikan SEMUA tugas yang sudah selesai ke daftar tugas aktif.\nTugas yang sedang aktif akan tetap ada.\nLanjutkan?")) {
                     resetAllTasks();
                 }
             });
         }
     }
 
-    // Tanggal dinamis
     function setDateNow() {
         const dateElem = document.getElementById("dateDisplay");
         if (dateElem) {
@@ -649,19 +667,17 @@
         }
     }
 
-    // Inisialisasi utama: load data dulu dari storage, lalu render, dan pastikan setiap perubahan tersimpan
     function init() {
-        loadFromLocalStorage();   // Memuat data yang tersimpan (tidak hilang walau refresh)
+        loadFromLocalStorage();
         setDateNow();
         renderAll();
         setupGlobalCheckboxListener();
         initAddButtons();
         initResetButton();
-        
-        // Optional: Simpan ulang untuk memastikan struktur data valid (misal jika ada update ID)
         persistToLocalStorage();
     }
 
+    window.editTask = editTask;
     init();
 </script>
 </body>
