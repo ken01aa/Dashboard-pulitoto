@@ -272,6 +272,15 @@
                     </svg>
                     SELISIH MINERAY
                 </a>
+
+                <!-- MENU 11: TUGAS LINE (JOBDESK.HTML) -->
+                <a href="#" onclick="loadPage('JOBDESK.HTML', this)" data-title="Tugas Line" data-menu="tugas_line" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2H6zm1 2a1 1 0 000 2h6a1 1 0 100-2H7zm6 7a1 1 0 011 1v3a1 1 0 11-2 0v-3a1 1 0 011-1zm-3 3a1 1 0 100 2h.01a1 1 0 100-2H10zm-4 1a1 1 0 011-1h.01a1 1 0 110 2H7a1 1 0 01-1-1zm1-4a1 1 0 100 2h.01a1 1 0 100-2H7zm2 1a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1zm4-4a1 1 0 100 2h.01a1 1 0 100-2H13zM9 9a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd" />
+                    </svg>
+                    TUGAS LINE
+                </a>
+
             </nav>
 
             <div class="p-4 border-t border-slate-700/50">
@@ -426,6 +435,19 @@
                             </div>
                         </div>
 
+                        <!-- Card Tugas Line (JOBDESK) -->
+                        <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-cyan-500 hover:shadow-xl transition-all">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-500 font-medium">Tugas Line</p>
+                                    <p class="text-3xl font-bold text-gray-800 mt-1" id="stat-tugas_line">0</p>
+                                </div>
+                                <div class="bg-cyan-100 p-3 rounded-full">
+                                    <i class="fas fa-clipboard-list text-cyan-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
                     <!-- Tabel Log Aktivitas Terbaru -->
@@ -461,7 +483,7 @@
     </div>
 
     <script>
-        // === KODE ASLI TIDAK BERUBAH SATU BARIS PUN (ditambah menu selisih_mineray) ===
+        // === KODE ASLI TIDAK BERUBAH SATU BARIS PUN (ditambah menu tugas_line) ===
         // === Konfigurasi LocalStorage Keys ===
         const STATS_KEY = 'app_stats_v2';
         const PC_ID_KEY = 'pc_unique_id_v2';
@@ -489,6 +511,7 @@
             hasil_result: 0,
             reportan: 0,
             selisih_mineray: 0,
+            tugas_line: 0,
             totalPc: 0,
             pcList: [], // Array untuk menyimpan ID PC unik
             logs: []
@@ -519,6 +542,7 @@
             document.getElementById('stat-hasil_result').innerText = stats.hasil_result;
             document.getElementById('stat-reportan').innerText = stats.reportan;
             document.getElementById('stat-selisih_mineray').innerText = stats.selisih_mineray;
+            document.getElementById('stat-tugas_line').innerText = stats.tugas_line;
             document.getElementById('stat-total-pc').innerText = stats.totalPc;
 
             // Update Log
