@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YouTube Live Monitor</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+:root {
+    --cover-color: #0F172A;
+    --bg-secondary: #f8fafc;
+    --text-primary: #0F172A;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    --border: #e2e8f0;
+    --accent-info: #3b82f6;
+}
+
+body{
+font-family: 'Plus Jakarta Sans', sans-serif;
+background: #f8fafc;
+color: var(--text-primary);
+padding: 25px;
+min-height: 100vh;
+overflow-x: hidden;
+}
+
+.bg-pattern {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 260px;
+    background: var(--cover-color);
+    z-index: 0;
+    clip-path: ellipse(120% 100% at 50% 0%);
+}
+
+.container{
+position: relative;
+z-index: 10;
+max-width: 1700px;
+margin: auto;
+}
+
+.topbar{
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 20px;
+flex-wrap: wrap;
+margin-bottom: 25px;
+background: white;
+padding: 20px 28px;
+border-radius: 20px;
+border: 1px solid var(--border);
+box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+.logo{
+font-size: 28px;
+font-weight: 700;
+font-family: 'Space Grotesk', sans-serif;
+color: var(--cover-color);
+}
+
+.logo span{
+color: var(--accent-info);
+}
+
+.status-grid{
+display: flex;
+gap: 15px;
+flex-wrap: wrap;
+}
+
+.status-card{
+background: var(--bg-secondary);
+border: 1px solid var(--border);
+padding: 14px 20px;
+border-radius: 16px;
+min-width: 160px;
+}
+
+.status-title{
+font-size: 11px;
+color: var(--text-muted);
+margin-bottom: 5px;
+font-weight: 600;
+}
+
+.status-value{
+font-size: 20px;
+font-weight: 700;
+font-family: 'Space Grotesk', sans-serif;
+}
+
+.online{
+color: #10b981;
+}
+
+.setting-panel{
+background: white;
+border: 1px solid var(--border);
+padding: 20px 24px;
+border-radius: 20px;
+margin-bottom: 25px;
+box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+}
+
+.setting-row{
+display: flex;
+gap: 15px;
+align-items: center;
+flex-wrap: wrap;
+}
+
+input{
+background: var(--bg-secondary);
+border: 1px solid var(--border);
+padding: 12px 16px;
+border-radius: 12px;
+color: var(--text-primary);
+font-size: 14px;
+outline: none;
+width: 200px;
+font-family: 'Plus Jakarta Sans', sans-serif;
+transition: 0.3s;
+}
+
+input:focus{
+border-color: var(--cover-color);
+box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
+background: white;
+}
+
+button{
+background: var(--cover-color);
+border: none;
+padding: 12px 22px;
+border-radius: 12px;
+color: white;
+font-weight: 600;
+cursor: pointer;
+font-size: 13px;
+transition: 0.3s;
+font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+button:hover{
+transform: translateY(-2px);
+background: #1e293b;
+}
+
+.video-grid{
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+gap: 25px;
+}
+
+.video-card{
+background: white;
+border: 1px solid var(--border);
+border-radius: 20px;
+overflow: hidden;
+box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+display: flex;
+flex-direction: column;
+transition: 0.3s;
+}
+
+.video-card:hover{
+transform: translateY(-2px);
+box-shadow: 0 12px 25px rgba(15, 23, 42, 0.1);
+}
+
+.video-header{
+padding: 14px 16px;
+display: flex;
+justify-content: space-between;
+align-items: flex-start;
+gap: 10px;
+border-bottom: 1px solid var(--border);
+}
+
+.video-title{
+font-size: 14px;
+font-weight: 600;
+line-height: 1.4;
+word-break: break-word;
+flex: 1;
+color: var(--text-primary);
+}
+
+.comment-count{
+background: var(--bg-secondary);
+padding: 4px 12px;
+border-radius: 30px;
+font-size: 11px;
+color: var(--text-secondary);
+font-weight: 600;
+white-space: nowrap;
+flex-shrink: 0;
+}
+
+.thumbnail-box{
+position: relative;
+width: 100%;
+height: 200px;
+overflow: hidden;
+cursor: pointer;
+display: block;
+flex-shrink: 0;
+background: var(--bg-secondary);
+}
+
+.thumbnail-box img{
+width: 100%;
+height: 100%;
+object-fit: cover;
+transition: 0.3s;
+}
+
+.thumbnail-box:hover img{
+transform: scale(1.03);
+}
+
+.comment-section{
+padding: 16px;
+max-height: 350px;
+overflow-y: auto;
+flex: 1;
+background: var(--bg-secondary);
+}
+
+.comment-item{
+background: white;
+border: 1px solid var(--border);
+padding: 12px;
+border-radius: 14px;
+margin-bottom: 12px;
+transition: 0.2s;
+}
+
+.comment-item:hover{
+background: var(--bg-secondary);
+}
+
+.comment-user{
+display: flex;
+align-items: center;
+gap: 10px;
+margin-bottom: 10px;
+}
+
+.comment-user img{
+width: 36px;
+height: 36px;
+border-radius: 50%;
+border: 1.5px solid var(--accent-info);
+object-fit: cover;
+background: var(--bg-secondary);
+flex-shrink: 0;
+}
+
+.comment-name{
+font-size: 13px;
+font-weight: 700;
+color: var(--text-primary);
+word-break: break-word;
+}
+
+.comment-time{
+font-size: 10px;
+color: var(--text-muted);
+margin-top: 3px;
+}
+
+.comment-text{
+font-size: 12px;
+line-height: 1.5;
+color: var(--text-secondary);
+word-break: break-word;
+}
+
+.toast{
+position: fixed;
+top: 25px;
+right: -400px;
+width: 360px;
+background: white;
+border-left: 4px solid #10b981;
+border-radius: 16px;
+padding: 16px;
+transition: 0.4s cubic-bezier(0.2,0.9,0.4,1.1);
+z-index: 999;
+box-shadow: 0 10px 35px rgba(15, 23, 42, 0.15);
+border: 1px solid var(--border);
+}
+
+.toast.show{
+right: 25px;
+}
+
+.toast-title{
+font-weight: 700;
+margin-bottom: 6px;
+color: var(--cover-color);
+font-size: 14px;
+}
+
+.toast-text{
+font-size: 13px;
+color: var(--text-secondary);
+line-height: 1.5;
+word-break: break-word;
+}
+
+::-webkit-scrollbar{
+width: 5px;
+}
+
+::-webkit-scrollbar-track{
+background: var(--bg-secondary);
+border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb{
+background: var(--border);
+border-radius: 10px;
+}
+
+@media(max-width: 768px){
+body{
+padding: 15px;
+}
+.video-grid{
+grid-template-columns: 1fr;
+}
+.thumbnail-box{
+height: 180px;
+}
+button, input{
+width: 100%;
+}
+.video-title{
+font-size: 13px;
+}
+.toast{
+width: 90%;
+right: -90%;
+}
+.topbar{
+flex-direction: column;
+align-items: flex-start;
+}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-pattern"></div>
+
+<div class="toast" id="toast">
+<div class="toast-title">🔔 KOMENTAR BARU</div>
+<div class="toast-text" id="toastText">Ada komentar baru dari pengguna</div>
+</div>
+
+<div class="container">
+<div class="topbar">
+<div class="logo">
+YOUTUBE <span>LIVE MONITOR</span>
+</div>
+<div class="status-grid">
+<div class="status-card">
+<div class="status-title">STATUS</div>
+<div class="status-value online">● ONLINE</div>
+</div>
+<div class="status-card">
+<div class="status-title">TOTAL VIDEO</div>
+<div class="status-value" id="totalVideos">0</div>
+</div>
+<div class="status-card">
+<div class="status-title">AUTO REFRESH</div>
+<div class="status-value" id="refreshText">30 MENIT</div>
+</div>
+</div>
+</div>
+
+<div class="setting-panel">
+<div class="setting-row">
+<input type="number" id="refreshInput" placeholder="Menit Refresh" value="30" min="1">
+<button onclick="saveRefresh()">SIMPAN REFRESH</button>
+<button onclick="manualRefresh()">REFRESH SEKARANG</button>
+</div>
+</div>
+
+<div class="video-grid" id="videoGrid"></div>
+</div>
+
+<audio id="notifSound" preload="auto">
+<source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+// =========================
+// API KEY YouTube
+// =========================
+const API_KEY = "AIzaSyC0QKWbbW4M9_kRu2e0PQ3psM8RYXv4GDI";
+
+// =========================
+// DAFTAR VIDEO
+// =========================
+const rawVideos = [
+{ url: "https://youtu.be/dgiQObBtcOY", title: "PULITOTO - Tutorial Lengkap"},
+{ url: "https://youtu.be/b18cWbAKIWw", title: "CARA DAFTAR AKUN BARU"},
+{ url: "https://youtu.be/FwxvsPpT5hk", title: "CARA DEPOSIT VIA BANK & E-WALLET"},
+{ url: "https://youtu.be/4TDTgBHmO4w", title: "CARA WITHDRAW SALDO KE REKENING"},
+{ url: "https://youtu.be/e1y9fQzjISc", title: "DEPOSIT QRIS INSTANT"},
+{ url: "https://youtu.be/XVHQZdBVowI", title: "CARIKAN ID USERNAME"},
+{ url: "https://youtu.be/vjgSH6y7PQ0", title: "APK ANDROID - Install & Login"},
+{ url: "https://youtu.be/vSoh5-Ecg2U", title: "APK IOS - Panduan Lengkap"}
+];
+
+function extractVideoId(url) {
+    if(!url) return null;
+    let match = url.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+    if(match) return match[1];
+    match = url.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
+    if(match) return match[1];
+    match = url.match(/embed\/([a-zA-Z0-9_-]{11})/);
+    if(match) return match[1];
+    if(/^[a-zA-Z0-9_-]{11}$/.test(url)) return url;
+    return null;
+}
+
+const videos = rawVideos.map(v => ({
+    id: extractVideoId(v.url),
+    title: v.title
+})).filter(v => v.id !== null);
+
+document.getElementById("totalVideos").innerText = videos.length;
+
+let refreshMinutes = parseInt(localStorage.getItem("refreshMinutes")) || 30;
+let refreshInterval;
+let savedComments = {};
+
+document.getElementById("refreshInput").value = refreshMinutes;
+document.getElementById("refreshText").innerText = refreshMinutes + " MENIT";
+
+function saveRefresh() {
+    let val = parseInt(document.getElementById("refreshInput").value);
+    if(isNaN(val) || val < 1) val = 1;
+    refreshMinutes = val;
+    localStorage.setItem("refreshMinutes", refreshMinutes);
+    document.getElementById("refreshText").innerText = refreshMinutes + " MENIT";
+    startAutoRefresh();
+    showToastMessage("✅ Refresh diatur ke " + refreshMinutes + " menit");
+}
+
+function startAutoRefresh() {
+    if(refreshInterval) clearInterval(refreshInterval);
+    refreshInterval = setInterval(() => {
+        loadAllComments();
+    }, refreshMinutes * 60 * 1000);
+}
+
+async function loadAllComments() {
+    const grid = document.getElementById("videoGrid");
+    grid.innerHTML = '<div style="text-align:center;padding:50px;color:#94a3b8;">🔄 Memuat video & komentar...</div>';
+    
+    const promises = videos.map(video => loadVideoCard(video));
+    const cards = await Promise.all(promises);
+    
+    grid.innerHTML = "";
+    cards.forEach(card => {
+        if(card) grid.appendChild(card);
+    });
+}
+
+async function loadVideoCard(video) {
+    try {
+        const apiUrl = `https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=${video.id}&maxResults=10&order=time&key=${API_KEY}`;
+        const response = await fetch(apiUrl);
+        
+        if(!response.ok) {
+            console.warn(`Gagal fetch ${video.id}: ${response.status}`);
+            return createErrorCard(video);
+        }
+        
+        const data = await response.json();
+        let commentsHTML = "";
+        let totalComments = 0;
+        const currentCommentIds = [];
+        
+        if(data.items && data.items.length > 0) {
+            totalComments = data.items.length;
+            
+            for(const item of data.items) {
+                const comment = item.snippet.topLevelComment.snippet;
+                const commentId = item.snippet.topLevelComment.id;
+                currentCommentIds.push(commentId);
+                
+                const oldList = savedComments[video.id] || [];
+                if(!isFirstLoad && !oldList.includes(commentId)) {
+                    showNewCommentToast(comment.authorDisplayName, video.title);
+                    const sound = document.getElementById("notifSound");
+                    if(sound) sound.play().catch(e => console.log("audio error"));
+                }
+                
+                const authorName = escapeHtml(comment.authorDisplayName);
+                const authorImg = comment.authorProfileImageUrl || `https://ui-avatars.com/api/?background=0F172A&color=fff&name=${encodeURIComponent(authorName.substring(0,2))}`;
+                const commentText = escapeHtml(comment.textDisplay);
+                const commentTime = new Date(comment.publishedAt).toLocaleString('id-ID');
+                
+                commentsHTML += `
+                    <div class="comment-item">
+                        <div class="comment-user">
+                            <img src="${authorImg}" onerror="this.src='https://ui-avatars.com/api/?background=0F172A&color=fff&name=${encodeURIComponent(authorName.charAt(0))}'" alt="avatar">
+                            <div style="flex:1;">
+                                <div class="comment-name">${authorName}</div>
+                                <div class="comment-time">${commentTime}</div>
+                            </div>
+                        </div>
+                        <div class="comment-text">${commentText}</div>
+                    </div>
+                `;
+            }
+        }
+        
+        savedComments[video.id] = currentCommentIds;
+        
+        const card = document.createElement("div");
+        card.className = "video-card";
+        
+        const thumbnailUrl = `https://img.youtube.com/vi/${video.id}/maxresdefault.jpg`;
+        const fallbackThumb = `https://img.youtube.com/vi/${video.id}/hqdefault.jpg`;
+        
+        card.innerHTML = `
+            <div class="video-header">
+                <div class="video-title" title="${escapeHtml(video.title)}">${escapeHtml(video.title)}</div>
+                <div class="comment-count">💬 ${totalComments}</div>
+            </div>
+            <a href="https://www.youtube.com/watch?v=${video.id}" target="_blank" class="thumbnail-box">
+                <img src="${thumbnailUrl}" 
+                     onerror="this.src='${fallbackThumb}'"
+                     alt="${escapeHtml(video.title)}">
+            </a>
+            <div class="comment-section">
+                ${commentsHTML || '<div style="padding:20px;text-align:center;color:#94a3b8;">✨ Belum ada komentar ✨</div>'}
+            </div>
+        `;
+        
+        return card;
+        
+    } catch(error) {
+        console.error("Error:", error);
+        return createErrorCard(video);
+    }
+}
+
+function createErrorCard(video) {
+    const card = document.createElement("div");
+    card.className = "video-card";
+    card.innerHTML = `
+        <div class="video-header">
+            <div class="video-title" style="color:#ef4444;">⚠️ ${escapeHtml(video.title)}</div>
+            <div class="comment-count">❌ Error</div>
+        </div>
+        <a href="https://www.youtube.com/watch?v=${video.id}" target="_blank" class="thumbnail-box">
+            <img src="https://img.youtube.com/vi/${video.id}/hqdefault.jpg" style="opacity:0.5;">
+        </a>
+        <div class="comment-section">
+            <div style="padding:20px;text-align:center;color:#ef4444;">Gagal memuat komentar</div>
+        </div>
+    `;
+    return card;
+}
+
+function showNewCommentToast(username, videoTitle) {
+    const toast = document.getElementById("toast");
+    const toastText = document.getElementById("toastText");
+    toastText.innerHTML = `💬 <strong>${escapeHtml(username)}</strong> berkomentar di <strong>${escapeHtml(videoTitle)}</strong>`;
+    toast.classList.add("show");
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 5000);
+}
+
+function showToastMessage(msg) {
+    const toast = document.getElementById("toast");
+    const toastText = document.getElementById("toastText");
+    toastText.innerHTML = `🔔 ${escapeHtml(msg)}`;
+    toast.classList.add("show");
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 3000);
+}
+
+function escapeHtml(str) {
+    if(!str) return "";
+    return str.replace(/[&<>]/g, function(m) {
+        if(m === '&') return '&amp;';
+        if(m === '<') return '&lt;';
+        if(m === '>') return '&gt;';
+        return m;
+    });
+}
+
+function manualRefresh() {
+    loadAllComments();
+    showToastMessage("🔄 Memperbarui semua komentar...");
+}
+
+// First load tanpa notifikasi (silent)
+let isFirstLoad = true;
+
+async function silentLoadAll() {
+    const grid = document.getElementById("videoGrid");
+    grid.innerHTML = '<div style="text-align:center;padding:50px;color:#94a3b8;">⏳ Memuat video...</div>';
+    
+    const promises = videos.map(async (video) => {
+        try {
+            const apiUrl = `https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=${video.id}&maxResults=10&order=time&key=${API_KEY}`;
+            const response = await fetch(apiUrl);
+            if(!response.ok) return createErrorCard(video);
+            
+            const data = await response.json();
+            let commentsHTML = "";
+            let totalComments = 0;
+            const currentCommentIds = [];
+            
+            if(data.items && data.items.length > 0) {
+                totalComments = data.items.length;
+                for(const item of data.items) {
+                    const comment = item.snippet.topLevelComment.snippet;
+                    const commentId = item.snippet.topLevelComment.id;
+                    currentCommentIds.push(commentId);
+                    
+                    commentsHTML += `
+                        <div class="comment-item">
+                            <div class="comment-user">
+                                <img src="${comment.authorProfileImageUrl || ''}" onerror="this.src='https://ui-avatars.com/api/?background=0F172A&color=fff&name=${encodeURIComponent(comment.authorDisplayName?.charAt(0)||'U')}'">
+                                <div style="flex:1;">
+                                    <div class="comment-name">${escapeHtml(comment.authorDisplayName)}</div>
+                                    <div class="comment-time">${new Date(comment.publishedAt).toLocaleString('id-ID')}</div>
+                                </div>
+                            </div>
+                            <div class="comment-text">${escapeHtml(comment.textDisplay)}</div>
+                        </div>
+                    `;
+                }
+            }
+            
+            savedComments[video.id] = currentCommentIds;
+            
+            const card = document.createElement("div");
+            card.className = "video-card";
+            const thumbnailUrl = `https://img.youtube.com/vi/${video.id}/maxresdefault.jpg`;
+            const fallbackThumb = `https://img.youtube.com/vi/${video.id}/hqdefault.jpg`;
+            
+            card.innerHTML = `
+                <div class="video-header">
+                    <div class="video-title" title="${escapeHtml(video.title)}">${escapeHtml(video.title)}</div>
+                    <div class="comment-count">💬 ${totalComments}</div>
+                </div>
+                <a href="https://www.youtube.com/watch?v=${video.id}" target="_blank" class="thumbnail-box">
+                    <img src="${thumbnailUrl}" onerror="this.src='${fallbackThumb}'" alt="${escapeHtml(video.title)}">
+                </a>
+                <div class="comment-section">
+                    ${commentsHTML || '<div style="padding:20px;text-align:center;color:#94a3b8;">✨ Belum ada komentar ✨</div>'}
+                </div>
+            `;
+            return card;
+        } catch(e) {
+            return createErrorCard(video);
+        }
+    });
+    
+    const cards = await Promise.all(promises);
+    grid.innerHTML = "";
+    cards.forEach(c => grid.appendChild(c));
+    isFirstLoad = false;
+}
+
+silentLoadAll();
+startAutoRefresh();
+</script>
+</body>
+</html>
