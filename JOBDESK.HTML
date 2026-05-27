@@ -3,682 +3,653 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>CS LINE · Manajemen Tugas Kerja</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <title>JOB CS LINE - ShiftFlow Pro</title>
+    <!-- Google Fonts & Font Awesome 6 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Canvas Confetti library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
     <style>
-        :root {
-            --bg-primary: #ffffff;
-            --bg-secondary: #f8fafc;
-            --bg-card: #ffffff;
-            --cover-color: #0F172A;
-            --accent-success: #10b981;
-            --accent-danger: #ef4444;
-            --accent-info: #3b82f6;
-            --text-primary: #0F172A;
-            --text-secondary: #475569;
-            --text-muted: #94a3b8;
-            --border: #e2e8f0;
-        }
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
-            background: var(--bg-secondary);
-            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
-            padding: 32px 24px;
-            color: var(--text-primary);
+            background: radial-gradient(circle at 10% 30%, #eef2f9, #d9e2ef);
+            min-height: 100vh;
+            padding: 2rem 1.5rem;
         }
-        .font-display {
-            font-family: 'Space Grotesk', sans-serif;
-        }
-        .bg-pattern {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 260px;
-            background: var(--cover-color);
-            z-index: 0;
-            clip-path: ellipse(120% 100% at 50% 0%);
-        }
-        .dashboard {
-            position: relative;
-            z-index: 10;
+
+        .app-container {
             max-width: 1400px;
             margin: 0 auto;
         }
 
-        .header {
-            margin-bottom: 32px;
+        /* Glass header keren */
+        .glass-header {
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(16px);
+            border-radius: 2rem;
+            padding: 1.2rem 2rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255,255,245,0.6);
             display: flex;
             justify-content: space-between;
-            align-items: flex-end;
+            align-items: center;
             flex-wrap: wrap;
-            gap: 16px;
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 20px;
+            gap: 1rem;
         }
+
         .title-section h1 {
-            font-size: 1.9rem;
-            font-weight: 700;
-            letter-spacing: -0.3px;
-            font-family: 'Space Grotesk', sans-serif;
-            color: #ffffff;
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #0B2B40, #1A4A5F);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
         }
-        .title-section p {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            margin-top: 6px;
-            font-weight: 500;
-        }
+
         .badge-date {
-            background: white;
-            padding: 8px 20px;
-            border-radius: 40px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            color: var(--cover-color);
-            border: 1px solid var(--border);
-        }
-        .save-indicator {
-            background: #e6f4ea;
-            color: #2e7d32;
-            font-size: 0.7rem;
-            padding: 4px 14px;
-            border-radius: 40px;
-            display: inline-flex;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(8px);
+            padding: 0.6rem 1.3rem;
+            border-radius: 2rem;
+            color: white;
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: flex;
             align-items: center;
-            gap: 6px;
-            transition: opacity 0.3s;
-            font-weight: 600;
+            gap: 12px;
         }
-        .shift-grid {
+
+        /* Grid dua kolom */
+        .shifts-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 28px;
-            margin-bottom: 48px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
         }
+
+        /* Card premium */
         .shift-card {
-            background: var(--bg-card);
-            border-radius: 20px;
-            box-shadow: 0 12px 28px -8px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.02);
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(4px);
+            border-radius: 2rem;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.2);
             overflow: hidden;
-            transition: all 0.2s ease;
-            border: 1px solid var(--border);
+            transition: transform 0.3s ease, box-shadow 0.3s;
+            border: 1px solid rgba(255,255,250,0.8);
         }
-        .shift-header {
-            padding: 20px 24px 12px 24px;
-            border-bottom: 1px solid var(--border);
-            background: var(--bg-secondary);
+
+        .shift-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 28px 32px -12px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            padding: 1.5rem 1.8rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
-        .shift-header h2 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            letter-spacing: -0.2px;
-            font-family: 'Space Grotesk', sans-serif;
-            color: var(--cover-color);
-        }
-        .shift-header .sub {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 600;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-        .shift-title-group {
+
+        .shift-title {
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            gap: 14px;
         }
-        .table-shimmer-wrapper {
-            position: relative;
-            overflow: hidden;
-            border-radius: 16px;
-            margin: 4px;
+
+        .shift-icon {
+            font-size: 2.2rem;
         }
-        .shimmer-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                115deg,
-                transparent 0%,
-                transparent 35%,
-                rgba(15, 23, 42, 0.05) 45%,
-                rgba(15, 23, 42, 0.08) 50%,
-                rgba(15, 23, 42, 0.05) 55%,
-                transparent 65%,
-                transparent 100%
-            );
-            background-size: 200% 100%;
-            pointer-events: none;
-            z-index: 1;
-            animation: shimmerMove 3.8s infinite linear;
-            border-radius: inherit;
+
+        .shift-name {
+            font-size: 1.7rem;
+            font-weight: 800;
+            letter-spacing: -0.3px;
         }
-        @keyframes shimmerMove {
-            0% { background-position: 150% 0; }
-            100% { background-position: -150% 0; }
-        }
-        .task-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.85rem;
-            background: white;
-            position: relative;
-            z-index: 2;
-        }
-        .task-table th {
-            text-align: left;
-            padding: 16px 12px 10px 20px;
+
+        .badge-shift {
+            font-size: 0.7rem;
+            background: #ffffffaa;
+            backdrop-filter: blur(2px);
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
             font-weight: 700;
-            color: var(--text-secondary);
-            background: #ffffff;
-            border-bottom: 1px solid var(--border);
-            font-size: 0.75rem;
-            letter-spacing: 0.5px;
+            color: #1e293b;
         }
-        .task-table td {
-            padding: 14px 12px 14px 20px;
-            border-bottom: 1px solid #f0f3f7;
-            vertical-align: middle;
-            color: var(--text-primary);
+
+        .task-count {
+            background: rgba(0,0,0,0.05);
+            padding: 0.4rem 1.1rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        /* Form tambah tugas */
+        .add-task-form {
+            padding: 1.2rem 1.5rem;
+            background: #f9fbfe;
+            display: flex;
+            gap: 12px;
+            border-bottom: 1px solid #e9edf2;
+        }
+
+        .add-task-form input {
+            flex: 1;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 2rem;
+            padding: 0.8rem 1rem;
+            font-size: 0.9rem;
             font-weight: 500;
+            outline: none;
+            transition: all 0.2s;
+            background: white;
         }
-        .task-table tr:last-child td {
-            border-bottom: none;
+
+        .add-task-form input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
         }
-        .task-table tr:hover td {
-            background-color: var(--bg-secondary);
-        }
-        .checkbox-cell {
-            width: 48px;
-            text-align: center;
-        }
-        .checkbox-custom {
-            width: 20px;
-            height: 20px;
+
+        .btn-add {
+            background: #0f2c39;
+            border: none;
+            color: white;
+            padding: 0 1.6rem;
+            border-radius: 2rem;
+            font-weight: 700;
             cursor: pointer;
-            accent-color: var(--accent-success);
-            transform: scale(1.05);
-            transition: 0.1s;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
         }
-        .checkbox-custom:hover {
-            transform: scale(1.15);
+
+        .btn-add:hover {
+            background: #083344;
+            transform: scale(0.96);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
-        .editable-task {
+
+        /* Task list */
+        .task-list-container {
+            padding: 1.2rem 1.2rem 1.8rem;
+            max-height: 480px;
+            overflow-y: auto;
+        }
+
+        .task-item {
+            background: white;
+            border-radius: 1.2rem;
+            padding: 0.9rem 1.2rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.02);
+            border: 1px solid #edf2f7;
+            transition: all 0.25s ease;
+            animation: fadeSlideIn 0.3s ease-out;
+        }
+
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .task-item:hover {
+            border-color: #cbd5e1;
+            background: #fefefe;
+            transform: translateX(6px);
+        }
+
+        .task-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex: 1;
+        }
+
+        .task-check {
+            width: 22px;
+            height: 22px;
             cursor: pointer;
-            transition: 0.1s;
-            display: inline-block;
-            padding: 2px 6px;
-            border-radius: 8px;
+            accent-color: #0f5c6e;
+            transition: transform 0.1s;
         }
-        .editable-task:hover {
-            background-color: #eef2ff;
-            text-decoration: underline;
-            color: var(--accent-info);
+        .task-check:active {
+            transform: scale(1.1);
         }
+
+        .task-text {
+            font-size: 0.98rem;
+            font-weight: 500;
+            color: #0f172a;
+            word-break: break-word;
+            transition: 0.2s;
+        }
+
+        .task-text.completed {
+            text-decoration: line-through;
+            color: #94a3b8;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .edit-btn, .delete-btn {
+            background: transparent;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.15s;
+            color: #64748b;
+        }
+
+        .edit-btn:hover { color: #0284c7; transform: scale(1.15);}
+        .delete-btn:hover { color: #dc2626; transform: scale(1.15);}
+
         .empty-message {
             text-align: center;
-            padding: 32px 20px;
-            color: var(--text-muted);
+            padding: 2rem;
+            color: #5b6e8c;
             font-style: italic;
-            font-size: 0.85rem;
-            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
         }
-        .reset-btn-container {
+
+        /* Modal Edit */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(6px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 1.8rem;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 25px 40px rgba(0,0,0,0.3);
+            animation: zoomIn 0.2s ease;
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-content h3 {
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 2rem;
+            border: 1px solid #ccc;
+            margin-bottom: 1rem;
+        }
+
+        .modal-buttons {
             display: flex;
             justify-content: flex-end;
-            margin-bottom: 16px;
             gap: 12px;
+        }
+
+        .modal-buttons button {
+            padding: 0.5rem 1.2rem;
+            border-radius: 2rem;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .save-edit {
+            background: #0f5c6e;
+            color: white;
+        }
+
+        .cancel-edit {
+            background: #e2e8f0;
+        }
+
+        /* Toast notification */
+        .toast-notif {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #1e293bdd;
+            backdrop-filter: blur(12px);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            z-index: 1100;
+            opacity: 0;
+            transition: all 0.25s ease;
+            pointer-events: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: flex;
             align-items: center;
+            gap: 8px;
         }
-        .btn-reset-all {
-            background: #ffffff;
-            border: 1px solid var(--border);
-            padding: 8px 20px;
-            border-radius: 60px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--accent-danger);
-            cursor: pointer;
-            transition: all 0.2s;
+
+        .toast-notif.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
         }
-        .btn-reset-all:hover {
-            background-color: #fef2ef;
-            border-color: #f3b5a8;
-            color: #dc2626;
-        }
-        .btn-add-task {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            font-size: 0.7rem;
-            padding: 6px 16px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: 600;
-            color: var(--cover-color);
-            transition: 0.15s;
-        }
-        .btn-add-task:hover {
-            background: var(--border);
-            color: var(--cover-color);
-        }
-        .note {
-            margin-top: 24px;
-            text-align: center;
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            border-top: 1px solid var(--border);
-            padding-top: 24px;
-        }
+
         @media (max-width: 850px) {
-            body { padding: 20px 16px; }
-            .shift-grid { grid-template-columns: 1fr; gap: 24px; }
-            .reset-btn-container { justify-content: center; flex-wrap: wrap; }
+            .shifts-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            body {
+                padding: 1rem;
+            }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            font-size: 0.75rem;
+            color: #2c3e50;
+            opacity: 0.7;
         }
     </style>
 </head>
 <body>
 
-<div class="bg-pattern"></div>
-
-<div class="dashboard">
-    <div class="header">
+<div class="app-container">
+    <div class="glass-header">
         <div class="title-section">
-            <h1 class="font-display">◈ CS LINE</h1>
-            <p>Manajemen tugas shift · centang untuk menyelesaikan · ✏️ Klik tugas untuk edit · 💾 Auto Save</p>
+            <h1><i class="fas fa-headset"></i> JOB CS LINE</h1>
         </div>
-        <div class="badge-date" id="dateDisplay"></div>
-    </div>
-
-    <div class="reset-btn-container">
-        <div id="saveIndicator" class="save-indicator saved">💾 Tersimpan otomatis</div>
-        <button id="resetAllTasksBtn" class="btn-reset-all">⟳ Reset (Kembalikan semua tugas)</button>
-    </div>
-
-    <div class="shift-grid">
-        <!-- SHIFT PAGI CARD -->
-        <div class="shift-card" id="shiftPagiCard">
-            <div class="shift-header">
-                <div class="shift-title-group">
-                    <h2>🌅 Shift Pagi</h2>
-                    <div class="sub">Tugas operasional · 06.00 - 14.00</div>
-                </div>
-                <button class="btn-add-task" id="addPagiBtn">+ Tambah tugas</button>
-            </div>
-            <div class="table-shimmer-wrapper">
-                <div class="shimmer-overlay"></div>
-                <table class="task-table" id="tabelPagiActive">
-                    <thead><tr><th style="width: 50px;">✔</th><th>📋 Nama Tugas (klik untuk edit)</th></tr></thead>
-                    <tbody id="pagiActiveBody"></tbody>
-                </table>
-            </div>
-            <div style="margin-top: 20px; border-top: 2px solid var(--border); padding-top: 16px;">
-                <div style="padding: 0px 20px 8px 20px;">
-                    <span style="font-weight: 700; font-size: 0.7rem; letter-spacing: 0.5px; color: var(--text-muted);">✓ TERSELESAIKAN (PAGI)</span>
-                </div>
-                <div class="table-shimmer-wrapper">
-                    <div class="shimmer-overlay"></div>
-                    <table class="task-table" id="tabelPagiCompleted">
-                        <tbody id="pagiCompletedBody"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- SHIFT MALAM CARD -->
-        <div class="shift-card" id="shiftMalamCard">
-            <div class="shift-header">
-                <div class="shift-title-group">
-                    <h2>🌙 Shift Malam</h2>
-                    <div class="sub">Tugas operasional · 22.00 - 06.00</div>
-                </div>
-                <button class="btn-add-task" id="addMalamBtn">+ Tambah tugas</button>
-            </div>
-            <div class="table-shimmer-wrapper">
-                <div class="shimmer-overlay"></div>
-                <table class="task-table" id="tabelMalamActive">
-                    <thead><tr><th style="width: 50px;">✔</th><th>📋 Nama Tugas (klik untuk edit)</th></tr></thead>
-                    <tbody id="malamActiveBody"></tbody>
-                </table>
-            </div>
-            <div style="margin-top: 20px; border-top: 2px solid var(--border); padding-top: 16px;">
-                <div style="padding: 0px 20px 8px 20px;">
-                    <span style="font-weight: 700; font-size: 0.7rem; letter-spacing: 0.5px; color: var(--text-muted);">✓ TERSELESAIKAN (MALAM)</span>
-                </div>
-                <div class="table-shimmer-wrapper">
-                    <div class="shimmer-overlay"></div>
-                    <table class="task-table" id="tabelMalamCompleted">
-                        <tbody id="malamCompletedBody"></tbody>
-                    </table>
-                </div>
-            </div>
+        <div class="badge-date">
+            <i class="far fa-calendar-alt"></i>
+            <span id="liveDate"></span>
         </div>
     </div>
 
-    <div class="note">
-        ✨ Efek cahaya kilau pada setiap tabel · Centang untuk menyelesaikan → pindah ke daftar "Terselesaikan" <br>
-        ✏️ <strong>Klik pada nama tugas</strong> untuk mengedit jobdesk · 💾 Data TERSIMPAN OTOMATIS <br>
-        ⟳ Tombol RESET akan <strong>mengembalikan semua tugas yang sudah selesai ke daftar aktif</strong>
+    <div class="shifts-grid">
+        <!-- SHIFT PAGI -->
+        <div class="shift-card" data-shift="morning">
+            <div class="card-header" style="background: linear-gradient(115deg, #FEF3C7, #FFE4A3);">
+                <div class="shift-title">
+                    <div class="shift-icon"><i class="fas fa-sun fa-fw"></i></div>
+                    <div class="shift-name">Shift Pagi</div>
+                    <span class="badge-shift"><i class="far fa-clock"></i> 07.45 – 19.45</span>
+                </div>
+                <div class="task-count" id="morningCount">0 tugas</div>
+            </div>
+            <div class="add-task-form">
+                <input type="text" id="morningInput" placeholder="+ Tambah jobdesk CS pagi ..." autocomplete="off">
+                <button class="btn-add" onclick="addTask('morning')"><i class="fas fa-plus-circle"></i> Tambah</button>
+            </div>
+            <div class="task-list-container" id="morningList">
+                <div class="empty-message"><i class="fas fa-coffee"></i> Belum ada jobdesk Shift Pagi</div>
+            </div>
+        </div>
+
+        <!-- SHIFT MALAM -->
+        <div class="shift-card" data-shift="night">
+            <div class="card-header" style="background: linear-gradient(115deg, #C9E9FF, #ADD8FF);">
+                <div class="shift-title">
+                    <div class="shift-icon"><i class="fas fa-moon fa-fw"></i></div>
+                    <div class="shift-name">Shift Malam</div>
+                    <span class="badge-shift"><i class="far fa-clock"></i> 19.45 – 07.45</span>
+                </div>
+                <div class="task-count" id="nightCount">0 tugas</div>
+            </div>
+            <div class="add-task-form">
+                <input type="text" id="nightInput" placeholder="+ Tambah jobdesk CS malam ..." autocomplete="off">
+                <button class="btn-add" onclick="addTask('night')"><i class="fas fa-plus-circle"></i> Tambah</button>
+            </div>
+            <div class="task-list-container" id="nightList">
+                <div class="empty-message"><i class="fas fa-star-of-life"></i> Belum ada jobdesk Shift Malam</div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <i class="fas fa-save"></i> Auto-save otomatis • <i class="fas fa-magic"></i> Efek confetti selesai
+    </footer>
+</div>
+
+<!-- Modal Edit -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <h3><i class="fas fa-pen-fancy"></i> Edit Jobdesk</h3>
+        <input type="text" id="editInput" placeholder="Ubah deskripsi tugas ...">
+        <div class="modal-buttons">
+            <button class="cancel-edit" onclick="closeModal()">Batal</button>
+            <button class="save-edit" onclick="confirmEdit()">Simpan</button>
+        </div>
     </div>
 </div>
 
+<div id="toastMsg" class="toast-notif"><i class="fas fa-check-circle"></i> <span>Berhasil</span></div>
+
 <script>
-    // ========== STORAGE KEYS ==========
-    const STORAGE_KEYS = {
-        PAGI_ACTIVE: 'shiftflow_pagi_active',
-        PAGI_COMPLETED: 'shiftflow_pagi_completed',
-        MALAM_ACTIVE: 'shiftflow_malam_active',
-        MALAM_COMPLETED: 'shiftflow_malam_completed'
-    };
+    let tasksData = { morning: [], night: [] };
 
-    let pagiTasksActive = [];
-    let pagiTasksCompleted = [];
-    let malamTasksActive = [];
-    let malamTasksCompleted = [];
-
-    function generateId(prefix = "task") {
-        return prefix + "_" + Date.now() + "_" + Math.random().toString(36).substring(2, 10);
+    function generateId() {
+        return `${Date.now()}-${Math.random().toString(36).substr(2, 10)}`;
     }
 
-    function persistToLocalStorage() {
-        try {
-            localStorage.setItem(STORAGE_KEYS.PAGI_ACTIVE, JSON.stringify(pagiTasksActive));
-            localStorage.setItem(STORAGE_KEYS.PAGI_COMPLETED, JSON.stringify(pagiTasksCompleted));
-            localStorage.setItem(STORAGE_KEYS.MALAM_ACTIVE, JSON.stringify(malamTasksActive));
-            localStorage.setItem(STORAGE_KEYS.MALAM_COMPLETED, JSON.stringify(malamTasksCompleted));
-            
-            const indicator = document.getElementById('saveIndicator');
-            if (indicator) {
-                indicator.textContent = '💾 Tersimpan';
-                indicator.style.opacity = '1';
-                indicator.style.background = '#c8e6d9';
-                setTimeout(() => {
-                    if (indicator) {
-                        indicator.textContent = '💾 Tersimpan otomatis';
-                        indicator.style.opacity = '0.7';
-                        indicator.style.background = '#e6f4ea';
-                    }
-                }, 1200);
-            }
-        } catch(e) { console.warn("Gagal menyimpan ke localStorage", e); }
+    // Toast manis
+    function showToast(message, icon = 'fa-check-circle') {
+        const toast = document.getElementById('toastMsg');
+        toast.innerHTML = `<i class="fas ${icon}"></i> <span>${message}</span>`;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
     }
 
-    function loadFromLocalStorage() {
-        try {
-            const savedPagiActive = localStorage.getItem(STORAGE_KEYS.PAGI_ACTIVE);
-            const savedPagiCompleted = localStorage.getItem(STORAGE_KEYS.PAGI_COMPLETED);
-            const savedMalamActive = localStorage.getItem(STORAGE_KEYS.MALAM_ACTIVE);
-            const savedMalamCompleted = localStorage.getItem(STORAGE_KEYS.MALAM_COMPLETED);
-            
-            pagiTasksActive = savedPagiActive ? JSON.parse(savedPagiActive) : [];
-            pagiTasksCompleted = savedPagiCompleted ? JSON.parse(savedPagiCompleted) : [];
-            malamTasksActive = savedMalamActive ? JSON.parse(savedMalamActive) : [];
-            malamTasksCompleted = savedMalamCompleted ? JSON.parse(savedMalamCompleted) : [];
-            
-            [pagiTasksActive, pagiTasksCompleted, malamTasksActive, malamTasksCompleted].forEach(arr => {
-                if (Array.isArray(arr)) {
-                    for (let i = 0; i < arr.length; i++) {
-                        if (!arr[i].id) arr[i].id = generateId('fix');
-                        if (typeof arr[i].name !== 'string') arr[i].name = 'Tugas tanpa nama';
-                    }
-                }
-            });
-        } catch(e) {
-            console.warn("Gagal load dari localStorage, mulai dengan data kosong", e);
-            pagiTasksActive = [];
-            pagiTasksCompleted = [];
-            malamTasksActive = [];
-            malamTasksCompleted = [];
-        }
+    // Confetti celebration
+    function burstConfetti() {
+        canvasConfetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, startVelocity: 15, colors: ['#0f5c6e', '#f59e0b', '#3b82f6'] });
+        canvasConfetti({ particleCount: 40, spread: 100, origin: { y: 0.5, x: 0.3 }, startVelocity: 20 });
     }
 
-    // RESET: mengembalikan semua tugas yang sudah selesai ke daftar aktif
-    function resetAllTasks() {
-        // Pindahkan semua tugas yang terselesaikan (PAGI) kembali ke active
-        for (const task of pagiTasksCompleted) {
-            pagiTasksActive.push({ id: generateId('pagi'), name: task.name });
-        }
-        // Pindahkan semua tugas yang terselesaikan (MALAM) kembali ke active
-        for (const task of malamTasksCompleted) {
-            malamTasksActive.push({ id: generateId('malam'), name: task.name });
-        }
-        // Kosongkan daftar terselesaikan
-        pagiTasksCompleted = [];
-        malamTasksCompleted = [];
-        
-        renderAll();
-        persistToLocalStorage();
-        
-        const indicator = document.getElementById('saveIndicator');
-        if (indicator) {
-            indicator.textContent = '⟳ Semua tugas dikembalikan';
-            indicator.style.opacity = '1';
-            setTimeout(() => {
-                if (indicator) indicator.textContent = '💾 Tersimpan otomatis';
-            }, 1500);
+    // LocalStorage
+    function loadFromStorage() {
+        const stored = localStorage.getItem('shiftFlowPro_data');
+        if (stored) {
+            try {
+                const parsed = JSON.parse(stored);
+                if (parsed.morning && parsed.night) tasksData = parsed;
+            } catch(e) {}
         }
     }
-
-    // EDIT TUGAS
-    function editTask(shift, type, taskId, currentName) {
-        const newName = prompt("Edit jobdesk/tugas:", currentName);
-        if (newName !== null && newName.trim() !== "") {
-            if (shift === 'pagi') {
-                if (type === 'active') {
-                    const task = pagiTasksActive.find(t => t.id === taskId);
-                    if (task) task.name = newName.trim();
-                } else {
-                    const task = pagiTasksCompleted.find(t => t.id === taskId);
-                    if (task) task.name = newName.trim();
-                }
-            } else if (shift === 'malam') {
-                if (type === 'active') {
-                    const task = malamTasksActive.find(t => t.id === taskId);
-                    if (task) task.name = newName.trim();
-                } else {
-                    const task = malamTasksCompleted.find(t => t.id === taskId);
-                    if (task) task.name = newName.trim();
-                }
-            }
-            renderAll();
-            persistToLocalStorage();
-        } else if (newName !== null && newName.trim() === "") {
-            alert("Nama tugas tidak boleh kosong!");
-        }
-    }
-
-    function renderAll() {
-        renderPagi();
-        renderMalam();
-    }
-
-    function renderPagi() {
-        const activeBody = document.getElementById("pagiActiveBody");
-        if (activeBody) {
-            if (pagiTasksActive.length === 0) {
-                activeBody.innerHTML = `<tr><td colspan="2" class="empty-message" style="text-align:center; padding:32px;">✨ Belum ada tugas shift pagi. Silakan tambah tugas.</td></tr>`;
-            } else {
-                activeBody.innerHTML = pagiTasksActive.map(task => `
-                    <tr data-task-id="${task.id}">
-                        <td class="checkbox-cell"><input type="checkbox" class="checkbox-custom task-checkbox" data-id="${task.id}" data-shift="pagi" data-mode="active"></td>
-                        <td><span class="editable-task" onclick="editTask('pagi', 'active', '${task.id}', '${escapeHtml(task.name).replace(/'/g, "\\'")}')">✏️ ${escapeHtml(task.name)}</span></td>
-                    </tr>
-                `).join('');
-            }
-        }
-
-        const completedBody = document.getElementById("pagiCompletedBody");
-        if (completedBody) {
-            if (pagiTasksCompleted.length === 0) {
-                completedBody.innerHTML = `<tr><td colspan="1" class="empty-message" style="text-align:center; padding:16px;">— Belum ada tugas terselesaikan —</td></tr>`;
-            } else {
-                completedBody.innerHTML = pagiTasksCompleted.map(task => `
-                    <tr>
-                        <td style="padding-left: 24px;"><span class="editable-task" onclick="editTask('pagi', 'completed', '${task.id}', '${escapeHtml(task.name).replace(/'/g, "\\'")}')">✓ ✏️ ${escapeHtml(task.name)}</span></td>
-                    </tr>
-                `).join('');
-            }
-        }
-    }
-
-    function renderMalam() {
-        const activeBodyMalam = document.getElementById("malamActiveBody");
-        if (activeBodyMalam) {
-            if (malamTasksActive.length === 0) {
-                activeBodyMalam.innerHTML = `<tr><td colspan="2" class="empty-message" style="text-align:center; padding:32px;">🌙 Belum ada tugas shift malam. Silakan tambah tugas.</td></tr>`;
-            } else {
-                activeBodyMalam.innerHTML = malamTasksActive.map(task => `
-                    <tr data-task-id="${task.id}">
-                        <td class="checkbox-cell"><input type="checkbox" class="checkbox-custom task-checkbox" data-id="${task.id}" data-shift="malam" data-mode="active"></td>
-                        <td><span class="editable-task" onclick="editTask('malam', 'active', '${task.id}', '${escapeHtml(task.name).replace(/'/g, "\\'")}')">✏️ ${escapeHtml(task.name)}</span></td>
-                    </tr>
-                `).join('');
-            }
-        }
-
-        const completedBodyMalam = document.getElementById("malamCompletedBody");
-        if (completedBodyMalam) {
-            if (malamTasksCompleted.length === 0) {
-                completedBodyMalam.innerHTML = `<tr><td colspan="1" class="empty-message" style="text-align:center; padding:16px;">— Belum ada tugas selesai —</td></tr>`;
-            } else {
-                completedBodyMalam.innerHTML = malamTasksCompleted.map(task => `
-                    <tr>
-                        <td style="padding-left: 24px;"><span class="editable-task" onclick="editTask('malam', 'completed', '${task.id}', '${escapeHtml(task.name).replace(/'/g, "\\'")}')">✓ ✏️ ${escapeHtml(task.name)}</span></td>
-                    </tr>
-                `).join('');
-            }
-        }
+    function saveToStorage() {
+        localStorage.setItem('shiftFlowPro_data', JSON.stringify(tasksData));
     }
 
     function escapeHtml(str) {
-        if (!str) return '';
         return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
+            if(m === '&') return '&amp;';
+            if(m === '<') return '&lt;';
+            if(m === '>') return '&gt;';
             return m;
         });
     }
 
-    function setupGlobalCheckboxListener() {
-        document.body.addEventListener('change', function(e) {
-            const target = e.target;
-            if (target && target.classList && target.classList.contains('task-checkbox')) {
-                if (target.checked) {
-                    const shift = target.getAttribute('data-shift');
-                    const taskId = target.getAttribute('data-id');
-                    if (!shift || !taskId) return;
+    function renderShift(shift) {
+        const container = document.getElementById(`${shift}List`);
+        const countSpan = document.getElementById(`${shift}Count`);
+        if (!container) return;
+        const tasks = tasksData[shift];
+        const total = tasks.length;
+        const completedCount = tasks.filter(t => t.completed).length;
+        countSpan.innerText = `${total} tugas • ${completedCount} selesai`;
 
-                    if (shift === 'pagi') {
-                        const taskIndex = pagiTasksActive.findIndex(t => t.id === taskId);
-                        if (taskIndex !== -1) {
-                            const movedTask = pagiTasksActive[taskIndex];
-                            pagiTasksActive.splice(taskIndex, 1);
-                            pagiTasksCompleted.unshift({ id: generateId("done_p"), name: movedTask.name });
-                            renderAll();
-                            persistToLocalStorage();
-                        } else {
-                            target.checked = false;
-                        }
-                    } 
-                    else if (shift === 'malam') {
-                        const taskIndex = malamTasksActive.findIndex(t => t.id === taskId);
-                        if (taskIndex !== -1) {
-                            const movedTask = malamTasksActive[taskIndex];
-                            malamTasksActive.splice(taskIndex, 1);
-                            malamTasksCompleted.unshift({ id: generateId("done_m"), name: movedTask.name });
-                            renderAll();
-                            persistToLocalStorage();
-                        } else {
-                            target.checked = false;
-                        }
-                    }
-                }
-            }
+        if (total === 0) {
+            const icon = shift === 'morning' ? 'fa-sun' : 'fa-moon';
+            container.innerHTML = `<div class="empty-message"><i class="fas ${icon}"></i> Kosong, tambah jobdesk</div>`;
+            return;
+        }
+
+        let itemsHtml = '';
+        tasks.forEach(task => {
+            const completedClass = task.completed ? 'completed' : '';
+            const checkedAttr = task.completed ? 'checked' : '';
+            itemsHtml += `
+                <div class="task-item" data-id="${task.id}">
+                    <div class="task-info">
+                        <input type="checkbox" class="task-check" data-id="${task.id}" data-shift="${shift}" ${checkedAttr} onchange="toggleComplete('${shift}', '${task.id}', this.checked)">
+                        <span class="task-text ${completedClass}">${escapeHtml(task.text)}</span>
+                    </div>
+                    <div class="task-actions">
+                        <button class="edit-btn" onclick="openEditModal('${shift}', '${task.id}')"><i class="fas fa-edit"></i></button>
+                        <button class="delete-btn" onclick="deleteTask('${shift}', '${task.id}')"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                </div>
+            `;
         });
+        container.innerHTML = itemsHtml;
     }
 
-    function initAddButtons() {
-        const addPagiBtn = document.getElementById("addPagiBtn");
-        if (addPagiBtn) {
-            const newPagiBtn = addPagiBtn.cloneNode(true);
-            addPagiBtn.parentNode.replaceChild(newPagiBtn, addPagiBtn);
-            newPagiBtn.addEventListener('click', () => {
-                const newTaskName = prompt("Tugas baru untuk Shift Pagi:", "Contoh: Menyusun laporan stok");
-                if (newTaskName && newTaskName.trim()) {
-                    pagiTasksActive.push({ id: generateId("pagi_new"), name: newTaskName.trim() });
-                    renderAll();
-                    persistToLocalStorage();
-                } else if (newTaskName !== null && newTaskName !== "") {
-                    alert("Nama tugas tidak boleh kosong");
-                }
-            });
-        }
-
-        const addMalamBtn = document.getElementById("addMalamBtn");
-        if (addMalamBtn) {
-            const newMalamBtn = addMalamBtn.cloneNode(true);
-            addMalamBtn.parentNode.replaceChild(newMalamBtn, addMalamBtn);
-            newMalamBtn.addEventListener('click', () => {
-                const newTaskName = prompt("Tugas baru untuk Shift Malam:", "Contoh: Inspeksi alat berat");
-                if (newTaskName && newTaskName.trim()) {
-                    malamTasksActive.push({ id: generateId("malam_new"), name: newTaskName.trim() });
-                    renderAll();
-                    persistToLocalStorage();
-                } else if (newTaskName !== null && newTaskName !== "") {
-                    alert("Nama tugas wajib diisi");
-                }
-            });
-        }
+    function renderAll() {
+        renderShift('morning');
+        renderShift('night');
+        saveToStorage();
     }
 
-    function initResetButton() {
-        const resetBtn = document.getElementById("resetAllTasksBtn");
-        if (resetBtn) {
-            const newResetBtn = resetBtn.cloneNode(true);
-            resetBtn.parentNode.replaceChild(newResetBtn, resetBtn);
-            newResetBtn.addEventListener('click', () => {
-                if (confirm("⚠️ Reset akan mengembalikan SEMUA tugas yang sudah selesai ke daftar tugas aktif.\nTugas yang sedang aktif akan tetap ada.\nLanjutkan?")) {
-                    resetAllTasks();
-                }
-            });
+    window.addTask = function(shift) {
+        const inputElem = document.getElementById(`${shift}Input`);
+        const rawText = inputElem.value.trim();
+        if (rawText === "") {
+            showToast("Jobdesk tidak boleh kosong!", "fa-exclamation-triangle");
+            return;
         }
-    }
-
-    function setDateNow() {
-        const dateElem = document.getElementById("dateDisplay");
-        if (dateElem) {
-            const today = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            dateElem.innerText = today.toLocaleDateString('id-ID', options);
-        }
-    }
-
-    function init() {
-        loadFromLocalStorage();
-        setDateNow();
+        const newTask = { id: generateId(), text: rawText, completed: false };
+        tasksData[shift].push(newTask);
+        inputElem.value = "";
         renderAll();
-        setupGlobalCheckboxListener();
-        initAddButtons();
-        initResetButton();
-        persistToLocalStorage();
+        showToast(`✅ Jobdesk ditambahkan di ${shift === 'morning' ? 'Pagi' : 'Malam'}`, "fa-plus-circle");
+        // scroll
+        const listDiv = document.getElementById(`${shift}List`);
+        if(listDiv) listDiv.scrollTop = listDiv.scrollHeight;
     }
 
-    window.editTask = editTask;
-    init();
+    window.deleteTask = function(shift, taskId) {
+        tasksData[shift] = tasksData[shift].filter(t => t.id !== taskId);
+        renderAll();
+        showToast("🗑 Tugas dihapus", "fa-trash-alt");
+    }
+
+    window.toggleComplete = function(shift, taskId, isChecked) {
+        const task = tasksData[shift].find(t => t.id === taskId);
+        if (task) {
+            task.completed = isChecked;
+            renderAll();
+            if (isChecked) {
+                burstConfetti();
+                showToast("✨ Selamat! Tugas selesai ✨", "fa-trophy");
+            } else {
+                showToast("Tugas belum selesai", "fa-undo-alt");
+            }
+        }
+    }
+
+    // Modal logic
+    let currentEdit = { shift: null, taskId: null };
+    window.openEditModal = function(shift, taskId) {
+        const task = tasksData[shift].find(t => t.id === taskId);
+        if (!task) return;
+        currentEdit = { shift, taskId };
+        document.getElementById('editInput').value = task.text;
+        document.getElementById('editModal').style.display = 'flex';
+    }
+    window.closeModal = function() {
+        document.getElementById('editModal').style.display = 'none';
+        currentEdit = { shift: null, taskId: null };
+    }
+    window.confirmEdit = function() {
+        if (!currentEdit.shift || !currentEdit.taskId) { closeModal(); return; }
+        const newText = document.getElementById('editInput').value.trim();
+        if (newText === "") { showToast("Teks tidak boleh kosong!", "fa-exclamation"); return; }
+        const task = tasksData[currentEdit.shift].find(t => t.id === currentEdit.taskId);
+        if (task) {
+            task.text = newText;
+            renderAll();
+            showToast("✏️ Jobdesk diperbarui", "fa-pen");
+        }
+        closeModal();
+    }
+    window.onclick = function(e) { if (e.target === document.getElementById('editModal')) closeModal(); }
+
+    // Tanggal live
+    function updateLiveDate() {
+        const now = new Date();
+        const formatted = now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        document.getElementById('liveDate').innerHTML = `<i class="far fa-calendar-check"></i> ${formatted}`;
+    }
+
+    // Data demo CS line
+    function initDemoData() {
+        if (tasksData.morning.length === 0 && tasksData.night.length === 0) {
+            tasksData.morning = [
+                { id: generateId(), text: "📞 Menjawab telepon customer (07.45 - 10.00)", completed: false },
+                { id: generateId(), text: "💬 Membalas chat WhatsApp & email", completed: false },
+                { id: generateId(), text: "📝 Input keluhan ke sistem", completed: true },
+                { id: generateId(), text: "🔄 Koordinasi dengan teknisi lapangan", completed: false },
+                { id: generateId(), text: "📊 Laporan CS shift pagi", completed: false }
+            ];
+            tasksData.night = [
+                { id: generateId(), text: "🌙 Follow up tiket malam (19.45 - 22.00)", completed: false },
+                { id: generateId(), text: "🔒 Cek kepuasan pelanggan via broadcast", completed: false },
+                { id: generateId(), text: "📋 Rekap masalah darurat", completed: true },
+                { id: generateId(), text: "☎️ Layanan hotline 24 jam", completed: false },
+                { id: generateId(), text: "📑 Serah terima ke shift pagi", completed: false }
+            ];
+            renderAll();
+        }
+    }
+
+    // Binding enter
+    function bindEnter() {
+        document.getElementById('morningInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') addTask('morning'); });
+        document.getElementById('nightInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') addTask('night'); });
+    }
+
+    loadFromStorage();
+    if (!tasksData.morning || !tasksData.night) tasksData = { morning: [], night: [] };
+    if (tasksData.morning.length === 0 && tasksData.night.length === 0) initDemoData();
+    else renderAll();
+
+    bindEnter();
+    updateLiveDate();
+    setInterval(updateLiveDate, 60000);
+    console.log("🔥 JOB CS LINE dengan AutoSave + Confetti + Animasi keren");
 </script>
 </body>
 </html>
