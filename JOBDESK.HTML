@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>JOB CS LINE - ShiftFlow Pro</title>
-    <!-- Google Fonts & Font Awesome 6 -->
+    <title>JOB CS LINE - Auto Save</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Canvas Confetti library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
     <style>
         * {
@@ -28,7 +26,6 @@
             margin: 0 auto;
         }
 
-        /* Glass header keren */
         .glass-header {
             background: rgba(255, 255, 255, 0.3);
             backdrop-filter: blur(16px);
@@ -67,14 +64,12 @@
             gap: 12px;
         }
 
-        /* Grid dua kolom */
         .shifts-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 2rem;
         }
 
-        /* Card premium */
         .shift-card {
             background: rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(4px);
@@ -132,7 +127,6 @@
             font-size: 0.8rem;
         }
 
-        /* Form tambah tugas */
         .add-task-form {
             padding: 1.2rem 1.5rem;
             background: #f9fbfe;
@@ -179,7 +173,6 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        /* Task list */
         .task-list-container {
             padding: 1.2rem 1.2rem 1.8rem;
             max-height: 480px;
@@ -229,10 +222,6 @@
             height: 22px;
             cursor: pointer;
             accent-color: #0f5c6e;
-            transition: transform 0.1s;
-        }
-        .task-check:active {
-            transform: scale(1.1);
         }
 
         .task-text {
@@ -240,7 +229,6 @@
             font-weight: 500;
             color: #0f172a;
             word-break: break-word;
-            transition: 0.2s;
         }
 
         .task-text.completed {
@@ -276,7 +264,6 @@
             gap: 8px;
         }
 
-        /* Modal Edit */
         .modal {
             display: none;
             position: fixed;
@@ -340,7 +327,6 @@
             background: #e2e8f0;
         }
 
-        /* Toast notification */
         .toast-notif {
             position: fixed;
             bottom: 30px;
@@ -401,11 +387,10 @@
     </div>
 
     <div class="shifts-grid">
-        <!-- SHIFT PAGI -->
-        <div class="shift-card" data-shift="morning">
+        <div class="shift-card">
             <div class="card-header" style="background: linear-gradient(115deg, #FEF3C7, #FFE4A3);">
                 <div class="shift-title">
-                    <div class="shift-icon"><i class="fas fa-sun fa-fw"></i></div>
+                    <div class="shift-icon"><i class="fas fa-sun"></i></div>
                     <div class="shift-name">Shift Pagi</div>
                     <span class="badge-shift"><i class="far fa-clock"></i> 07.45 – 19.45</span>
                 </div>
@@ -413,18 +398,15 @@
             </div>
             <div class="add-task-form">
                 <input type="text" id="morningInput" placeholder="+ Tambah jobdesk CS pagi ..." autocomplete="off">
-                <button class="btn-add" onclick="addTask('morning')"><i class="fas fa-plus-circle"></i> Tambah</button>
+                <button class="btn-add" id="btnMorningAdd"><i class="fas fa-plus-circle"></i> Tambah</button>
             </div>
-            <div class="task-list-container" id="morningList">
-                <div class="empty-message"><i class="fas fa-coffee"></i> Belum ada jobdesk Shift Pagi</div>
-            </div>
+            <div class="task-list-container" id="morningList"></div>
         </div>
 
-        <!-- SHIFT MALAM -->
-        <div class="shift-card" data-shift="night">
+        <div class="shift-card">
             <div class="card-header" style="background: linear-gradient(115deg, #C9E9FF, #ADD8FF);">
                 <div class="shift-title">
-                    <div class="shift-icon"><i class="fas fa-moon fa-fw"></i></div>
+                    <div class="shift-icon"><i class="fas fa-moon"></i></div>
                     <div class="shift-name">Shift Malam</div>
                     <span class="badge-shift"><i class="far fa-clock"></i> 19.45 – 07.45</span>
                 </div>
@@ -432,26 +414,23 @@
             </div>
             <div class="add-task-form">
                 <input type="text" id="nightInput" placeholder="+ Tambah jobdesk CS malam ..." autocomplete="off">
-                <button class="btn-add" onclick="addTask('night')"><i class="fas fa-plus-circle"></i> Tambah</button>
+                <button class="btn-add" id="btnNightAdd"><i class="fas fa-plus-circle"></i> Tambah</button>
             </div>
-            <div class="task-list-container" id="nightList">
-                <div class="empty-message"><i class="fas fa-star-of-life"></i> Belum ada jobdesk Shift Malam</div>
-            </div>
+            <div class="task-list-container" id="nightList"></div>
         </div>
     </div>
     <footer>
-        <i class="fas fa-save"></i> Auto-save otomatis • <i class="fas fa-magic"></i> Efek confetti selesai
+        <i class="fas fa-save"></i> Auto save otomatis (Tambah/Hapus/Edit/Centang) • Data tetap setelah refresh
     </footer>
 </div>
 
-<!-- Modal Edit -->
 <div id="editModal" class="modal">
     <div class="modal-content">
         <h3><i class="fas fa-pen-fancy"></i> Edit Jobdesk</h3>
         <input type="text" id="editInput" placeholder="Ubah deskripsi tugas ...">
         <div class="modal-buttons">
-            <button class="cancel-edit" onclick="closeModal()">Batal</button>
-            <button class="save-edit" onclick="confirmEdit()">Simpan</button>
+            <button class="cancel-edit" id="cancelEditBtn">Batal</button>
+            <button class="save-edit" id="saveEditBtn">Simpan</button>
         </div>
     </div>
 </div>
@@ -459,13 +438,17 @@
 <div id="toastMsg" class="toast-notif"><i class="fas fa-check-circle"></i> <span>Berhasil</span></div>
 
 <script>
-    let tasksData = { morning: [], night: [] };
+    // ==================== DATA ====================
+    let tasksData = {
+        morning: [],
+        night: []
+    };
 
+    // ==================== FUNGSI DASAR ====================
     function generateId() {
-        return `${Date.now()}-${Math.random().toString(36).substr(2, 10)}`;
+        return Date.now() + '-' + Math.random().toString(36).substr(2, 8);
     }
 
-    // Toast manis
     function showToast(message, icon = 'fa-check-circle') {
         const toast = document.getElementById('toastMsg');
         toast.innerHTML = `<i class="fas ${icon}"></i> <span>${message}</span>`;
@@ -473,31 +456,39 @@
         setTimeout(() => toast.classList.remove('show'), 2000);
     }
 
-    // Confetti celebration
     function burstConfetti() {
         canvasConfetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, startVelocity: 15, colors: ['#0f5c6e', '#f59e0b', '#3b82f6'] });
         canvasConfetti({ particleCount: 40, spread: 100, origin: { y: 0.5, x: 0.3 }, startVelocity: 20 });
     }
 
-    // LocalStorage
-    function loadFromStorage() {
-        const stored = localStorage.getItem('shiftFlowPro_data');
+    // ==================== LOCALSTORAGE (AUTO SAVE) ====================
+    function saveToLocalStorage() {
+        localStorage.setItem('jobCSLine_data', JSON.stringify(tasksData));
+        console.log("✅ Data auto saved:", tasksData);
+    }
+
+    function loadFromLocalStorage() {
+        const stored = localStorage.getItem('jobCSLine_data');
         if (stored) {
             try {
                 const parsed = JSON.parse(stored);
-                if (parsed.morning && parsed.night) tasksData = parsed;
-            } catch(e) {}
+                if (parsed && typeof parsed === 'object' && parsed.morning && parsed.night) {
+                    tasksData = parsed;
+                    console.log("📀 Data loaded from storage:", tasksData);
+                    return true;
+                }
+            } catch(e) { console.error("Gagal parse storage:", e); }
         }
-    }
-    function saveToStorage() {
-        localStorage.setItem('shiftFlowPro_data', JSON.stringify(tasksData));
+        return false;
     }
 
+    // ==================== RENDER UI ====================
     function escapeHtml(str) {
+        if (!str) return '';
         return str.replace(/[&<>]/g, function(m) {
-            if(m === '&') return '&amp;';
-            if(m === '<') return '&lt;';
-            if(m === '>') return '&gt;';
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
             return m;
         });
     }
@@ -506,6 +497,7 @@
         const container = document.getElementById(`${shift}List`);
         const countSpan = document.getElementById(`${shift}Count`);
         if (!container) return;
+
         const tasks = tasksData[shift];
         const total = tasks.length;
         const completedCount = tasks.filter(t => t.completed).length;
@@ -517,139 +509,227 @@
             return;
         }
 
-        let itemsHtml = '';
+        let html = '';
         tasks.forEach(task => {
             const completedClass = task.completed ? 'completed' : '';
             const checkedAttr = task.completed ? 'checked' : '';
-            itemsHtml += `
+            html += `
                 <div class="task-item" data-id="${task.id}">
                     <div class="task-info">
-                        <input type="checkbox" class="task-check" data-id="${task.id}" data-shift="${shift}" ${checkedAttr} onchange="toggleComplete('${shift}', '${task.id}', this.checked)">
+                        <input type="checkbox" class="task-check" data-shift="${shift}" data-id="${task.id}" ${checkedAttr}>
                         <span class="task-text ${completedClass}">${escapeHtml(task.text)}</span>
                     </div>
                     <div class="task-actions">
-                        <button class="edit-btn" onclick="openEditModal('${shift}', '${task.id}')"><i class="fas fa-edit"></i></button>
-                        <button class="delete-btn" onclick="deleteTask('${shift}', '${task.id}')"><i class="fas fa-trash-alt"></i></button>
+                        <button class="edit-btn" data-shift="${shift}" data-id="${task.id}"><i class="fas fa-edit"></i></button>
+                        <button class="delete-btn" data-shift="${shift}" data-id="${task.id}"><i class="fas fa-trash-alt"></i></button>
                     </div>
                 </div>
             `;
         });
-        container.innerHTML = itemsHtml;
+        container.innerHTML = html;
     }
 
     function renderAll() {
         renderShift('morning');
         renderShift('night');
-        saveToStorage();
     }
 
-    window.addTask = function(shift) {
-        const inputElem = document.getElementById(`${shift}Input`);
-        const rawText = inputElem.value.trim();
-        if (rawText === "") {
+    // ==================== CRUD + AUTO SAVE ====================
+    function addTask(shift, text) {
+        if (!text.trim()) {
             showToast("Jobdesk tidak boleh kosong!", "fa-exclamation-triangle");
-            return;
+            return false;
         }
-        const newTask = { id: generateId(), text: rawText, completed: false };
+        const newTask = {
+            id: generateId(),
+            text: text.trim(),
+            completed: false
+        };
         tasksData[shift].push(newTask);
-        inputElem.value = "";
+        saveToLocalStorage();  // ← AUTO SAVE
         renderAll();
         showToast(`✅ Jobdesk ditambahkan di ${shift === 'morning' ? 'Pagi' : 'Malam'}`, "fa-plus-circle");
-        // scroll
+        
+        // scroll ke bawah
         const listDiv = document.getElementById(`${shift}List`);
-        if(listDiv) listDiv.scrollTop = listDiv.scrollHeight;
+        if (listDiv) listDiv.scrollTop = listDiv.scrollHeight;
+        return true;
     }
 
-    window.deleteTask = function(shift, taskId) {
+    function deleteTask(shift, taskId) {
+        const beforeLength = tasksData[shift].length;
         tasksData[shift] = tasksData[shift].filter(t => t.id !== taskId);
-        renderAll();
-        showToast("🗑 Tugas dihapus", "fa-trash-alt");
+        if (beforeLength !== tasksData[shift].length) {
+            saveToLocalStorage();  // ← AUTO SAVE (WAJIB)
+            renderAll();
+            showToast("🗑 Tugas berhasil dihapus", "fa-trash-alt");
+        }
     }
 
-    window.toggleComplete = function(shift, taskId, isChecked) {
+    function toggleComplete(shift, taskId, isChecked) {
         const task = tasksData[shift].find(t => t.id === taskId);
         if (task) {
             task.completed = isChecked;
+            saveToLocalStorage();  // ← AUTO SAVE
             renderAll();
             if (isChecked) {
                 burstConfetti();
-                showToast("✨ Selamat! Tugas selesai ✨", "fa-trophy");
+                showToast("🎉 Selamat! Tugas selesai 🎉", "fa-trophy");
             } else {
-                showToast("Tugas belum selesai", "fa-undo-alt");
+                showToast("Tugas dibatalkan selesai", "fa-undo-alt");
             }
         }
     }
 
-    // Modal logic
-    let currentEdit = { shift: null, taskId: null };
-    window.openEditModal = function(shift, taskId) {
+    function editTask(shift, taskId, newText) {
+        if (!newText.trim()) {
+            showToast("Text tidak boleh kosong!", "fa-exclamation");
+            return false;
+        }
         const task = tasksData[shift].find(t => t.id === taskId);
-        if (!task) return;
-        currentEdit = { shift, taskId };
-        document.getElementById('editInput').value = task.text;
-        document.getElementById('editModal').style.display = 'flex';
-    }
-    window.closeModal = function() {
-        document.getElementById('editModal').style.display = 'none';
-        currentEdit = { shift: null, taskId: null };
-    }
-    window.confirmEdit = function() {
-        if (!currentEdit.shift || !currentEdit.taskId) { closeModal(); return; }
-        const newText = document.getElementById('editInput').value.trim();
-        if (newText === "") { showToast("Teks tidak boleh kosong!", "fa-exclamation"); return; }
-        const task = tasksData[currentEdit.shift].find(t => t.id === currentEdit.taskId);
         if (task) {
-            task.text = newText;
+            task.text = newText.trim();
+            saveToLocalStorage();  // ← AUTO SAVE
             renderAll();
             showToast("✏️ Jobdesk diperbarui", "fa-pen");
+            return true;
         }
+        return false;
+    }
+
+    // ==================== EVENT LISTENER (DELEGASI) ====================
+    function attachGlobalEvents() {
+        // Morning add
+        const btnMorning = document.getElementById('btnMorningAdd');
+        const morningInput = document.getElementById('morningInput');
+        if (btnMorning) {
+            btnMorning.onclick = () => addTask('morning', morningInput.value) && (morningInput.value = '');
+        }
+        if (morningInput) {
+            morningInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') addTask('morning', morningInput.value) && (morningInput.value = '');
+            });
+        }
+
+        // Night add
+        const btnNight = document.getElementById('btnNightAdd');
+        const nightInput = document.getElementById('nightInput');
+        if (btnNight) {
+            btnNight.onclick = () => addTask('night', nightInput.value) && (nightInput.value = '');
+        }
+        if (nightInput) {
+            nightInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') addTask('night', nightInput.value) && (nightInput.value = '');
+            });
+        }
+
+        // Event delegation untuk checkbox, edit, delete (karena dynamic)
+        document.body.addEventListener('change', (e) => {
+            if (e.target.classList.contains('task-check')) {
+                const shift = e.target.getAttribute('data-shift');
+                const id = e.target.getAttribute('data-id');
+                const isChecked = e.target.checked;
+                if (shift && id) toggleComplete(shift, id, isChecked);
+            }
+        });
+
+        document.body.addEventListener('click', (e) => {
+            // Hapus
+            if (e.target.closest('.delete-btn')) {
+                const btn = e.target.closest('.delete-btn');
+                const shift = btn.getAttribute('data-shift');
+                const id = btn.getAttribute('data-id');
+                if (shift && id) deleteTask(shift, id);
+            }
+            // Edit
+            if (e.target.closest('.edit-btn')) {
+                const btn = e.target.closest('.edit-btn');
+                const shift = btn.getAttribute('data-shift');
+                const id = btn.getAttribute('data-id');
+                if (shift && id) openEditModal(shift, id);
+            }
+        });
+    }
+
+    // ==================== MODAL EDIT ====================
+    let currentEditShift = null;
+    let currentEditId = null;
+
+    function openEditModal(shift, taskId) {
+        const task = tasksData[shift].find(t => t.id === taskId);
+        if (!task) return;
+        currentEditShift = shift;
+        currentEditId = taskId;
+        const modal = document.getElementById('editModal');
+        const input = document.getElementById('editInput');
+        input.value = task.text;
+        modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('editModal').style.display = 'none';
+        currentEditShift = null;
+        currentEditId = null;
+    }
+
+    function confirmEdit() {
+        if (!currentEditShift || !currentEditId) {
+            closeModal();
+            return;
+        }
+        const newText = document.getElementById('editInput').value;
+        editTask(currentEditShift, currentEditId, newText);
         closeModal();
     }
-    window.onclick = function(e) { if (e.target === document.getElementById('editModal')) closeModal(); }
 
-    // Tanggal live
+    // ==================== INIT DEMO & LOAD ====================
+    function initDemoData() {
+        tasksData.morning = [
+            { id: generateId(), text: "📞 Menjawab telepon customer (07.45 - 10.00)", completed: false },
+            { id: generateId(), text: "💬 Membalas chat WhatsApp & email", completed: false },
+            { id: generateId(), text: "📝 Input keluhan ke sistem", completed: true },
+            { id: generateId(), text: "🔄 Koordinasi dengan teknisi lapangan", completed: false },
+            { id: generateId(), text: "📊 Laporan CS shift pagi", completed: false }
+        ];
+        tasksData.night = [
+            { id: generateId(), text: "🌙 Follow up tiket malam (19.45 - 22.00)", completed: false },
+            { id: generateId(), text: "🔒 Cek kepuasan pelanggan via broadcast", completed: false },
+            { id: generateId(), text: "📋 Rekap masalah darurat", completed: true },
+            { id: generateId(), text: "☎️ Layanan hotline 24 jam", completed: false },
+            { id: generateId(), text: "📑 Serah terima ke shift pagi", completed: false }
+        ];
+        saveToLocalStorage();
+        renderAll();
+    }
+
     function updateLiveDate() {
         const now = new Date();
         const formatted = now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        document.getElementById('liveDate').innerHTML = `<i class="far fa-calendar-check"></i> ${formatted}`;
+        const span = document.getElementById('liveDate');
+        if (span) span.innerHTML = `<i class="far fa-calendar-check"></i> ${formatted}`;
     }
 
-    // Data demo CS line
-    function initDemoData() {
-        if (tasksData.morning.length === 0 && tasksData.night.length === 0) {
-            tasksData.morning = [
-                { id: generateId(), text: "📞 Menjawab telepon customer (07.45 - 10.00)", completed: false },
-                { id: generateId(), text: "💬 Membalas chat WhatsApp & email", completed: false },
-                { id: generateId(), text: "📝 Input keluhan ke sistem", completed: true },
-                { id: generateId(), text: "🔄 Koordinasi dengan teknisi lapangan", completed: false },
-                { id: generateId(), text: "📊 Laporan CS shift pagi", completed: false }
-            ];
-            tasksData.night = [
-                { id: generateId(), text: "🌙 Follow up tiket malam (19.45 - 22.00)", completed: false },
-                { id: generateId(), text: "🔒 Cek kepuasan pelanggan via broadcast", completed: false },
-                { id: generateId(), text: "📋 Rekap masalah darurat", completed: true },
-                { id: generateId(), text: "☎️ Layanan hotline 24 jam", completed: false },
-                { id: generateId(), text: "📑 Serah terima ke shift pagi", completed: false }
-            ];
+    // ==================== START APLIKASI ====================
+    function startApp() {
+        const hasData = loadFromLocalStorage();
+        if (!hasData || (tasksData.morning.length === 0 && tasksData.night.length === 0)) {
+            initDemoData();
+        } else {
             renderAll();
         }
+        attachGlobalEvents();
+        updateLiveDate();
+        setInterval(updateLiveDate, 60000);
+
+        // Modal buttons
+        document.getElementById('saveEditBtn').onclick = confirmEdit;
+        document.getElementById('cancelEditBtn').onclick = closeModal;
+        window.onclick = (e) => { if (e.target === document.getElementById('editModal')) closeModal(); };
+        
+        console.log("🔥 JOB CS LINE - Auto save siap, hapus akan tersimpan permanen");
     }
 
-    // Binding enter
-    function bindEnter() {
-        document.getElementById('morningInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') addTask('morning'); });
-        document.getElementById('nightInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') addTask('night'); });
-    }
-
-    loadFromStorage();
-    if (!tasksData.morning || !tasksData.night) tasksData = { morning: [], night: [] };
-    if (tasksData.morning.length === 0 && tasksData.night.length === 0) initDemoData();
-    else renderAll();
-
-    bindEnter();
-    updateLiveDate();
-    setInterval(updateLiveDate, 60000);
-    console.log("🔥 JOB CS LINE dengan AutoSave + Confetti + Animasi keren");
+    startApp();
 </script>
 </body>
 </html>
