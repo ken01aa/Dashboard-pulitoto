@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>YouTube Live Monitor - Dengan Log Komentar Hapus</title>
+<title>YouTube Live Monitor - Firebase Sync</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 *{
@@ -17,11 +17,9 @@ box-sizing:border-box;
     --bg-secondary: #f8fafc;
     --text-primary: #0F172A;
     --text-secondary: #475569;
-    --text-muted: #94a3b8;
     --border: #e2e8f0;
     --accent-info: #3b82f6;
     --accent-danger: #ef4444;
-    --accent-warning: #f59e0b;
 }
 
 body{
@@ -30,7 +28,6 @@ background: #f8fafc;
 color: var(--text-primary);
 padding: 25px;
 min-height: 100vh;
-overflow-x: hidden;
 }
 
 .bg-pattern {
@@ -76,6 +73,15 @@ color: var(--cover-color);
 color: var(--accent-info);
 }
 
+.sync-badge{
+background: #10b981;
+color: white;
+padding: 4px 12px;
+border-radius: 30px;
+font-size: 11px;
+font-weight: 600;
+}
+
 .status-grid{
 display: flex;
 gap: 15px;
@@ -87,7 +93,7 @@ background: var(--bg-secondary);
 border: 1px solid var(--border);
 padding: 14px 20px;
 border-radius: 16px;
-min-width: 160px;
+min-width: 140px;
 }
 
 .status-title{
@@ -113,7 +119,6 @@ border: 1px solid var(--border);
 padding: 20px 24px;
 border-radius: 20px;
 margin-bottom: 25px;
-box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
 }
 
 .setting-row{
@@ -128,18 +133,9 @@ background: var(--bg-secondary);
 border: 1px solid var(--border);
 padding: 12px 16px;
 border-radius: 12px;
-color: var(--text-primary);
 font-size: 14px;
 outline: none;
 width: 200px;
-font-family: 'Plus Jakarta Sans', sans-serif;
-transition: 0.3s;
-}
-
-input:focus{
-border-color: var(--cover-color);
-box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
-background: white;
 }
 
 button{
@@ -152,7 +148,6 @@ font-weight: 600;
 cursor: pointer;
 font-size: 13px;
 transition: 0.3s;
-font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 button:hover{
@@ -172,7 +167,6 @@ button.danger-btn:hover {
     gap: 10px;
     margin-bottom: 25px;
     border-bottom: 2px solid var(--border);
-    padding-bottom: 0;
 }
 
 .tab-btn {
@@ -209,9 +203,6 @@ background: white;
 border: 1px solid var(--border);
 border-radius: 20px;
 overflow: hidden;
-box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
-display: flex;
-flex-direction: column;
 transition: 0.3s;
 }
 
@@ -225,7 +216,6 @@ padding: 14px 16px;
 display: flex;
 justify-content: space-between;
 align-items: flex-start;
-gap: 10px;
 border-bottom: 1px solid var(--border);
 }
 
@@ -233,9 +223,7 @@ border-bottom: 1px solid var(--border);
 font-size: 14px;
 font-weight: 600;
 line-height: 1.4;
-word-break: break-word;
 flex: 1;
-color: var(--text-primary);
 }
 
 .comment-count{
@@ -243,21 +231,14 @@ background: var(--bg-secondary);
 padding: 4px 12px;
 border-radius: 30px;
 font-size: 11px;
-color: var(--text-secondary);
 font-weight: 600;
-white-space: nowrap;
-flex-shrink: 0;
 }
 
 .thumbnail-box{
-position: relative;
+display: block;
 width: 100%;
 height: 200px;
 overflow: hidden;
-cursor: pointer;
-display: block;
-flex-shrink: 0;
-background: var(--bg-secondary);
 }
 
 .thumbnail-box img{
@@ -275,7 +256,6 @@ transform: scale(1.03);
 padding: 16px;
 max-height: 350px;
 overflow-y: auto;
-flex: 1;
 background: var(--bg-secondary);
 }
 
@@ -285,11 +265,6 @@ border: 1px solid var(--border);
 padding: 12px;
 border-radius: 14px;
 margin-bottom: 12px;
-transition: 0.2s;
-}
-
-.comment-item:hover{
-background: var(--bg-secondary);
 }
 
 .comment-user{
@@ -305,15 +280,11 @@ height: 36px;
 border-radius: 50%;
 border: 1.5px solid var(--accent-info);
 object-fit: cover;
-background: var(--bg-secondary);
-flex-shrink: 0;
 }
 
 .comment-name{
 font-size: 13px;
 font-weight: 700;
-color: var(--text-primary);
-word-break: break-word;
 }
 
 .comment-time{
@@ -326,17 +297,13 @@ margin-top: 3px;
 font-size: 12px;
 line-height: 1.5;
 color: var(--text-secondary);
-word-break: break-word;
 }
 
-/* Tabel Log Komentar Dihapus */
 .deleted-table-container {
     background: white;
     border: 1px solid var(--border);
     border-radius: 20px;
     overflow-x: auto;
-    padding: 0;
-    margin-bottom: 25px;
 }
 
 .deleted-table {
@@ -350,31 +317,21 @@ word-break: break-word;
     padding: 14px 12px;
     text-align: left;
     font-weight: 600;
-    color: var(--text-primary);
     border-bottom: 1px solid var(--border);
-    position: sticky;
-    top: 0;
 }
 
 .deleted-table td {
     padding: 12px;
     border-bottom: 1px solid var(--border);
-    vertical-align: top;
-    color: var(--text-secondary);
 }
 
-.deleted-table tr:hover {
-    background: var(--bg-secondary);
-}
-
-.deleted-table .badge-deleted {
+.badge-deleted {
     background: var(--accent-danger);
     color: white;
     padding: 2px 8px;
     border-radius: 20px;
     font-size: 10px;
     font-weight: 600;
-    display: inline-block;
 }
 
 .toast{
@@ -386,72 +343,26 @@ background: white;
 border-left: 4px solid #10b981;
 border-radius: 16px;
 padding: 16px;
-transition: 0.4s cubic-bezier(0.2,0.9,0.4,1.1);
+transition: 0.4s;
 z-index: 999;
-box-shadow: 0 10px 35px rgba(15, 23, 42, 0.15);
-border: 1px solid var(--border);
+box-shadow: 0 10px 35px rgba(0,0,0,0.15);
 }
 
 .toast.show{
 right: 25px;
 }
 
-.toast-title{
-font-weight: 700;
-margin-bottom: 6px;
-color: var(--cover-color);
-font-size: 14px;
-}
-
 .toast-text{
 font-size: 13px;
 color: var(--text-secondary);
-line-height: 1.5;
-word-break: break-word;
-}
-
-::-webkit-scrollbar{
-width: 5px;
-}
-
-::-webkit-scrollbar-track{
-background: var(--bg-secondary);
-border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb{
-background: var(--border);
-border-radius: 10px;
 }
 
 @media(max-width: 768px){
-body{
-padding: 15px;
-}
-.video-grid{
-grid-template-columns: 1fr;
-}
-.thumbnail-box{
-height: 180px;
-}
-button, input{
-width: 100%;
-}
-.video-title{
-font-size: 13px;
-}
-.toast{
-width: 90%;
-right: -90%;
-}
-.topbar{
-flex-direction: column;
-align-items: flex-start;
-}
-.deleted-table th, .deleted-table td {
-    padding: 8px;
-    font-size: 11px;
-}
+body{padding:15px;}
+.video-grid{grid-template-columns:1fr;}
+.thumbnail-box{height:180px;}
+button,input{width:100%;}
+.toast{width:90%;right:-90%;}
 }
 </style>
 </head>
@@ -460,32 +371,21 @@ align-items: flex-start;
 <div class="bg-pattern"></div>
 
 <div class="toast" id="toast">
-<div class="toast-title">🔔 KOMENTAR BARU</div>
-<div class="toast-text" id="toastText">Ada komentar baru dari pengguna</div>
+<div class="toast-title">🔔 NOTIFIKASI</div>
+<div class="toast-text" id="toastText"></div>
 </div>
 
 <div class="container">
 <div class="topbar">
 <div class="logo">
 YOUTUBE <span>LIVE MONITOR</span>
+<div class="sync-badge" style="margin-top:5px;">☁️ FIREBASE SYNC</div>
 </div>
 <div class="status-grid">
-<div class="status-card">
-<div class="status-title">STATUS</div>
-<div class="status-value online">● ONLINE</div>
-</div>
-<div class="status-card">
-<div class="status-title">TOTAL VIDEO</div>
-<div class="status-value" id="totalVideos">0</div>
-</div>
-<div class="status-card">
-<div class="status-title">AUTO REFRESH</div>
-<div class="status-value" id="refreshText">30 MENIT</div>
-</div>
-<div class="status-card">
-<div class="status-title">KOMENTAR DIHAPUS</div>
-<div class="status-value" id="deletedCount">0</div>
-</div>
+<div class="status-card"><div class="status-title">STATUS</div><div class="status-value online">● ONLINE</div></div>
+<div class="status-card"><div class="status-title">TOTAL VIDEO</div><div class="status-value" id="totalVideos">0</div></div>
+<div class="status-card"><div class="status-title">AUTO REFRESH</div><div class="status-value" id="refreshText">30 MENIT</div></div>
+<div class="status-card"><div class="status-title">KOMENTAR DIHAPUS</div><div class="status-value" id="deletedCount">0</div></div>
 </div>
 </div>
 
@@ -494,7 +394,7 @@ YOUTUBE <span>LIVE MONITOR</span>
 <input type="number" id="refreshInput" placeholder="Menit Refresh" value="30" min="1">
 <button onclick="saveRefresh()">SIMPAN REFRESH</button>
 <button onclick="manualRefresh()">REFRESH SEKARANG</button>
-<button onclick="clearDeletedLog()" class="danger-btn">HAPUS SEMUA LOG</button>
+<button onclick="clearAllHistory()" class="danger-btn">HAPUS SEMUA HISTORY</button>
 </div>
 </div>
 
@@ -509,37 +409,21 @@ YOUTUBE <span>LIVE MONITOR</span>
 
 <div id="deletedTab" class="tab-content">
 <div class="deleted-table-container">
-<table class="deleted-table" id="deletedTable">
-<thead>
-<tr>
-<th>Waktu Dihapus</th>
-<th>Nama Pengguna</th>
-<th>Komentar</th>
-<th>Video</th>
-<th>Status</th>
-</tr>
-</thead>
-<tbody id="deletedTableBody">
-<tr><td colspan="5" style="text-align:center;padding:40px;">✨ Belum ada komentar yang terdeteksi dihapus ✨</td></tr>
-</tbody>
+<table class="deleted-table">
+<thead><tr><th>Waktu Dihapus</th><th>Pengguna</th><th>Komentar</th><th>Video</th><th>Status</th></tr></thead>
+<tbody id="deletedTableBody"><tr><td colspan="5" style="text-align:center;padding:40px;">⏳ Memuat data dari Firebase...</td></tr></tbody>
 </table>
 </div>
 </div>
 </div>
 
-<audio id="notifSound" preload="auto">
-<source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" type="audio/mpeg">
-</audio>
+<audio id="notifSound"><source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" type="audio/mpeg"></audio>
 
 <script>
-// =========================
-// API KEY YouTube
-// =========================
+// ==================== FIREBASE CONFIG ====================
+const FIREBASE_URL = "https://monitor-5432a-default-rtdb.asia-southeast1.firebasedatabase.app/";
 const API_KEY = "AIzaSyC0QKWbbW4M9_kRu2e0PQ3psM8RYXv4GDI";
 
-// =========================
-// DAFTAR VIDEO
-// =========================
 const rawVideos = [
 { url: "https://youtu.be/dgiQObBtcOY", title: "PULITOTO - Tutorial Lengkap"},
 { url: "https://youtu.be/b18cWbAKIWw", title: "CARA DAFTAR AKUN BARU"},
@@ -552,107 +436,22 @@ const rawVideos = [
 ];
 
 function extractVideoId(url) {
-    if(!url) return null;
     let match = url.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
     if(match) return match[1];
     match = url.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
     if(match) return match[1];
-    match = url.match(/embed\/([a-zA-Z0-9_-]{11})/);
-    if(match) return match[1];
-    if(/^[a-zA-Z0-9_-]{11}$/.test(url)) return url;
     return null;
 }
 
-const videos = rawVideos.map(v => ({
-    id: extractVideoId(v.url),
-    title: v.title
-})).filter(v => v.id !== null);
-
+const videos = rawVideos.map(v => ({id: extractVideoId(v.url), title: v.title})).filter(v => v.id);
 document.getElementById("totalVideos").innerText = videos.length;
 
 let refreshMinutes = parseInt(localStorage.getItem("refreshMinutes")) || 30;
 let refreshInterval;
-let savedComments = {}; // menyimpan ID komentar per video
-let deletedCommentsLog = []; // array untuk log komentar yang dihapus
-
-// Load deleted log dari localStorage
-function loadDeletedLog() {
-    const stored = localStorage.getItem("deletedCommentsLog");
-    if(stored) {
-        try {
-            deletedCommentsLog = JSON.parse(stored);
-            updateDeletedCount();
-            renderDeletedTable();
-        } catch(e) { console.warn(e); }
-    }
-}
-
-function saveDeletedLog() {
-    localStorage.setItem("deletedCommentsLog", JSON.stringify(deletedCommentsLog));
-    updateDeletedCount();
-    renderDeletedTable();
-}
-
-function updateDeletedCount() {
-    document.getElementById("deletedCount").innerText = deletedCommentsLog.length;
-}
-
-function renderDeletedTable() {
-    const tbody = document.getElementById("deletedTableBody");
-    if(!tbody) return;
-    
-    if(deletedCommentsLog.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;">✨ Belum ada komentar yang terdeteksi dihapus ✨</td></tr>';
-        return;
-    }
-    
-    tbody.innerHTML = deletedCommentsLog.map(log => `
-        <tr>
-            <td style="white-space: nowrap;">${escapeHtml(log.deletedAt)}</td>
-            <td><strong>${escapeHtml(log.authorName)}</strong></td>
-            <td style="max-width: 300px;">${escapeHtml(log.commentText)}</td>
-            <td style="max-width: 250px;">${escapeHtml(log.videoTitle)}</td>
-            <td><span class="badge-deleted">TERHAPUS</span></td>
-        </tr>
-    `).join('');
-}
-
-function addDeletedComment(authorName, commentText, videoTitle, videoId, commentId) {
-    const now = new Date();
-    const formattedTime = now.toLocaleString('id-ID');
-    
-    // Cek apakah sudah ada log dengan commentId yang sama (hindari duplikat)
-    const alreadyExists = deletedCommentsLog.some(log => log.commentId === commentId);
-    if(alreadyExists) return;
-    
-    deletedCommentsLog.unshift({
-        commentId: commentId,
-        authorName: authorName,
-        commentText: commentText,
-        videoTitle: videoTitle,
-        videoId: videoId,
-        deletedAt: formattedTime,
-        timestamp: now.getTime()
-    });
-    
-    // Batasi log maksimal 500 entries
-    if(deletedCommentsLog.length > 500) {
-        deletedCommentsLog = deletedCommentsLog.slice(0, 500);
-    }
-    
-    saveDeletedLog();
-    
-    // Tampilkan toast khusus untuk komentar yang dihapus
-    showToastMessage(`🗑️ Komentar dari ${authorName} di video "${videoTitle.substring(0,40)}..." telah dihapus dari YouTube`, "warning");
-}
-
-function clearDeletedLog() {
-    if(confirm("Yakin ingin menghapus semua log komentar yang dihapus? Data tidak dapat dikembalikan.")) {
-        deletedCommentsLog = [];
-        saveDeletedLog();
-        showToastMessage("✅ Semua log komentar yang dihapus telah dibersihkan");
-    }
-}
+let savedComments = {};
+let savedCommentsDetail = {};
+let deletedCommentsLog = [];
+let isFirstLoad = true;
 
 document.getElementById("refreshInput").value = refreshMinutes;
 document.getElementById("refreshText").innerText = refreshMinutes + " MENIT";
@@ -664,28 +463,129 @@ function saveRefresh() {
     localStorage.setItem("refreshMinutes", refreshMinutes);
     document.getElementById("refreshText").innerText = refreshMinutes + " MENIT";
     startAutoRefresh();
-    showToastMessage("✅ Refresh diatur ke " + refreshMinutes + " menit");
+    showToast("✅ Refresh diatur ke " + refreshMinutes + " menit");
 }
 
 function startAutoRefresh() {
     if(refreshInterval) clearInterval(refreshInterval);
-    refreshInterval = setInterval(() => {
-        loadAllComments();
-    }, refreshMinutes * 60 * 1000);
+    refreshInterval = setInterval(() => loadAllComments(), refreshMinutes * 60 * 1000);
 }
 
+// ==================== FIREBASE SYNC ====================
+async function loadHistoryFromFirebase() {
+    try {
+        const response = await fetch(`${FIREBASE_URL}deletedHistory.json`);
+        const data = await response.json();
+        
+        if(data) {
+            deletedCommentsLog = Object.values(data);
+            deletedCommentsLog.sort((a,b) => b.timestamp - a.timestamp);
+            updateDeletedCount();
+            renderDeletedTable();
+            console.log(`✅ Loaded ${deletedCommentsLog.length} history from Firebase`);
+        } else {
+            deletedCommentsLog = [];
+            updateDeletedCount();
+            renderDeletedTable();
+        }
+    } catch(e) {
+        console.error("Gagal load dari Firebase:", e);
+        showToast("⚠️ Gagal sync dari Firebase");
+    }
+}
+
+async function addHistoryToFirebase(comment) {
+    try {
+        const newId = Date.now() + "_" + Math.random().toString(36).substr(2, 6);
+        await fetch(`${FIREBASE_URL}deletedHistory/${newId}.json`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(comment)
+        });
+        console.log("✅ History saved to Firebase");
+    } catch(e) {
+        console.error("Gagal save ke Firebase:", e);
+    }
+}
+
+async function clearAllHistory() {
+    if(!confirm("⚠️ PERINGATAN: Ini akan menghapus SEMUA history untuk SEMUA pengguna! Yakin?")) return;
+    
+    try {
+        await fetch(`${FIREBASE_URL}deletedHistory.json`, {
+            method: 'PUT',
+            body: JSON.stringify(null)
+        });
+        deletedCommentsLog = [];
+        updateDeletedCount();
+        renderDeletedTable();
+        showToast("✅ Semua history telah dihapus dari Firebase");
+    } catch(e) {
+        showToast("❌ Gagal menghapus history");
+    }
+}
+
+function updateDeletedCount() {
+    document.getElementById("deletedCount").innerText = deletedCommentsLog.length;
+}
+
+function renderDeletedTable() {
+    const tbody = document.getElementById("deletedTableBody");
+    if(!tbody) return;
+    
+    if(deletedCommentsLog.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;">✨ Belum ada komentar yang dihapus ✨</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = deletedCommentsLog.map(log => `
+        <tr>
+            <td style="white-space:nowrap;">${escapeHtml(log.deletedAt)}</td>
+            <td><strong>${escapeHtml(log.authorName)}</strong></td>
+            <td style="max-width:300px;">${escapeHtml(log.commentText)}</td>
+            <td style="max-width:250px;">${escapeHtml(log.videoTitle)}</td>
+            <td><span class="badge-deleted">TERHAPUS</span></td>
+        </tr>
+    `).join('');
+}
+
+async function addDeletedCommentToFirebase(authorName, commentText, videoTitle, videoId, commentId) {
+    const now = new Date();
+    const formattedTime = now.toLocaleString('id-ID');
+    
+    const alreadyExists = deletedCommentsLog.some(log => log.commentId === commentId);
+    if(alreadyExists) return;
+    
+    const newComment = {
+        deletedAt: formattedTime,
+        authorName: authorName,
+        commentText: commentText,
+        videoTitle: videoTitle,
+        videoId: videoId,
+        commentId: commentId,
+        timestamp: now.getTime()
+    };
+    
+    deletedCommentsLog.unshift(newComment);
+    if(deletedCommentsLog.length > 500) deletedCommentsLog = deletedCommentsLog.slice(0, 500);
+    
+    updateDeletedCount();
+    renderDeletedTable();
+    await addHistoryToFirebase(newComment);
+    showToast(`🗑️ Komentar dari ${authorName} dihapus dari YouTube & tersimpan di cloud`);
+}
+
+// ==================== LOAD COMMENTS ====================
 async function loadAllComments() {
     const grid = document.getElementById("videoGrid");
-    if(grid) grid.innerHTML = '<div style="text-align:center;padding:50px;color:#94a3b8;">🔄 Memuat video & komentar...</div>';
+    if(grid) grid.innerHTML = '<div style="text-align:center;padding:50px;">🔄 Memuat video...</div>';
     
     const promises = videos.map(video => loadVideoCard(video));
     const cards = await Promise.all(promises);
     
     if(grid) {
         grid.innerHTML = "";
-        cards.forEach(card => {
-            if(card) grid.appendChild(card);
-        });
+        cards.forEach(card => { if(card) grid.appendChild(card); });
     }
 }
 
@@ -693,123 +593,77 @@ async function loadVideoCard(video) {
     try {
         const apiUrl = `https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=${video.id}&maxResults=10&order=time&key=${API_KEY}`;
         const response = await fetch(apiUrl);
-        
-        if(!response.ok) {
-            console.warn(`Gagal fetch ${video.id}: ${response.status}`);
-            return createErrorCard(video);
-        }
+        if(!response.ok) return createErrorCard(video);
         
         const data = await response.json();
         let commentsHTML = "";
         let totalComments = 0;
         const currentCommentIds = [];
-        const currentCommentsMap = new Map(); // untuk deteksi komentar yang hilang
+        const currentCommentsMap = new Map();
         
         if(data.items && data.items.length > 0) {
             totalComments = data.items.length;
-            
             for(const item of data.items) {
                 const comment = item.snippet.topLevelComment.snippet;
                 const commentId = item.snippet.topLevelComment.id;
                 currentCommentIds.push(commentId);
                 currentCommentsMap.set(commentId, {
                     authorName: comment.authorDisplayName,
-                    commentText: comment.textDisplay,
-                    publishedAt: comment.publishedAt
+                    commentText: comment.textDisplay
                 });
                 
                 const oldList = savedComments[video.id] || [];
                 if(!isFirstLoad && !oldList.includes(commentId)) {
-                    showNewCommentToast(comment.authorDisplayName, video.title);
+                    showToast(`💬 ${comment.authorDisplayName} berkomentar di ${video.title}`);
                     const sound = document.getElementById("notifSound");
-                    if(sound) sound.play().catch(e => console.log("audio error"));
+                    if(sound) sound.play().catch(e=>console.log());
                 }
-                
-                const authorName = escapeHtml(comment.authorDisplayName);
-                const authorImg = comment.authorProfileImageUrl || `https://ui-avatars.com/api/?background=0F172A&color=fff&name=${encodeURIComponent(authorName.substring(0,2))}`;
-                const commentText = escapeHtml(comment.textDisplay);
-                const commentTime = new Date(comment.publishedAt).toLocaleString('id-ID');
                 
                 commentsHTML += `
                     <div class="comment-item">
                         <div class="comment-user">
-                            <img src="${authorImg}" onerror="this.src='https://ui-avatars.com/api/?background=0F172A&color=fff&name=${encodeURIComponent(authorName.charAt(0))}'" alt="avatar">
-                            <div style="flex:1;">
-                                <div class="comment-name">${authorName}</div>
-                                <div class="comment-time">${commentTime}</div>
-                            </div>
+                            <img src="${comment.authorProfileImageUrl || 'https://ui-avatars.com/api/?background=0F172A&color=fff&name='+encodeURIComponent(comment.authorDisplayName?.charAt(0)||'U')}">
+                            <div><div class="comment-name">${escapeHtml(comment.authorDisplayName)}</div>
+                            <div class="comment-time">${new Date(comment.publishedAt).toLocaleString('id-ID')}</div></div>
                         </div>
-                        <div class="comment-text">${commentText}</div>
+                        <div class="comment-text">${escapeHtml(comment.textDisplay)}</div>
                     </div>
                 `;
             }
         }
         
-        // DETEKSI KOMENTAR YANG DIHAPUS
         const oldList = savedComments[video.id] || [];
         if(!isFirstLoad && oldList.length > 0) {
             for(const oldCommentId of oldList) {
                 if(!currentCommentsMap.has(oldCommentId)) {
-                    // Komentar ini sudah tidak ada lagi -> kemungkinan dihapus
-                    // Cari data komentar dari savedCommentsDetail (perlu menyimpan detail)
-                    const oldCommentDetail = savedCommentsDetail[video.id]?.[oldCommentId];
-                    if(oldCommentDetail) {
-                        addDeletedComment(
-                            oldCommentDetail.authorName,
-                            oldCommentDetail.commentText,
-                            video.title,
-                            video.id,
-                            oldCommentId
-                        );
+                    const oldDetail = savedCommentsDetail[video.id]?.[oldCommentId];
+                    if(oldDetail) {
+                        await addDeletedCommentToFirebase(oldDetail.authorName, oldDetail.commentText, video.title, video.id, oldCommentId);
                     }
                 }
             }
         }
         
-        // Simpan detail komentar untuk deteksi hapus di masa depan
         if(!savedCommentsDetail[video.id]) savedCommentsDetail[video.id] = {};
-        for(const [cid, detail] of currentCommentsMap.entries()) {
-            savedCommentsDetail[video.id][cid] = {
-                authorName: detail.authorName,
-                commentText: detail.commentText,
-                publishedAt: detail.publishedAt
-            };
+        for(const [cid, detail] of currentCommentsMap) {
+            savedCommentsDetail[video.id][cid] = detail;
         }
-        
-        // Hapus detail komentar yang sudah tidak ada (opsional, biarkan agar tidak error)
-        for(const oldId of (savedComments[video.id] || [])) {
-            if(!currentCommentsMap.has(oldId)) {
-                delete savedCommentsDetail[video.id][oldId];
-            }
-        }
-        
         savedComments[video.id] = currentCommentIds;
         
         const card = document.createElement("div");
         card.className = "video-card";
-        
-        const thumbnailUrl = `https://img.youtube.com/vi/${video.id}/maxresdefault.jpg`;
-        const fallbackThumb = `https://img.youtube.com/vi/${video.id}/hqdefault.jpg`;
-        
         card.innerHTML = `
             <div class="video-header">
-                <div class="video-title" title="${escapeHtml(video.title)}">${escapeHtml(video.title)}</div>
+                <div class="video-title">${escapeHtml(video.title)}</div>
                 <div class="comment-count">💬 ${totalComments}</div>
             </div>
             <a href="https://www.youtube.com/watch?v=${video.id}" target="_blank" class="thumbnail-box">
-                <img src="${thumbnailUrl}" 
-                     onerror="this.src='${fallbackThumb}'"
-                     alt="${escapeHtml(video.title)}">
+                <img src="https://img.youtube.com/vi/${video.id}/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/${video.id}/hqdefault.jpg'">
             </a>
-            <div class="comment-section">
-                ${commentsHTML || '<div style="padding:20px;text-align:center;color:#94a3b8;">✨ Belum ada komentar ✨</div>'}
-            </div>
+            <div class="comment-section">${commentsHTML || '<div style="padding:20px;text-align:center;">✨ Belum ada komentar ✨</div>'}</div>
         `;
-        
         return card;
-        
-    } catch(error) {
-        console.error("Error:", error);
+    } catch(e) {
         return createErrorCard(video);
     }
 }
@@ -817,84 +671,50 @@ async function loadVideoCard(video) {
 function createErrorCard(video) {
     const card = document.createElement("div");
     card.className = "video-card";
-    card.innerHTML = `
-        <div class="video-header">
-            <div class="video-title" style="color:#ef4444;">⚠️ ${escapeHtml(video.title)}</div>
-            <div class="comment-count">❌ Error</div>
-        </div>
-        <a href="https://www.youtube.com/watch?v=${video.id}" target="_blank" class="thumbnail-box">
-            <img src="https://img.youtube.com/vi/${video.id}/hqdefault.jpg" style="opacity:0.5;">
-        </a>
-        <div class="comment-section">
-            <div style="padding:20px;text-align:center;color:#ef4444;">Gagal memuat komentar</div>
-        </div>
-    `;
+    card.innerHTML = `<div class="video-header"><div class="video-title">⚠️ ${escapeHtml(video.title)}</div><div class="comment-count">❌ Error</div></div>
+        <div class="comment-section"><div style="padding:20px;text-align:center;">Gagal memuat komentar</div></div>`;
     return card;
 }
 
-function showNewCommentToast(username, videoTitle) {
+function showToast(msg) {
     const toast = document.getElementById("toast");
-    const toastText = document.getElementById("toastText");
-    toastText.innerHTML = `💬 <strong>${escapeHtml(username)}</strong> berkomentar di <strong>${escapeHtml(videoTitle)}</strong>`;
+    document.getElementById("toastText").innerHTML = escapeHtml(msg);
     toast.classList.add("show");
-    setTimeout(() => {
-        toast.classList.remove("show");
-    }, 5000);
-}
-
-function showToastMessage(msg, type = "info") {
-    const toast = document.getElementById("toast");
-    const toastText = document.getElementById("toastText");
-    const icon = type === "warning" ? "⚠️" : "🔔";
-    toastText.innerHTML = `${icon} ${escapeHtml(msg)}`;
-    toast.classList.add("show");
-    setTimeout(() => {
-        toast.classList.remove("show");
-    }, 3000);
+    setTimeout(() => toast.classList.remove("show"), 4000);
 }
 
 function escapeHtml(str) {
     if(!str) return "";
-    return str.replace(/[&<>]/g, function(m) {
-        if(m === '&') return '&amp;';
-        if(m === '<') return '&lt;';
-        if(m === '>') return '&gt;';
-        return m;
-    });
+    return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
 }
 
 function manualRefresh() {
     loadAllComments();
-    showToastMessage("🔄 Memperbarui semua komentar...");
+    showToast("🔄 Memperbarui komentar...");
 }
 
-// Tab switching
 function switchTab(tab) {
-    const monitorTab = document.getElementById("monitorTab");
-    const deletedTab = document.getElementById("deletedTab");
+    const monitor = document.getElementById("monitorTab");
+    const deleted = document.getElementById("deletedTab");
     const btns = document.querySelectorAll(".tab-btn");
-    
     btns.forEach(btn => btn.classList.remove("active"));
-    
     if(tab === 'monitor') {
-        monitorTab.classList.add("active");
-        deletedTab.classList.remove("active");
+        monitor.classList.add("active");
+        deleted.classList.remove("active");
         btns[0].classList.add("active");
     } else {
-        monitorTab.classList.remove("active");
-        deletedTab.classList.add("active");
+        monitor.classList.remove("active");
+        deleted.classList.add("active");
         btns[1].classList.add("active");
-        renderDeletedTable(); // refresh tampilan tabel
+        renderDeletedTable();
     }
 }
 
-// First load tanpa notifikasi
-let isFirstLoad = true;
-let savedCommentsDetail = {}; // untuk menyimpan detail komentar (author, text)
-
 async function silentLoadAll() {
+    await loadHistoryFromFirebase();
+    
     const grid = document.getElementById("videoGrid");
-    if(grid) grid.innerHTML = '<div style="text-align:center;padding:50px;color:#94a3b8;">⏳ Memuat video...</div>';
+    if(grid) grid.innerHTML = '<div style="text-align:center;padding:50px;">⏳ Memuat video...</div>';
     
     const promises = videos.map(async (video) => {
         try {
@@ -916,18 +736,14 @@ async function silentLoadAll() {
                     currentCommentIds.push(commentId);
                     currentCommentsMap.set(commentId, {
                         authorName: comment.authorDisplayName,
-                        commentText: comment.textDisplay,
-                        publishedAt: comment.publishedAt
+                        commentText: comment.textDisplay
                     });
-                    
                     commentsHTML += `
                         <div class="comment-item">
                             <div class="comment-user">
-                                <img src="${comment.authorProfileImageUrl || ''}" onerror="this.src='https://ui-avatars.com/api/?background=0F172A&color=fff&name=${encodeURIComponent(comment.authorDisplayName?.charAt(0)||'U')}'">
-                                <div style="flex:1;">
-                                    <div class="comment-name">${escapeHtml(comment.authorDisplayName)}</div>
-                                    <div class="comment-time">${new Date(comment.publishedAt).toLocaleString('id-ID')}</div>
-                                </div>
+                                <img src="${comment.authorProfileImageUrl || 'https://ui-avatars.com/api/?background=0F172A&color=fff&name='+encodeURIComponent(comment.authorDisplayName?.charAt(0)||'U')}">
+                                <div><div class="comment-name">${escapeHtml(comment.authorDisplayName)}</div>
+                                <div class="comment-time">${new Date(comment.publishedAt).toLocaleString('id-ID')}</div></div>
                             </div>
                             <div class="comment-text">${escapeHtml(comment.textDisplay)}</div>
                         </div>
@@ -935,34 +751,23 @@ async function silentLoadAll() {
                 }
             }
             
-            // Simpan detail komentar untuk deteksi hapus nanti (saat load pertama, tidak perlu deteksi hapus)
             if(!savedCommentsDetail[video.id]) savedCommentsDetail[video.id] = {};
-            for(const [cid, detail] of currentCommentsMap.entries()) {
-                savedCommentsDetail[video.id][cid] = {
-                    authorName: detail.authorName,
-                    commentText: detail.commentText,
-                    publishedAt: detail.publishedAt
-                };
+            for(const [cid, detail] of currentCommentsMap) {
+                savedCommentsDetail[video.id][cid] = detail;
             }
-            
             savedComments[video.id] = currentCommentIds;
             
             const card = document.createElement("div");
             card.className = "video-card";
-            const thumbnailUrl = `https://img.youtube.com/vi/${video.id}/maxresdefault.jpg`;
-            const fallbackThumb = `https://img.youtube.com/vi/${video.id}/hqdefault.jpg`;
-            
             card.innerHTML = `
                 <div class="video-header">
-                    <div class="video-title" title="${escapeHtml(video.title)}">${escapeHtml(video.title)}</div>
+                    <div class="video-title">${escapeHtml(video.title)}</div>
                     <div class="comment-count">💬 ${totalComments}</div>
                 </div>
                 <a href="https://www.youtube.com/watch?v=${video.id}" target="_blank" class="thumbnail-box">
-                    <img src="${thumbnailUrl}" onerror="this.src='${fallbackThumb}'" alt="${escapeHtml(video.title)}">
+                    <img src="https://img.youtube.com/vi/${video.id}/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/${video.id}/hqdefault.jpg'">
                 </a>
-                <div class="comment-section">
-                    ${commentsHTML || '<div style="padding:20px;text-align:center;color:#94a3b8;">✨ Belum ada komentar ✨</div>'}
-                </div>
+                <div class="comment-section">${commentsHTML || '<div style="padding:20px;text-align:center;">✨ Belum ada komentar ✨</div>'}</div>
             `;
             return card;
         } catch(e) {
@@ -978,14 +783,14 @@ async function silentLoadAll() {
     isFirstLoad = false;
 }
 
-// Inisialisasi
-loadDeletedLog();
+// START
 silentLoadAll();
 startAutoRefresh();
-window.clearDeletedLog = clearDeletedLog;
-window.switchTab = switchTab;
+
 window.saveRefresh = saveRefresh;
 window.manualRefresh = manualRefresh;
+window.clearAllHistory = clearAllHistory;
+window.switchTab = switchTab;
 </script>
 </body>
 </html>
