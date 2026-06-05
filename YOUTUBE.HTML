@@ -393,7 +393,7 @@ KOMENTAR <span>NEGATIF YOUTUBE</span>
 <button onclick="saveRefresh()">SIMPAN REFRESH</button>
 <button onclick="manualRefresh()">REFRESH SEKARANG</button>
 <button onclick="clearAllHistory()" class="danger-btn">HAPUS SEMUA HISTORY</button>
-<button onclick="testSound()" class="success-btn">🔊 TEST SUARA</button>
+<button onclick="testSound()" class="success-btn">🔊 TEST SUARA (CEWEK LEMBUT)</button>
 </div>
 </div>
 
@@ -451,11 +451,127 @@ let savedCommentsDetail = {};
 let deletedCommentsLog = [];
 let isFirstLoad = true;
 
-// ==================== NOTIFIKASI SUARA ====================
-let audioContext = null;
+// ==================== SUARA CEWEK LEMBUT BAHASA INDONESIA ====================
+let speechEnabled = true;
+let speechSynthesis = window.speechSynthesis;
 let notificationPermission = false;
+let selectedVoice = null;
 
-// Minta izin notifikasi saat halaman dibuka
+// Fungsi untuk mendapatkan suara cewek Indonesia yang lembut
+function getIndonesianFemaleVoice() {
+    const voices = speechSynthesis.getVoices();
+    
+    // Daftar prioritas suara cewek Indonesia (dari yang terbaik)
+    const priorityList = [
+        "Google Bahasa Indonesia",      // Google Assistant (cewek, lembut)
+        "Microsoft Siti Online",        // Microsoft Siti (cewek Indonesia)
+        "Google Bahasa Indonesia",      // alternatif
+        "Siti",                         // Siti Indonesia
+        "Female",                       // generic female
+        "Perempuan"                     // generic perempuan
+    ];
+    
+    // Cari suara yang match dengan prioritas
+    for (const priority of priorityList) {
+        const voice = voices.find(v => 
+            (v.lang === "id-ID" || v.lang === "id") && 
+            v.name.includes(priority)
+        );
+        if (voice) return voice;
+    }
+    
+    // Fallback: cari suara dengan lang id-ID (Indonesia)
+    const indonesianVoice = voices.find(v => v.lang === "id-ID");
+    if (indonesianVoice) return indonesianVoice;
+    
+    // Fallback terakhir: cari suara female dengan bahasa apapun
+    const femaleVoice = voices.find(v => 
+        v.name.toLowerCase().includes("female") || 
+        v.name.toLowerCase().includes("perempuan")
+    );
+    if (femaleVoice) return femaleVoice;
+    
+    // Default: suara pertama yang available
+    return voices[0];
+}
+
+// Inisialisasi suara (panggil setelah voices loaded)
+function initVoice() {
+    const voices = speechSynthesis.getVoices();
+    if (voices.length > 0) {
+        selectedVoice = getIndonesianFemaleVoice();
+        console.log("✅ Suara terpilih:", selectedVoice?.name, selectedVoice?.lang);
+    }
+}
+
+// Load voices (karena kadang perlu waktu)
+if (speechSynthesis) {
+    speechSynthesis.onvoiceschanged = () => {
+        initVoice();
+    };
+    // Coba langsung
+    setTimeout(() => initVoice(), 500);
+}
+
+// Fungsi untuk mengucapkan teks dengan suara cewek lembut
+function speakText(text) {
+    if (!speechEnabled) return;
+    
+    try {
+        // Hentikan suara yang sedang berlangsung
+        if (speechSynthesis.speaking) {
+            speechSynthesis.cancel();
+        }
+        
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = "id-ID"; // Bahasa Indonesia
+        utterance.rate = 0.85;    // Sedikit lebih lambat (lembut)
+        utterance.pitch = 1.15;   // Nada lebih tinggi (khas cewek)
+        utterance.volume = 1.0;   // Volume maksimal
+        
+        // Gunakan suara cewek yang sudah dipilih
+        if (selectedVoice) {
+            utterance.voice = selectedVoice;
+        } else {
+            // Coba cari lagi suara cewek Indonesia
+            const voices = speechSynthesis.getVoices();
+            const femaleIndo = voices.find(v => 
+                (v.lang === "id-ID" || v.lang === "id") && 
+                (v.name.toLowerCase().includes("female") || v.name.toLowerCase().includes("google") || v.name.toLowerCase().includes("siti"))
+            );
+            if (femaleIndo) utterance.voice = femaleIndo;
+        }
+        
+        speechSynthesis.speak(utterance);
+        console.log(`🔊 (Suara cewek lembut) Mengucapkan: "${text}"`);
+    } catch(e) {
+        console.log("Speech error:", e);
+        playFallbackBeep();
+    }
+}
+
+// Fallback jika speech synthesis gagal
+function playFallbackBeep() {
+    try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioContext.state === "suspended") {
+            audioContext.resume();
+        }
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        oscillator.frequency.value = 880;
+        gainNode.gain.value = 0.3;
+        oscillator.start();
+        gainNode.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 1);
+        oscillator.stop(audioContext.currentTime + 0.8);
+    } catch(e) {
+        console.log("Beep fallback gagal");
+    }
+}
+
+// Minta izin notifikasi
 function requestNotificationPermission() {
     if ("Notification" in window) {
         if (Notification.permission === "default") {
@@ -469,48 +585,6 @@ function requestNotificationPermission() {
     }
 }
 
-// Play suara notifikasi
-function playNotificationSound() {
-    try {
-        // Buat audio sederhana dengan Web Audio API (nada dering)
-        if (!audioContext) {
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        }
-        
-        // Resume audio context (butuh interaksi user dulu)
-        if (audioContext.state === "suspended") {
-            audioContext.resume();
-        }
-        
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        
-        oscillator.frequency.value = 880; // Nada A5 (cukup nyaring)
-        gainNode.gain.value = 0.3;
-        
-        oscillator.start();
-        gainNode.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 1);
-        oscillator.stop(audioContext.currentTime + 0.8);
-        
-        // Fallback pakai element audio kalau Web Audio gagal
-        setTimeout(() => {
-            const audio = new Audio("https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3");
-            audio.volume = 0.5;
-            audio.play().catch(e => console.log("Audio fallback gagal:", e));
-        }, 100);
-        
-    } catch(e) {
-        console.log("Web Audio error:", e);
-        // Fallback
-        const audio = new Audio("https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3");
-        audio.volume = 0.5;
-        audio.play().catch(e => console.log("Audio play error:", e));
-    }
-}
-
 // Tampilkan notifikasi desktop
 function showDesktopNotification(title, body) {
     if (notificationPermission && "Notification" in window) {
@@ -520,14 +594,10 @@ function showDesktopNotification(title, body) {
                 icon: "https://www.youtube.com/s/desktop/014d2e5f/img/favicon_144x144.png",
                 silent: false
             });
-            
-            // Klik notifikasi -> fokus ke tab
             notification.onclick = () => {
                 window.focus();
                 notification.close();
             };
-            
-            // Auto close setelah 5 detik
             setTimeout(() => notification.close(), 5000);
         } catch(e) {
             console.log("Notifikasi error:", e);
@@ -535,24 +605,25 @@ function showDesktopNotification(title, body) {
     }
 }
 
-// Tampilkan notifikasi komentar baru
+// Tampilkan notifikasi komentar baru DENGAN SUARA CEWEK LEMBUT
 function showNewCommentNotification(username, videoTitle, commentText) {
-    // Toast di dalam halaman
+    // 1. SUARA UCAPAN CEWEK LEMBUT: "SATU KOMENTAR NEGATIF YOUTUBE"
+    speakText("SATU KOMENTAR NEGATIF YOUTUBE");
+    
+    // 2. Toast di dalam halaman
     const toast = document.getElementById("toast");
     document.getElementById("toastText").innerHTML = `💬 <strong>${escapeHtml(username)}</strong> berkomentar di <strong>${escapeHtml(videoTitle)}</strong><br><span style="font-size:11px;">${escapeHtml(commentText.substring(0,80))}${commentText.length>80?'...':''}</span>`;
     toast.classList.add("show");
     setTimeout(() => toast.classList.remove("show"), 5000);
     
-    // Suara notifikasi
-    playNotificationSound();
-    
-    // Notifikasi desktop
+    // 3. Notifikasi desktop
     showDesktopNotification(`💬 Komentar baru dari ${username}`, `${videoTitle}\n"${commentText.substring(0,100)}${commentText.length>100?'...':''}"`);
 }
 
+// Test suara (tombol TEST SUARA)
 function testSound() {
-    playNotificationSound();
-    showToast("🔊 Test suara! Anda seharusnya mendengar nada dering");
+    speakText("SATU KOMENTAR NEGATIF YOUTUBE");
+    showToast("🔊 Test suara cewek lembut! Seharusnya terdengar 'SATU KOMENTAR NEGATIF YOUTUBE' dengan suara perempuan");
     
     // Test notifikasi desktop
     if (notificationPermission) {
@@ -565,6 +636,19 @@ function testSound() {
 
 // Panggil minta izin saat halaman dimuat
 requestNotificationPermission();
+
+// Aktifkan Speech Synthesis (butuh interaksi user pertama)
+function enableSpeech() {
+    speechEnabled = true;
+    if (speechSynthesis) {
+        const dummy = new SpeechSynthesisUtterance("");
+        speechSynthesis.speak(dummy);
+        speechSynthesis.cancel();
+    }
+    console.log("✅ Speech diaktifkan");
+}
+
+setTimeout(() => enableSpeech(), 1000);
 
 document.getElementById("refreshInput").value = refreshMinutes;
 document.getElementById("refreshText").innerText = refreshMinutes + " MENIT";
@@ -727,7 +811,7 @@ async function loadVideoCard(video) {
                 
                 const oldList = savedComments[video.id] || [];
                 if(!isFirstLoad && !oldList.includes(commentId)) {
-                    // NOTIFIKASI KOMENTAR BARU
+                    // NOTIFIKASI KOMENTAR BARU dengan SUARA CEWEK LEMBUT
                     showNewCommentNotification(comment.authorDisplayName, video.title, comment.textDisplay);
                 }
                 
