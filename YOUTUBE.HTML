@@ -20,6 +20,7 @@ box-sizing:border-box;
     --border: #e2e8f0;
     --accent-info: #3b82f6;
     --accent-danger: #ef4444;
+    --accent-success: #10b981;
 }
 
 body{
@@ -151,6 +152,13 @@ button.danger-btn {
 }
 button.danger-btn:hover {
     background: #dc2626;
+}
+
+button.success-btn {
+    background: var(--accent-success);
+}
+button.success-btn:hover {
+    background: #059669;
 }
 
 .tabs {
@@ -362,7 +370,7 @@ button,input{width:100%;}
 <div class="bg-pattern"></div>
 
 <div class="toast" id="toast">
-<div class="toast-title">🔔 NOTIFIKASI</div>
+<div class="toast-title">🔔 KOMENTAR BARU</div>
 <div class="toast-text" id="toastText"></div>
 </div>
 
@@ -385,6 +393,7 @@ KOMENTAR <span>NEGATIF YOUTUBE</span>
 <button onclick="saveRefresh()">SIMPAN REFRESH</button>
 <button onclick="manualRefresh()">REFRESH SEKARANG</button>
 <button onclick="clearAllHistory()" class="danger-btn">HAPUS SEMUA HISTORY</button>
+<button onclick="testSound()" class="success-btn">🔊 TEST SUARA</button>
 </div>
 </div>
 
@@ -401,14 +410,12 @@ KOMENTAR <span>NEGATIF YOUTUBE</span>
 <div class="deleted-table-container">
 <table class="deleted-table">
 <thead><tr><th>Waktu Dihapus</th><th>Pengguna</th><th>Komentar</th><th>Video</th><th>Status</th></tr></thead>
-<tbody id="deletedTableBody"><tr><td colspan="5" style="text-align:center;padding:40px;">⏳ Memuat data dari Firebase...</td></tr>
+<tbody id="deletedTableBody"><tr><td colspan="5" style="text-align:center;padding:40px;">⏳ Memuat data dari Firebase......</td></tr>
 </tbody>
 </table>
 </div>
 </div>
 </div>
-
-<audio id="notifSound"><source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" type="audio/mpeg"></audio>
 
 <script>
 // ==================== FIREBASE CONFIG ====================
@@ -443,6 +450,121 @@ let savedComments = {};
 let savedCommentsDetail = {};
 let deletedCommentsLog = [];
 let isFirstLoad = true;
+
+// ==================== NOTIFIKASI SUARA ====================
+let audioContext = null;
+let notificationPermission = false;
+
+// Minta izin notifikasi saat halaman dibuka
+function requestNotificationPermission() {
+    if ("Notification" in window) {
+        if (Notification.permission === "default") {
+            Notification.requestPermission().then(perm => {
+                notificationPermission = perm === "granted";
+                if (notificationPermission) console.log("✅ Notifikasi diizinkan");
+            });
+        } else if (Notification.permission === "granted") {
+            notificationPermission = true;
+        }
+    }
+}
+
+// Play suara notifikasi
+function playNotificationSound() {
+    try {
+        // Buat audio sederhana dengan Web Audio API (nada dering)
+        if (!audioContext) {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        
+        // Resume audio context (butuh interaksi user dulu)
+        if (audioContext.state === "suspended") {
+            audioContext.resume();
+        }
+        
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.value = 880; // Nada A5 (cukup nyaring)
+        gainNode.gain.value = 0.3;
+        
+        oscillator.start();
+        gainNode.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 1);
+        oscillator.stop(audioContext.currentTime + 0.8);
+        
+        // Fallback pakai element audio kalau Web Audio gagal
+        setTimeout(() => {
+            const audio = new Audio("https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3");
+            audio.volume = 0.5;
+            audio.play().catch(e => console.log("Audio fallback gagal:", e));
+        }, 100);
+        
+    } catch(e) {
+        console.log("Web Audio error:", e);
+        // Fallback
+        const audio = new Audio("https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3");
+        audio.volume = 0.5;
+        audio.play().catch(e => console.log("Audio play error:", e));
+    }
+}
+
+// Tampilkan notifikasi desktop
+function showDesktopNotification(title, body) {
+    if (notificationPermission && "Notification" in window) {
+        try {
+            const notification = new Notification(title, {
+                body: body,
+                icon: "https://www.youtube.com/s/desktop/014d2e5f/img/favicon_144x144.png",
+                silent: false
+            });
+            
+            // Klik notifikasi -> fokus ke tab
+            notification.onclick = () => {
+                window.focus();
+                notification.close();
+            };
+            
+            // Auto close setelah 5 detik
+            setTimeout(() => notification.close(), 5000);
+        } catch(e) {
+            console.log("Notifikasi error:", e);
+        }
+    }
+}
+
+// Tampilkan notifikasi komentar baru
+function showNewCommentNotification(username, videoTitle, commentText) {
+    // Toast di dalam halaman
+    const toast = document.getElementById("toast");
+    document.getElementById("toastText").innerHTML = `💬 <strong>${escapeHtml(username)}</strong> berkomentar di <strong>${escapeHtml(videoTitle)}</strong><br><span style="font-size:11px;">${escapeHtml(commentText.substring(0,80))}${commentText.length>80?'...':''}</span>`;
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 5000);
+    
+    // Suara notifikasi
+    playNotificationSound();
+    
+    // Notifikasi desktop
+    showDesktopNotification(`💬 Komentar baru dari ${username}`, `${videoTitle}\n"${commentText.substring(0,100)}${commentText.length>100?'...':''}"`);
+}
+
+function testSound() {
+    playNotificationSound();
+    showToast("🔊 Test suara! Anda seharusnya mendengar nada dering");
+    
+    // Test notifikasi desktop
+    if (notificationPermission) {
+        new Notification("Test Notifikasi", { body: "Notifikasi berfungsi dengan baik!" });
+    } else {
+        showToast("⚠️ Izin notifikasi belum diberikan. Klik izinkan saat popup muncul.");
+        Notification.requestPermission();
+    }
+}
+
+// Panggil minta izin saat halaman dimuat
+requestNotificationPermission();
 
 document.getElementById("refreshInput").value = refreshMinutes;
 document.getElementById("refreshText").innerText = refreshMinutes + " MENIT";
@@ -605,9 +727,8 @@ async function loadVideoCard(video) {
                 
                 const oldList = savedComments[video.id] || [];
                 if(!isFirstLoad && !oldList.includes(commentId)) {
-                    showToast(`💬 ${comment.authorDisplayName} berkomentar di ${video.title}`);
-                    const sound = document.getElementById("notifSound");
-                    if(sound) sound.play().catch(e=>console.log());
+                    // NOTIFIKASI KOMENTAR BARU
+                    showNewCommentNotification(comment.authorDisplayName, video.title, comment.textDisplay);
                 }
                 
                 commentsHTML += `
@@ -782,6 +903,7 @@ window.saveRefresh = saveRefresh;
 window.manualRefresh = manualRefresh;
 window.clearAllHistory = clearAllHistory;
 window.switchTab = switchTab;
+window.testSound = testSound;
 </script>
 </body>
 </html>
