@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>YouTube Live Monitor</title>
+<title>YouTube Live Monitor - Dengan Log Komentar Hapus</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 *{
@@ -20,6 +20,8 @@ box-sizing:border-box;
     --text-muted: #94a3b8;
     --border: #e2e8f0;
     --accent-info: #3b82f6;
+    --accent-danger: #ef4444;
+    --accent-warning: #f59e0b;
 }
 
 body{
@@ -158,6 +160,44 @@ transform: translateY(-2px);
 background: #1e293b;
 }
 
+button.danger-btn {
+    background: var(--accent-danger);
+}
+button.danger-btn:hover {
+    background: #dc2626;
+}
+
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 0;
+}
+
+.tab-btn {
+    background: transparent;
+    color: var(--text-secondary);
+    border-radius: 12px 12px 0 0;
+    padding: 12px 24px;
+    margin-bottom: -2px;
+}
+
+.tab-btn.active {
+    background: white;
+    color: var(--cover-color);
+    border-bottom: 2px solid var(--cover-color);
+    transform: none;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
 .video-grid{
 display: grid;
 grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -289,6 +329,54 @@ color: var(--text-secondary);
 word-break: break-word;
 }
 
+/* Tabel Log Komentar Dihapus */
+.deleted-table-container {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow-x: auto;
+    padding: 0;
+    margin-bottom: 25px;
+}
+
+.deleted-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.deleted-table th {
+    background: var(--bg-secondary);
+    padding: 14px 12px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+}
+
+.deleted-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    color: var(--text-secondary);
+}
+
+.deleted-table tr:hover {
+    background: var(--bg-secondary);
+}
+
+.deleted-table .badge-deleted {
+    background: var(--accent-danger);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 600;
+    display: inline-block;
+}
+
 .toast{
 position: fixed;
 top: 25px;
@@ -360,6 +448,10 @@ right: -90%;
 flex-direction: column;
 align-items: flex-start;
 }
+.deleted-table th, .deleted-table td {
+    padding: 8px;
+    font-size: 11px;
+}
 }
 </style>
 </head>
@@ -390,6 +482,10 @@ YOUTUBE <span>LIVE MONITOR</span>
 <div class="status-title">AUTO REFRESH</div>
 <div class="status-value" id="refreshText">30 MENIT</div>
 </div>
+<div class="status-card">
+<div class="status-title">KOMENTAR DIHAPUS</div>
+<div class="status-value" id="deletedCount">0</div>
+</div>
 </div>
 </div>
 
@@ -398,10 +494,37 @@ YOUTUBE <span>LIVE MONITOR</span>
 <input type="number" id="refreshInput" placeholder="Menit Refresh" value="30" min="1">
 <button onclick="saveRefresh()">SIMPAN REFRESH</button>
 <button onclick="manualRefresh()">REFRESH SEKARANG</button>
+<button onclick="clearDeletedLog()" class="danger-btn">HAPUS SEMUA LOG</button>
 </div>
 </div>
 
+<div class="tabs">
+<button class="tab-btn active" onclick="switchTab('monitor')">📺 MONITOR KOMENTAR</button>
+<button class="tab-btn" onclick="switchTab('deleted')">🗑️ KOMENTAR YANG DIHAPUS</button>
+</div>
+
+<div id="monitorTab" class="tab-content active">
 <div class="video-grid" id="videoGrid"></div>
+</div>
+
+<div id="deletedTab" class="tab-content">
+<div class="deleted-table-container">
+<table class="deleted-table" id="deletedTable">
+<thead>
+<tr>
+<th>Waktu Dihapus</th>
+<th>Nama Pengguna</th>
+<th>Komentar</th>
+<th>Video</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody id="deletedTableBody">
+<tr><td colspan="5" style="text-align:center;padding:40px;">✨ Belum ada komentar yang terdeteksi dihapus ✨</td></tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 
 <audio id="notifSound" preload="auto">
@@ -449,7 +572,87 @@ document.getElementById("totalVideos").innerText = videos.length;
 
 let refreshMinutes = parseInt(localStorage.getItem("refreshMinutes")) || 30;
 let refreshInterval;
-let savedComments = {};
+let savedComments = {}; // menyimpan ID komentar per video
+let deletedCommentsLog = []; // array untuk log komentar yang dihapus
+
+// Load deleted log dari localStorage
+function loadDeletedLog() {
+    const stored = localStorage.getItem("deletedCommentsLog");
+    if(stored) {
+        try {
+            deletedCommentsLog = JSON.parse(stored);
+            updateDeletedCount();
+            renderDeletedTable();
+        } catch(e) { console.warn(e); }
+    }
+}
+
+function saveDeletedLog() {
+    localStorage.setItem("deletedCommentsLog", JSON.stringify(deletedCommentsLog));
+    updateDeletedCount();
+    renderDeletedTable();
+}
+
+function updateDeletedCount() {
+    document.getElementById("deletedCount").innerText = deletedCommentsLog.length;
+}
+
+function renderDeletedTable() {
+    const tbody = document.getElementById("deletedTableBody");
+    if(!tbody) return;
+    
+    if(deletedCommentsLog.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;">✨ Belum ada komentar yang terdeteksi dihapus ✨</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = deletedCommentsLog.map(log => `
+        <tr>
+            <td style="white-space: nowrap;">${escapeHtml(log.deletedAt)}</td>
+            <td><strong>${escapeHtml(log.authorName)}</strong></td>
+            <td style="max-width: 300px;">${escapeHtml(log.commentText)}</td>
+            <td style="max-width: 250px;">${escapeHtml(log.videoTitle)}</td>
+            <td><span class="badge-deleted">TERHAPUS</span></td>
+        </tr>
+    `).join('');
+}
+
+function addDeletedComment(authorName, commentText, videoTitle, videoId, commentId) {
+    const now = new Date();
+    const formattedTime = now.toLocaleString('id-ID');
+    
+    // Cek apakah sudah ada log dengan commentId yang sama (hindari duplikat)
+    const alreadyExists = deletedCommentsLog.some(log => log.commentId === commentId);
+    if(alreadyExists) return;
+    
+    deletedCommentsLog.unshift({
+        commentId: commentId,
+        authorName: authorName,
+        commentText: commentText,
+        videoTitle: videoTitle,
+        videoId: videoId,
+        deletedAt: formattedTime,
+        timestamp: now.getTime()
+    });
+    
+    // Batasi log maksimal 500 entries
+    if(deletedCommentsLog.length > 500) {
+        deletedCommentsLog = deletedCommentsLog.slice(0, 500);
+    }
+    
+    saveDeletedLog();
+    
+    // Tampilkan toast khusus untuk komentar yang dihapus
+    showToastMessage(`🗑️ Komentar dari ${authorName} di video "${videoTitle.substring(0,40)}..." telah dihapus dari YouTube`, "warning");
+}
+
+function clearDeletedLog() {
+    if(confirm("Yakin ingin menghapus semua log komentar yang dihapus? Data tidak dapat dikembalikan.")) {
+        deletedCommentsLog = [];
+        saveDeletedLog();
+        showToastMessage("✅ Semua log komentar yang dihapus telah dibersihkan");
+    }
+}
 
 document.getElementById("refreshInput").value = refreshMinutes;
 document.getElementById("refreshText").innerText = refreshMinutes + " MENIT";
@@ -473,15 +676,17 @@ function startAutoRefresh() {
 
 async function loadAllComments() {
     const grid = document.getElementById("videoGrid");
-    grid.innerHTML = '<div style="text-align:center;padding:50px;color:#94a3b8;">🔄 Memuat video & komentar...</div>';
+    if(grid) grid.innerHTML = '<div style="text-align:center;padding:50px;color:#94a3b8;">🔄 Memuat video & komentar...</div>';
     
     const promises = videos.map(video => loadVideoCard(video));
     const cards = await Promise.all(promises);
     
-    grid.innerHTML = "";
-    cards.forEach(card => {
-        if(card) grid.appendChild(card);
-    });
+    if(grid) {
+        grid.innerHTML = "";
+        cards.forEach(card => {
+            if(card) grid.appendChild(card);
+        });
+    }
 }
 
 async function loadVideoCard(video) {
@@ -498,6 +703,7 @@ async function loadVideoCard(video) {
         let commentsHTML = "";
         let totalComments = 0;
         const currentCommentIds = [];
+        const currentCommentsMap = new Map(); // untuk deteksi komentar yang hilang
         
         if(data.items && data.items.length > 0) {
             totalComments = data.items.length;
@@ -506,6 +712,11 @@ async function loadVideoCard(video) {
                 const comment = item.snippet.topLevelComment.snippet;
                 const commentId = item.snippet.topLevelComment.id;
                 currentCommentIds.push(commentId);
+                currentCommentsMap.set(commentId, {
+                    authorName: comment.authorDisplayName,
+                    commentText: comment.textDisplay,
+                    publishedAt: comment.publishedAt
+                });
                 
                 const oldList = savedComments[video.id] || [];
                 if(!isFirstLoad && !oldList.includes(commentId)) {
@@ -531,6 +742,44 @@ async function loadVideoCard(video) {
                         <div class="comment-text">${commentText}</div>
                     </div>
                 `;
+            }
+        }
+        
+        // DETEKSI KOMENTAR YANG DIHAPUS
+        const oldList = savedComments[video.id] || [];
+        if(!isFirstLoad && oldList.length > 0) {
+            for(const oldCommentId of oldList) {
+                if(!currentCommentsMap.has(oldCommentId)) {
+                    // Komentar ini sudah tidak ada lagi -> kemungkinan dihapus
+                    // Cari data komentar dari savedCommentsDetail (perlu menyimpan detail)
+                    const oldCommentDetail = savedCommentsDetail[video.id]?.[oldCommentId];
+                    if(oldCommentDetail) {
+                        addDeletedComment(
+                            oldCommentDetail.authorName,
+                            oldCommentDetail.commentText,
+                            video.title,
+                            video.id,
+                            oldCommentId
+                        );
+                    }
+                }
+            }
+        }
+        
+        // Simpan detail komentar untuk deteksi hapus di masa depan
+        if(!savedCommentsDetail[video.id]) savedCommentsDetail[video.id] = {};
+        for(const [cid, detail] of currentCommentsMap.entries()) {
+            savedCommentsDetail[video.id][cid] = {
+                authorName: detail.authorName,
+                commentText: detail.commentText,
+                publishedAt: detail.publishedAt
+            };
+        }
+        
+        // Hapus detail komentar yang sudah tidak ada (opsional, biarkan agar tidak error)
+        for(const oldId of (savedComments[video.id] || [])) {
+            if(!currentCommentsMap.has(oldId)) {
+                delete savedCommentsDetail[video.id][oldId];
             }
         }
         
@@ -593,10 +842,11 @@ function showNewCommentToast(username, videoTitle) {
     }, 5000);
 }
 
-function showToastMessage(msg) {
+function showToastMessage(msg, type = "info") {
     const toast = document.getElementById("toast");
     const toastText = document.getElementById("toastText");
-    toastText.innerHTML = `🔔 ${escapeHtml(msg)}`;
+    const icon = type === "warning" ? "⚠️" : "🔔";
+    toastText.innerHTML = `${icon} ${escapeHtml(msg)}`;
     toast.classList.add("show");
     setTimeout(() => {
         toast.classList.remove("show");
@@ -618,12 +868,33 @@ function manualRefresh() {
     showToastMessage("🔄 Memperbarui semua komentar...");
 }
 
-// First load tanpa notifikasi (silent)
+// Tab switching
+function switchTab(tab) {
+    const monitorTab = document.getElementById("monitorTab");
+    const deletedTab = document.getElementById("deletedTab");
+    const btns = document.querySelectorAll(".tab-btn");
+    
+    btns.forEach(btn => btn.classList.remove("active"));
+    
+    if(tab === 'monitor') {
+        monitorTab.classList.add("active");
+        deletedTab.classList.remove("active");
+        btns[0].classList.add("active");
+    } else {
+        monitorTab.classList.remove("active");
+        deletedTab.classList.add("active");
+        btns[1].classList.add("active");
+        renderDeletedTable(); // refresh tampilan tabel
+    }
+}
+
+// First load tanpa notifikasi
 let isFirstLoad = true;
+let savedCommentsDetail = {}; // untuk menyimpan detail komentar (author, text)
 
 async function silentLoadAll() {
     const grid = document.getElementById("videoGrid");
-    grid.innerHTML = '<div style="text-align:center;padding:50px;color:#94a3b8;">⏳ Memuat video...</div>';
+    if(grid) grid.innerHTML = '<div style="text-align:center;padding:50px;color:#94a3b8;">⏳ Memuat video...</div>';
     
     const promises = videos.map(async (video) => {
         try {
@@ -635,6 +906,7 @@ async function silentLoadAll() {
             let commentsHTML = "";
             let totalComments = 0;
             const currentCommentIds = [];
+            const currentCommentsMap = new Map();
             
             if(data.items && data.items.length > 0) {
                 totalComments = data.items.length;
@@ -642,6 +914,11 @@ async function silentLoadAll() {
                     const comment = item.snippet.topLevelComment.snippet;
                     const commentId = item.snippet.topLevelComment.id;
                     currentCommentIds.push(commentId);
+                    currentCommentsMap.set(commentId, {
+                        authorName: comment.authorDisplayName,
+                        commentText: comment.textDisplay,
+                        publishedAt: comment.publishedAt
+                    });
                     
                     commentsHTML += `
                         <div class="comment-item">
@@ -656,6 +933,16 @@ async function silentLoadAll() {
                         </div>
                     `;
                 }
+            }
+            
+            // Simpan detail komentar untuk deteksi hapus nanti (saat load pertama, tidak perlu deteksi hapus)
+            if(!savedCommentsDetail[video.id]) savedCommentsDetail[video.id] = {};
+            for(const [cid, detail] of currentCommentsMap.entries()) {
+                savedCommentsDetail[video.id][cid] = {
+                    authorName: detail.authorName,
+                    commentText: detail.commentText,
+                    publishedAt: detail.publishedAt
+                };
             }
             
             savedComments[video.id] = currentCommentIds;
@@ -684,13 +971,21 @@ async function silentLoadAll() {
     });
     
     const cards = await Promise.all(promises);
-    grid.innerHTML = "";
-    cards.forEach(c => grid.appendChild(c));
+    if(grid) {
+        grid.innerHTML = "";
+        cards.forEach(c => grid.appendChild(c));
+    }
     isFirstLoad = false;
 }
 
+// Inisialisasi
+loadDeletedLog();
 silentLoadAll();
 startAutoRefresh();
+window.clearDeletedLog = clearDeletedLog;
+window.switchTab = switchTab;
+window.saveRefresh = saveRefresh;
+window.manualRefresh = manualRefresh;
 </script>
 </body>
 </html>
