@@ -7,6 +7,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
     <style>
         /* MODERN CUSTOM CSS - TANPA MENGUBAH STRUKTUR ASLI */
         * {
@@ -504,7 +507,22 @@
     </div>
 
     <script>
-        // === KODE ASLI TIDAK BERUBAH SATU BARIS PUN (ditambah menu youtube) ===
+        // ========== KONFIGURASI FIREBASE (SUDAH DIISI) ==========
+        const firebaseConfig = {
+            apiKey: "AIzaSyDehQb6iredmcc-xFGHxe_axBUvDbUOOxM",
+            authDomain: "cs-line-pulitoto.firebaseapp.com",
+            databaseURL: "https://cs-line-pulitoto-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "cs-line-pulitoto",
+            storageBucket: "cs-line-pulitoto.firebasestorage.app",
+            messagingSenderId: "281551833618",
+            appId: "1:281551833618:web:e52fd5cf616b3348b226cb"
+        };
+
+        // Inisialisasi Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        
+        // ========== KODE ASLI TIDAK BERUBAH (DITAMBAH FIREBASE) ==========
         // === Konfigurasi LocalStorage Keys ===
         const STATS_KEY = 'app_stats_v2';
         const PC_ID_KEY = 'pc_unique_id_v2';
@@ -513,72 +531,107 @@
         function getOrCreatePcId() {
             let pcId = localStorage.getItem(PC_ID_KEY);
             if (!pcId) {
-                // Membuat ID sederhana dari timestamp + random
                 pcId = 'PC-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substr(2, 5).toUpperCase();
                 localStorage.setItem(PC_ID_KEY, pcId);
             }
             return pcId;
         }
 
-        // === Inisialisasi Data Statistik ===
         const currentPcId = getOrCreatePcId();
-        let stats = JSON.parse(localStorage.getItem(STATS_KEY)) || {
-            prediksi: 0,
-            bukti_jp: 0,
-            syair: 0,
-            result: 0,
-            saldo: 0,
-            link_prediksi: 0,
-            hasil_result: 0,
-            reportan: 0,
-            selisih_mineray: 0,
-            tugas_line: 0,
-            youtube: 0,
-            totalPc: 0,
-            pcList: [], // Array untuk menyimpan ID PC unik
-            logs: []
+        
+        // === Data lokal fallback ===
+        let localStats = JSON.parse(localStorage.getItem(STATS_KEY)) || {
+            prediksi: 0, bukti_jp: 0, syair: 0, result: 0, saldo: 0,
+            link_prediksi: 0, hasil_result: 0, reportan: 0, selisih_mineray: 0,
+            tugas_line: 0, youtube: 0, totalPc: 0, pcList: [], logs: []
         };
+
+        // === Sinkronisasi data dari Firebase ke lokal ===
+        async function syncStatsFromFirebase() {
+            try {
+                const snapshot = await database.ref('stats').once('value');
+                const firebaseStats = snapshot.val();
+                if (firebaseStats) {
+                    Object.keys(firebaseStats).forEach(key => {
+                        if (key !== 'logs' && key !== 'pcList') {
+                            localStats[key] = firebaseStats[key] || 0;
+                        }
+                    });
+                    if (firebaseStats.pcList) localStats.pcList = firebaseStats.pcList;
+                    if (firebaseStats.logs) localStats.logs = firebaseStats.logs;
+                    localStorage.setItem(STATS_KEY, JSON.stringify(localStats));
+                }
+                updateStatsView();
+            } catch (error) {
+                console.warn("Gagal sync dari Firebase, pakai local:", error);
+                updateStatsView();
+            }
+        }
+
+        // === Simpan ke Firebase ===
+        async function saveToFirebase() {
+            try {
+                const dataToSave = {
+                    prediksi: localStats.prediksi,
+                    bukti_jp: localStats.bukti_jp,
+                    syair: localStats.syair,
+                    result: localStats.result,
+                    saldo: localStats.saldo,
+                    link_prediksi: localStats.link_prediksi,
+                    hasil_result: localStats.hasil_result,
+                    reportan: localStats.reportan,
+                    selisih_mineray: localStats.selisih_mineray,
+                    tugas_line: localStats.tugas_line,
+                    youtube: localStats.youtube,
+                    totalPc: localStats.totalPc,
+                    pcList: localStats.pcList,
+                    logs: localStats.logs
+                };
+                await database.ref('stats').set(dataToSave);
+            } catch (error) {
+                console.error("Gagal simpan ke Firebase:", error);
+            }
+        }
+
+        // === Fungsi Simpan Stats (lokal + Firebase) ===
+        function saveStats() {
+            localStorage.setItem(STATS_KEY, JSON.stringify(localStats));
+            saveToFirebase();
+        }
 
         // === Fungsi untuk merekam PC baru jika belum ada ===
         function registerPcAccess() {
-            if (!stats.pcList.includes(currentPcId)) {
-                stats.pcList.push(currentPcId);
-                stats.totalPc = stats.pcList.length;
+            if (!localStats.pcList.includes(currentPcId)) {
+                localStats.pcList.push(currentPcId);
+                localStats.totalPc = localStats.pcList.length;
                 saveStats();
             }
         }
 
-        // === Fungsi Simpan Stats ===
-        function saveStats() {
-            localStorage.setItem(STATS_KEY, JSON.stringify(stats));
-        }
-
         // === Fungsi untuk update tampilan statistik ===
         function updateStatsView() {
-            // Update angka
-            document.getElementById('stat-prediksi').innerText = stats.prediksi;
-            document.getElementById('stat-bukti_jp').innerText = stats.bukti_jp;
-            document.getElementById('stat-syair').innerText = stats.syair;
-            document.getElementById('stat-result').innerText = stats.result;
-            document.getElementById('stat-saldo').innerText = stats.saldo;
-            document.getElementById('stat-hasil_result').innerText = stats.hasil_result;
-            document.getElementById('stat-reportan').innerText = stats.reportan;
-            document.getElementById('stat-selisih_mineray').innerText = stats.selisih_mineray;
-            document.getElementById('stat-tugas_line').innerText = stats.tugas_line;
-            document.getElementById('stat-youtube').innerText = stats.youtube;
-            document.getElementById('stat-total-pc').innerText = stats.totalPc;
+            document.getElementById('stat-prediksi').innerText = localStats.prediksi;
+            document.getElementById('stat-bukti_jp').innerText = localStats.bukti_jp;
+            document.getElementById('stat-syair').innerText = localStats.syair;
+            document.getElementById('stat-result').innerText = localStats.result;
+            document.getElementById('stat-saldo').innerText = localStats.saldo;
+            document.getElementById('stat-hasil_result').innerText = localStats.hasil_result;
+            document.getElementById('stat-reportan').innerText = localStats.reportan;
+            document.getElementById('stat-selisih_mineray').innerText = localStats.selisih_mineray;
+            document.getElementById('stat-tugas_line').innerText = localStats.tugas_line;
+            document.getElementById('stat-youtube').innerText = localStats.youtube;
+            document.getElementById('stat-total-pc').innerText = localStats.totalPc;
 
-            // Update Log
             const logBody = document.getElementById('log-body');
             const noLogs = document.getElementById('no-logs');
             
             logBody.innerHTML = '';
 
-            if (stats.logs.length === 0) {
+            if (localStats.logs.length === 0) {
                 noLogs.classList.remove('hidden');
             } else {
                 noLogs.classList.add('hidden');
-                const recentLogs = stats.logs.slice(-10).reverse(); // 10 log terakhir
+                const recentLogs = localStats.logs.slice(-10).reverse();
                 recentLogs.forEach(log => {
                     const row = document.createElement('tr');
                     row.className = "bg-white border-b hover:bg-gray-50";
@@ -594,40 +647,37 @@
             }
         }
 
-        // === Fungsi untuk menambah statistik penggunaan menu ===
+        // === Fungsi untuk menambah statistik penggunaan menu (LANGSUNG KE FIREBASE) ===
         function addStat(menuKey, appName) {
-            // Jangan rekam jika menu dashboard
             if (menuKey !== 'dashboard') {
-                // Tambah hitungan menu spesifik
-                stats[menuKey] = (stats[menuKey] || 0) + 1;
+                localStats[menuKey] = (localStats[menuKey] || 0) + 1;
                 
-                // Tambah log
                 const now = new Date();
                 const timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' ' + now.toLocaleDateString('id-ID');
                 
-                stats.logs.push({
+                localStats.logs.unshift({
                     app: appName,
                     time: timeString,
                     pc: currentPcId
                 });
-
+                
+                if (localStats.logs.length > 100) localStats.logs = localStats.logs.slice(0, 100);
+                
                 saveStats();
             }
         }
 
-        // === Fungsi untuk memuat halaman (dengan animasi loading) ===
+        // === Fungsi untuk memuat halaman ===
         function loadPage(page, element) {
             const contentDashboard = document.getElementById('content-dashboard');
             const contentFrame = document.getElementById('content-frame');
             const allMenus = document.querySelectorAll('.menu-item');
 
-            // Reset warna menu
             allMenus.forEach(menu => {
                 menu.classList.remove('bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-500/30');
                 menu.classList.add('text-slate-300', 'hover:bg-slate-800');
             });
 
-            // Aktifkan menu yang diklik
             element.classList.remove('text-slate-300', 'hover:bg-slate-800');
             element.classList.add('bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-500/30');
 
@@ -638,19 +688,14 @@
                 contentDashboard.classList.remove('hidden');
                 contentFrame.classList.add('hidden');
                 contentFrame.src = "";
-                // Update stats view setiap kali kembali ke dashboard
-                updateStatsView();
+                syncStatsFromFirebase();
             } else {
-                // Rekam statistik
                 addStat(menuKey, title);
-                
-                // Tambahkan efek loading
                 contentFrame.classList.add('loading');
                 contentDashboard.classList.add('hidden');
                 contentFrame.classList.remove('hidden');
                 contentFrame.src = page;
                 
-                // Hilangkan loading setelah iframe load
                 setTimeout(() => {
                     contentFrame.classList.remove('loading');
                 }, 500);
@@ -674,9 +719,9 @@
         }
 
         // === Jalankan saat halaman dimuat ===
-        document.addEventListener('DOMContentLoaded', () => {
-            registerPcAccess();      // Catat PC ini jika baru pertama kali
-            updateStatsView();       // Tampilkan statistik
+        document.addEventListener('DOMContentLoaded', async () => {
+            await syncStatsFromFirebase();
+            registerPcAccess();
         });
     </script>
 </body>
