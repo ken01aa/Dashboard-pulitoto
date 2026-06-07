@@ -6,12 +6,7 @@
     <title>Prediksi Bola Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --bg-dark: #0F172A;
             --bg-card: #ffffff;
@@ -21,7 +16,6 @@
             --text-muted: #94a3b8;
             --border: #e2e8f0;
         }
-
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background: var(--bg-secondary);
@@ -30,7 +24,6 @@
             position: relative;
             overflow-x: hidden;
         }
-
         .bg-pattern {
             position: fixed;
             top: 0;
@@ -41,7 +34,6 @@
             z-index: 0;
             clip-path: ellipse(120% 100% at 50% 0%);
         }
-
         .container {
             position: relative;
             z-index: 10;
@@ -49,7 +41,6 @@
             margin: 0 auto;
             padding: 20px;
         }
-
         .header {
             text-align: center;
             margin-bottom: 30px;
@@ -59,18 +50,13 @@
             border: 1px solid var(--border);
             box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
         }
-
         .header h1 {
             color: var(--bg-dark);
             font-size: 2.2em;
             font-family: 'Space Grotesk', sans-serif;
             margin-bottom: 10px;
         }
-
-        .header p {
-            color: var(--text-muted);
-        }
-
+        .header p { color: var(--text-muted); }
         .panel {
             background: var(--bg-card);
             border-radius: 20px;
@@ -79,11 +65,7 @@
             border: 1px solid var(--border);
             box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
         }
-
-        .input-section {
-            margin-bottom: 30px;
-        }
-
+        .input-section { margin-bottom: 30px; }
         .input-section label {
             display: block;
             margin-bottom: 15px;
@@ -91,7 +73,6 @@
             font-size: 1.1em;
             font-weight: 700;
         }
-
         textarea {
             width: 100%;
             height: 200px;
@@ -103,24 +84,20 @@
             font-size: 14px;
             line-height: 1.6;
             resize: vertical;
-            transition: border 0.3s;
             font-family: 'Plus Jakarta Sans', monospace;
         }
-
         textarea:focus {
             outline: none;
             border-color: var(--bg-dark);
             box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
             background: var(--bg-card);
         }
-
         .buttons {
             display: flex;
             gap: 15px;
             margin-top: 20px;
             flex-wrap: wrap;
         }
-
         .btn {
             padding: 12px 28px;
             border: none;
@@ -135,32 +112,14 @@
             letter-spacing: 1px;
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
-
-        .btn-generate {
-            background: var(--bg-dark);
-            color: white;
-        }
-
-        .btn-copy {
-            background: var(--bg-secondary);
-            color: var(--bg-dark);
-            border: 1px solid var(--border);
-        }
-
-        .btn-publish {
-            background: #10b981;
-            color: white;
-        }
-
+        .btn-generate { background: var(--bg-dark); color: white; }
+        .btn-copy { background: var(--bg-secondary); color: var(--bg-dark); border: 1px solid var(--border); }
+        .btn-publish { background: #10b981; color: white; }
         .btn-generate:hover, .btn-copy:hover, .btn-publish:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(15, 23, 42, 0.15);
         }
-
-        .output-section {
-            margin-top: 40px;
-        }
-
+        .output-section { margin-top: 40px; }
         .preview-area {
             background: var(--bg-secondary);
             border-radius: 12px;
@@ -171,7 +130,6 @@
             max-height: 400px;
             overflow-y: auto;
         }
-
         #previewOutput {
             color: var(--text-primary);
             font-family: 'Space Grotesk', monospace;
@@ -180,11 +138,7 @@
             word-break: break-all;
             line-height: 1.4;
         }
-
-        .tables-container {
-            margin-top: 40px;
-        }
-
+        .tables-container { margin-top: 40px; }
         .match-table-preview {
             width: 100%;
             border-collapse: collapse;
@@ -195,7 +149,6 @@
             box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
             border: 1px solid var(--border);
         }
-
         .league-header-preview {
             background: var(--bg-dark);
             color: white;
@@ -203,30 +156,11 @@
             text-align: center;
             font-size: 1.3em;
             font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
             font-family: 'Space Grotesk', sans-serif;
         }
-
-        .table-header-preview {
-            background: var(--bg-secondary);
-            color: var(--text-secondary);
-            font-weight: 700;
-        }
-
-        .table-header-preview th {
-            padding: 14px 12px;
-            text-align: left;
-            font-size: 13px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .match-table-preview td {
-            padding: 12px;
-            border-bottom: 1px solid var(--border);
-            color: var(--text-primary);
-        }
-
+        .table-header-preview { background: var(--bg-secondary); color: var(--text-secondary); font-weight: 700; }
+        .table-header-preview th { padding: 14px 12px; text-align: left; font-size: 13px; border-bottom: 1px solid var(--border); }
+        .match-table-preview td { padding: 12px; border-bottom: 1px solid var(--border); color: var(--text-primary); }
         .settings-panel {
             background: var(--bg-secondary);
             border-radius: 16px;
@@ -234,7 +168,6 @@
             margin: 20px 0;
             border: 1px solid var(--border);
         }
-
         .settings-title {
             color: var(--bg-dark);
             font-size: 1.1em;
@@ -244,17 +177,12 @@
             gap: 10px;
             font-weight: 700;
         }
-
         .settings-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 20px;
         }
-
-        .setting-group {
-            margin-bottom: 15px;
-        }
-
+        .setting-group { margin-bottom: 15px; }
         .setting-group label {
             display: block;
             color: var(--text-secondary);
@@ -262,13 +190,7 @@
             font-weight: 600;
             font-size: 12px;
         }
-
-        .color-picker {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
+        .color-picker { display: flex; gap: 10px; align-items: center; }
         .color-preview {
             width: 32px;
             height: 32px;
@@ -276,7 +198,6 @@
             border: 1px solid var(--border);
             cursor: pointer;
         }
-
         input[type="color"] {
             width: 50px;
             height: 38px;
@@ -285,7 +206,6 @@
             background: white;
             cursor: pointer;
         }
-
         select, input[type="range"] {
             width: 100%;
             padding: 8px 12px;
@@ -295,20 +215,13 @@
             color: var(--text-primary);
             font-size: 13px;
         }
-
-        .range-value {
-            color: var(--bg-dark);
-            font-weight: 700;
-            margin-left: 10px;
-        }
-
+        .range-value { color: var(--bg-dark); font-weight: 700; margin-left: 10px; }
         .font-options {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
             gap: 8px;
             margin-top: 5px;
         }
-
         .font-option {
             padding: 6px 10px;
             background: white;
@@ -320,24 +233,14 @@
             transition: all 0.2s;
             font-size: 12px;
         }
-
-        .font-option:hover {
-            border-color: var(--bg-dark);
-        }
-
-        .font-option.active {
-            background: var(--bg-dark);
-            color: white;
-            border-color: var(--bg-dark);
-        }
-
+        .font-option:hover { border-color: var(--bg-dark); }
+        .font-option.active { background: var(--bg-dark); color: white; border-color: var(--bg-dark); }
         .preset-buttons {
             display: flex;
             gap: 10px;
             margin-top: 15px;
             flex-wrap: wrap;
         }
-
         .preset-btn {
             padding: 8px 14px;
             background: white;
@@ -349,12 +252,7 @@
             font-weight: 600;
             transition: all 0.2s;
         }
-
-        .preset-btn:hover {
-            border-color: var(--bg-dark);
-            transform: translateY(-1px);
-        }
-
+        .preset-btn:hover { border-color: var(--bg-dark); transform: translateY(-1px); }
         .notification {
             position: fixed;
             bottom: 20px;
@@ -370,12 +268,7 @@
             z-index: 1000;
             box-shadow: 0 5px 15px rgba(15, 23, 42, 0.15);
         }
-
-        .notification.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
+        .notification.show { opacity: 1; transform: translateY(0); }
         .footer {
             text-align: center;
             margin-top: 40px;
@@ -384,7 +277,6 @@
             font-size: 0.8em;
             border-top: 1px solid var(--border);
         }
-
         .embed-info {
             background: linear-gradient(135deg, #10b98115, #0F172A15);
             border-left: 4px solid #10b981;
@@ -392,7 +284,6 @@
             border-radius: 12px;
             margin-bottom: 20px;
         }
-
         .embed-code {
             background: #1e1e1e;
             color: #d4d4d4;
@@ -402,52 +293,28 @@
             font-size: 12px;
             overflow-x: auto;
             margin-top: 10px;
-            max-height: 300px;
+            max-height: 400px;
             overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
         }
-
-        .data-endpoint-info {
-            background: #e0f2fe;
-            border-left: 4px solid #0284c7;
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 15px;
-            font-size: 12px;
-        }
-
         @media (max-width: 768px) {
-            .container {
-                padding: 15px;
-            }
-            .header h1 {
-                font-size: 1.5em;
-            }
-            .panel {
-                padding: 18px;
-            }
-            .btn {
-                min-width: 100%;
-                margin-bottom: 8px;
-            }
-            .settings-grid {
-                grid-template-columns: 1fr;
-            }
-            .font-options {
-                grid-template-columns: repeat(2, 1fr);
-            }
+            .container { padding: 15px; }
+            .header h1 { font-size: 1.5em; }
+            .panel { padding: 18px; }
+            .btn { min-width: 100%; margin-bottom: 8px; }
+            .settings-grid { grid-template-columns: 1fr; }
+            .font-options { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
 <body>
-
 <div class="bg-pattern"></div>
-
 <div class="container">
     <div class="header">
         <h1>⚽ PREDIKSI BOLA PULITOTO ⚽</h1>
         <p>Generator Tabel Prediksi Pertandingan Sepak Bola</p>
     </div>
-
     <div class="panel">
         <div class="input-section">
             <label for="matchInput">📝 Input Data Pertandingan:</label>
@@ -459,24 +326,16 @@ LITHUANIA A LEAGUE
 ENGLISH PREMIER LEAGUE
 01/06 22:00 WIB Manchester United VS Liverpool 3 : 2
 02/06 01:00 WIB Chelsea VS Arsenal 1 : 1"></textarea>
-            
             <div class="buttons">
-                <button class="btn btn-generate" onclick="generateTables()">
-                    🚀 Generate Tabel
-                </button>
-                <button class="btn btn-copy" onclick="copyHTML()">
-                    📋 Copy HTML
-                </button>
-                <button class="btn btn-publish" onclick="publishToBlog()">
-                    🔗 Publish ke Blog (Dapatkan Script)
-                </button>
+                <button class="btn btn-generate" onclick="generateTables()">🚀 Generate Tabel</button>
+                <button class="btn btn-copy" onclick="copyHTML()">📋 Copy HTML</button>
+                <button class="btn btn-publish" onclick="publishToBlog()">🔗 Publish ke Blog (Ambil Script)</button>
             </div>
         </div>
 
         <!-- SETTINGS SECTION -->
         <div class="settings-panel">
             <div class="settings-title">🎨 Pengaturan Tampilan</div>
-            
             <div class="settings-grid">
                 <div class="setting-group">
                     <label>Warna Border Tabel:</label>
@@ -485,7 +344,6 @@ ENGLISH PREMIER LEAGUE
                         <input type="color" id="borderColor" value="#FFD700" onchange="updateBorderColor(this.value)">
                     </div>
                 </div>
-                
                 <div class="setting-group">
                     <label>Warna Header Liga:</label>
                     <div class="color-picker">
@@ -493,7 +351,6 @@ ENGLISH PREMIER LEAGUE
                         <input type="color" id="headerColor" value="#FFD700" onchange="updateHeaderColor(this.value)">
                     </div>
                 </div>
-                
                 <div class="setting-group">
                     <label>Warna Teks Header:</label>
                     <div class="color-picker">
@@ -501,7 +358,6 @@ ENGLISH PREMIER LEAGUE
                         <input type="color" id="headerTextColor" value="#000000" onchange="updateHeaderTextColor(this.value)">
                     </div>
                 </div>
-                
                 <div class="setting-group">
                     <label>Warna Background Tabel:</label>
                     <div class="color-picker">
@@ -509,7 +365,6 @@ ENGLISH PREMIER LEAGUE
                         <input type="color" id="tableBgColor" value="#0a0a0a" onchange="updateTableBgColor(this.value)">
                     </div>
                 </div>
-                
                 <div class="setting-group">
                     <label>Warna Teks Skor:</label>
                     <div class="color-picker">
@@ -517,7 +372,6 @@ ENGLISH PREMIER LEAGUE
                         <input type="color" id="scoreColor" value="#FFD700" onchange="updateScoreColor(this.value)">
                     </div>
                 </div>
-                
                 <div class="setting-group">
                     <label>Ukuran Font (px):</label>
                     <div style="display: flex; align-items: center;">
@@ -525,7 +379,6 @@ ENGLISH PREMIER LEAGUE
                         <span class="range-value" id="fontSizeValue">12px</span>
                     </div>
                 </div>
-                
                 <div class="setting-group">
                     <label>Jenis Font:</label>
                     <div class="font-options">
@@ -538,7 +391,6 @@ ENGLISH PREMIER LEAGUE
                     </div>
                 </div>
             </div>
-            
             <div style="margin-top: 20px;">
                 <label style="color: var(--text-secondary); margin-bottom: 10px; display: block; font-size: 12px; font-weight: 600;">Preset Warna:</label>
                 <div class="preset-buttons">
@@ -554,10 +406,10 @@ ENGLISH PREMIER LEAGUE
 
         <!-- EMBED INFO SECTION -->
         <div class="embed-info" id="embedInfo" style="display: none;">
-            <div style="font-weight: 700; margin-bottom: 10px;">✅ SCRIPT UNTUK BLOG (Cukup Pasang SEKALI):</div>
+            <div style="font-weight: 700; margin-bottom: 10px;">✅ SCRIPT UNTUK BLOG (Cukup Pasang SEKALI SAAT UPDATE):</div>
             <div class="embed-code" id="embedCode"></div>
             <div style="font-size: 12px; margin-top: 10px; color: #10b981;">
-                ⚡ Setiap Anda klik "Publish ke Blog", data akan tersimpan. Blog akan otomatis menampilkan data terbaru saat di-refresh.
+                ⚡ <strong>Cara Update:</strong> Generate tabel baru lalu klik "Publish ke Blog" → Copy script baru → Tempel ke blog (ganti yang lama).
             </div>
             <button class="btn btn-copy" style="margin-top: 10px; width: auto; min-width: auto;" onclick="copyEmbedScript()">
                 📋 Copy Script untuk Blog
@@ -565,25 +417,14 @@ ENGLISH PREMIER LEAGUE
         </div>
 
         <div class="output-section">
-            <label style="color: var(--bg-dark); font-size: 1.1em; margin-bottom: 15px; display: block; font-weight: 700;">
-                📊 Preview Tabel:
-            </label>
+            <label style="color: var(--bg-dark); font-size: 1.1em; margin-bottom: 15px; display: block; font-weight: 700;">📊 Preview Tabel:</label>
             <div id="tablesContainer" class="tables-container"></div>
-            
-            <label style="color: var(--bg-dark); font-size: 1.1em; margin: 30px 0 15px 0; display: block; font-weight: 700;">
-                📝 HTML untuk Blog (Copy-paste Manual):
-            </label>
-            <div class="preview-area">
-                <pre id="previewOutput">Generate tabel untuk melihat HTML...</pre>
-            </div>
+            <label style="color: var(--bg-dark); font-size: 1.1em; margin: 30px 0 15px 0; display: block; font-weight: 700;">📝 HTML untuk Blog (Copy-paste Manual):</label>
+            <div class="preview-area"><pre id="previewOutput">Generate tabel untuk melihat HTML...</pre></div>
         </div>
     </div>
-
-    <div class="footer">
-        Dashboard Prediksi Bola © 2026 • Insight & Discipline by KEN
-    </div>
+    <div class="footer">Dashboard Prediksi Bola © 2026 • Insight & Discipline by KEN</div>
 </div>
-
 <div class="notification" id="notification">✓ Berhasil disalin!</div>
 
 <script>
@@ -597,116 +438,25 @@ ENGLISH PREMIER LEAGUE
         fontSize: '12',
         fontFamily: 'Arial, sans-serif'
     };
-
     let currentLeagues = [];
 
-    function updateBorderColor(color) {
-        settings.borderColor = color;
-        document.getElementById('borderColorPreview').style.background = color;
-        generateTables();
-    }
-
-    function updateHeaderColor(color) {
-        settings.headerColor = color;
-        document.getElementById('headerColorPreview').style.background = color;
-        generateTables();
-    }
-
-    function updateHeaderTextColor(color) {
-        settings.headerTextColor = color;
-        document.getElementById('headerTextColorPreview').style.background = color;
-        generateTables();
-    }
-
-    function updateTableBgColor(color) {
-        settings.tableBgColor = color;
-        document.getElementById('tableBgColorPreview').style.background = color;
-        generateTables();
-    }
-
-    function updateScoreColor(color) {
-        settings.scoreColor = color;
-        document.getElementById('scoreColorPreview').style.background = color;
-        generateTables();
-    }
-
-    function updateFontSize(size) {
-        settings.fontSize = size;
-        document.getElementById('fontSizeValue').textContent = size + 'px';
-        generateTables();
-    }
-
-    function selectFont(element, font) {
-        settings.fontFamily = font;
-        document.querySelectorAll('.font-option').forEach(opt => opt.classList.remove('active'));
-        element.classList.add('active');
-        generateTables();
-    }
+    function updateBorderColor(color) { settings.borderColor = color; document.getElementById('borderColorPreview').style.background = color; generateTables(); }
+    function updateHeaderColor(color) { settings.headerColor = color; document.getElementById('headerColorPreview').style.background = color; generateTables(); }
+    function updateHeaderTextColor(color) { settings.headerTextColor = color; document.getElementById('headerTextColorPreview').style.background = color; generateTables(); }
+    function updateTableBgColor(color) { settings.tableBgColor = color; document.getElementById('tableBgColorPreview').style.background = color; generateTables(); }
+    function updateScoreColor(color) { settings.scoreColor = color; document.getElementById('scoreColorPreview').style.background = color; generateTables(); }
+    function updateFontSize(size) { settings.fontSize = size; document.getElementById('fontSizeValue').textContent = size + 'px'; generateTables(); }
+    function selectFont(element, font) { settings.fontFamily = font; document.querySelectorAll('.font-option').forEach(opt => opt.classList.remove('active')); element.classList.add('active'); generateTables(); }
 
     function applyPreset(presetName) {
         const presets = {
-            'blog_pulitoto': {
-                borderColor: '#C19A5B',
-                headerMainColor: '#C19A5B',
-                headerTextColor: '#000000',
-                tableBgColor: '#ffffff',
-                scoreColor: '#a67c3d',
-                textColor: '#333333',
-                fontSize: '12',
-                fontFamily: 'Arial, sans-serif'
-            },
-            'dashboard_asli': {
-                borderColor: '#FFD700',
-                headerMainColor: '#FFD700',
-                headerTextColor: '#000000',
-                tableBgColor: '#0a0a0a',
-                scoreColor: '#FFD700',
-                textColor: '#ffffff',
-                fontSize: '12',
-                fontFamily: 'Arial, sans-serif'
-            },
-            'biru_dashboard': {
-                borderColor: '#007BFF',
-                headerMainColor: '#007BFF',
-                headerTextColor: '#FFFFFF',
-                tableBgColor: '#001a33',
-                scoreColor: '#66B2FF',
-                textColor: '#ffffff',
-                fontSize: '12',
-                fontFamily: 'Arial, sans-serif'
-            },
-            'hijau_dashboard': {
-                borderColor: '#28A745',
-                headerMainColor: '#28A745',
-                headerTextColor: '#FFFFFF',
-                tableBgColor: '#0a200a',
-                scoreColor: '#90EE90',
-                textColor: '#ffffff',
-                fontSize: '12',
-                fontFamily: 'Arial, sans-serif'
-            },
-            'merah_dashboard': {
-                borderColor: '#DC3545',
-                headerMainColor: '#DC3545',
-                headerTextColor: '#FFFFFF',
-                tableBgColor: '#330a0a',
-                scoreColor: '#FF6B6B',
-                textColor: '#ffffff',
-                fontSize: '12',
-                fontFamily: 'Arial, sans-serif'
-            },
-            'ungu_dashboard': {
-                borderColor: '#6F42C1',
-                headerMainColor: '#6F42C1',
-                headerTextColor: '#FFFFFF',
-                tableBgColor: '#1a0a33',
-                scoreColor: '#B19CD9',
-                textColor: '#ffffff',
-                fontSize: '12',
-                fontFamily: 'Arial, sans-serif'
-            }
+            'blog_pulitoto': { borderColor: '#C19A5B', headerMainColor: '#C19A5B', headerTextColor: '#000000', tableBgColor: '#ffffff', scoreColor: '#a67c3d', textColor: '#333333', fontSize: '12', fontFamily: 'Arial, sans-serif' },
+            'dashboard_asli': { borderColor: '#FFD700', headerMainColor: '#FFD700', headerTextColor: '#000000', tableBgColor: '#0a0a0a', scoreColor: '#FFD700', textColor: '#ffffff', fontSize: '12', fontFamily: 'Arial, sans-serif' },
+            'biru_dashboard': { borderColor: '#007BFF', headerMainColor: '#007BFF', headerTextColor: '#FFFFFF', tableBgColor: '#001a33', scoreColor: '#66B2FF', textColor: '#ffffff', fontSize: '12', fontFamily: 'Arial, sans-serif' },
+            'hijau_dashboard': { borderColor: '#28A745', headerMainColor: '#28A745', headerTextColor: '#FFFFFF', tableBgColor: '#0a200a', scoreColor: '#90EE90', textColor: '#ffffff', fontSize: '12', fontFamily: 'Arial, sans-serif' },
+            'merah_dashboard': { borderColor: '#DC3545', headerMainColor: '#DC3545', headerTextColor: '#FFFFFF', tableBgColor: '#330a0a', scoreColor: '#FF6B6B', textColor: '#ffffff', fontSize: '12', fontFamily: 'Arial, sans-serif' },
+            'ungu_dashboard': { borderColor: '#6F42C1', headerMainColor: '#6F42C1', headerTextColor: '#FFFFFF', tableBgColor: '#1a0a33', scoreColor: '#B19CD9', textColor: '#ffffff', fontSize: '12', fontFamily: 'Arial, sans-serif' }
         };
-
         const preset = presets[presetName];
         if (preset) {
             settings.borderColor = preset.borderColor;
@@ -717,7 +467,6 @@ ENGLISH PREMIER LEAGUE
             settings.textColor = preset.textColor;
             settings.fontSize = preset.fontSize;
             settings.fontFamily = preset.fontFamily;
-
             document.getElementById('borderColor').value = preset.borderColor;
             document.getElementById('headerColor').value = preset.headerMainColor;
             document.getElementById('headerTextColor').value = preset.headerTextColor;
@@ -725,13 +474,11 @@ ENGLISH PREMIER LEAGUE
             document.getElementById('scoreColor').value = preset.scoreColor;
             document.getElementById('fontSize').value = preset.fontSize;
             document.getElementById('fontSizeValue').textContent = preset.fontSize + 'px';
-
             document.getElementById('borderColorPreview').style.background = preset.borderColor;
             document.getElementById('headerColorPreview').style.background = preset.headerMainColor;
             document.getElementById('headerTextColorPreview').style.background = preset.headerTextColor;
             document.getElementById('tableBgColorPreview').style.background = preset.tableBgColor;
             document.getElementById('scoreColorPreview').style.background = preset.scoreColor;
-
             generateTables();
             showNotification(`✅ Preset "${presetName.replace('_', ' ').toUpperCase()}" diterapkan!`, true);
         }
@@ -742,9 +489,7 @@ ENGLISH PREMIER LEAGUE
         const tomorrow = new Date(today);
         tomorrow.setDate(tomorrow.getDate() + 1);
         const options = { day: 'numeric', month: 'long', year: 'numeric' };
-        const todayStr = today.toLocaleDateString('id-ID', options);
-        const tomorrowStr = tomorrow.toLocaleDateString('id-ID', options);
-        return { todayStr, tomorrowStr };
+        return { todayStr: today.toLocaleDateString('id-ID', options), tomorrowStr: tomorrow.toLocaleDateString('id-ID', options) };
     }
 
     function parseInput(inputText) {
@@ -752,55 +497,22 @@ ENGLISH PREMIER LEAGUE
         const lines = inputText.split('\n');
         const leagues = [];
         let currentLeague = null;
-
         lines.forEach(line => {
             const trimmed = line.trim();
             if (!trimmed) return;
-
             if (!/\bvs\b/i.test(trimmed) || !/\d+\s*[:\-–—−]\s*\d+/.test(trimmed)) {
-                if (currentLeague && currentLeague.matches.length > 0) {
-                    leagues.push(currentLeague);
-                }
-                currentLeague = {
-                    name: trimmed,
-                    matches: []
-                };
+                if (currentLeague && currentLeague.matches.length > 0) leagues.push(currentLeague);
+                currentLeague = { name: trimmed, matches: [] };
             } else if (currentLeague) {
                 const matchRegex = /(\d{2}\/\d{2})\s+(\d{2}:\d{2})\s+(\w+)\s+(.+?)\s+\bvs\b\s+(.+?)\s+(\d+)\s*[:\-–—−]\s*(\d+)/i;
                 const match = trimmed.match(matchRegex);
-                
                 if (match) {
-                    currentLeague.matches.push({
-                        date: match[1],
-                        time: match[2],
-                        timezone: match[3],
-                        team1: match[4].trim(),
-                        team2: match[5].trim(),
-                        score1: parseInt(match[6]),
-                        score2: parseInt(match[7])
-                    });
+                    currentLeague.matches.push({ date: match[1], time: match[2], timezone: match[3], team1: match[4].trim(), team2: match[5].trim(), score1: parseInt(match[6]), score2: parseInt(match[7]) });
                 }
             }
         });
-
-        if (currentLeague && currentLeague.matches.length > 0) {
-            leagues.push(currentLeague);
-        }
-
+        if (currentLeague && currentLeague.matches.length > 0) leagues.push(currentLeague);
         return leagues;
-    }
-
-    function saveDataToLocalStorage() {
-        const { todayStr, tomorrowStr } = getDates();
-        const dataToSave = {
-            lastUpdate: new Date().toISOString(),
-            settings: settings,
-            leagues: currentLeagues,
-            todayStr: todayStr,
-            tomorrowStr: tomorrowStr
-        };
-        localStorage.setItem('prediksiBolaData', JSON.stringify(dataToSave));
-        return dataToSave;
     }
 
     function generateTables() {
@@ -808,52 +520,23 @@ ENGLISH PREMIER LEAGUE
         currentLeagues = parseInput(input);
         const container = document.getElementById('tablesContainer');
         const preview = document.getElementById('previewOutput');
-
         container.innerHTML = '';
-
         if (currentLeagues.length === 0) {
             container.innerHTML = '<div style="color: #FFD700; text-align: center; padding: 40px;">Tidak ada data yang valid. Periksa format input.</div>';
             preview.textContent = '// Tidak ada data yang valid';
             return;
         }
-
         const { todayStr, tomorrowStr } = getDates();
         const secondaryTextColor = settings.textColor + "cc";
-
         currentLeagues.forEach(league => {
             const headerBackground = `linear-gradient(90deg, #1a1a1a, ${settings.headerColor}, #1a1a1a)`;
-
-            const tableHTML = `
-                <div style="margin-bottom: 30px;">
-                    <div class="match-table-preview" style="border-color: ${settings.borderColor}; background: ${settings.tableBgColor};">
-                        <div class="league-header-preview" style="background: ${headerBackground}; color: ${settings.headerTextColor}; font-family: ${settings.fontFamily};">${league.name}</div>
-                        <table width="100%" cellspacing="0" cellpadding="0" style="font-family: ${settings.fontFamily};">
-                            <thead class="table-header-preview" style="background: ${settings.headerColor}22; color: ${settings.headerColor}; border-bottom-color: ${settings.borderColor};">
-                                <tr>
-                                    <th width="25%" style="border-right-color: ${settings.borderColor}33;">Tanggal & Waktu</th>
-                                    <th width="50%" style="border-right-color: ${settings.borderColor}33;">Pertandingan</th>
-                                    <th width="25%">Skor</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${league.matches.map(match => `
-                                    <tr>
-                                        <td style="border-right-color: ${settings.borderColor}22; color: ${secondaryTextColor}; font-size: ${settings.fontSize}px; word-break: break-word;">${match.date} ${match.time}<br><small>${match.timezone}</small></td>
-                                        <td style="border-right-color: ${settings.borderColor}22; color: ${settings.textColor}; font-size: ${settings.fontSize}px; word-break: break-word;"><strong>${match.team1}</strong> VS <strong>${match.team2}</strong></td>
-                                        <td style="color: ${settings.scoreColor}; font-weight: bold; font-size: ${parseInt(settings.fontSize) + 2}px;">${match.score1} : ${match.score2}</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            `;
+            const tableHTML = `<div style="margin-bottom: 30px;"><div class="match-table-preview" style="border-color: ${settings.borderColor}; background: ${settings.tableBgColor};"><div class="league-header-preview" style="background: ${headerBackground}; color: ${settings.headerTextColor}; font-family: ${settings.fontFamily};">${league.name}</div><table width="100%" cellspacing="0" cellpadding="0" style="font-family: ${settings.fontFamily};"><thead class="table-header-preview" style="background: ${settings.headerColor}22; color: ${settings.headerColor}; border-bottom-color: ${settings.borderColor};"><tr><th width="25%" style="border-right-color: ${settings.borderColor}33;">Tanggal & Waktu</th><th width="50%" style="border-right-color: ${settings.borderColor}33;">Pertandingan</th><th width="25%">Skor</th></tr></thead><tbody>${league.matches.map(match => `<tr><td style="border-right-color: ${settings.borderColor}22; color: ${secondaryTextColor}; font-size: ${settings.fontSize}px; word-break: break-word;">${match.date} ${match.time}<br><small>${match.timezone}</small></td><td style="border-right-color: ${settings.borderColor}22; color: ${settings.textColor}; font-size: ${settings.fontSize}px; word-break: break-word;"><strong>${match.team1}</strong> VS <strong>${match.team2}</strong></td><td style="color: ${settings.scoreColor}; font-weight: bold; font-size: ${parseInt(settings.fontSize) + 2}px;">${match.score1} : ${match.score2}</td></tr>`).join('')}</tbody></table></div></div>`;
             container.innerHTML += tableHTML;
         });
 
-        // HTML UNTUK BLOG
+        // Generate HTML untuk blog
         const headerBackgroundForBlog = `linear-gradient(90deg, #1a1a1a, ${settings.headerColor}, #1a1a1a)`;
-        const headerBrightness = getBrightness(settings.headerColor);
+        const headerBrightness = (parseInt(settings.headerColor.slice(1,3),16)*299 + parseInt(settings.headerColor.slice(3,5),16)*587 + parseInt(settings.headerColor.slice(5,7),16)*114)/1000;
         const headerTextColorAuto = headerBrightness > 128 ? '#000000' : '#FFFFFF';
         const tableBorderColor = settings.borderColor;
         const tableHeaderBg = settings.headerColor === '#FFD700' ? 'rgba(255, 215, 0, 0.15)' : `${settings.headerColor}15`;
@@ -875,7 +558,6 @@ ENGLISH PREMIER LEAGUE
         htmlForBlog += `        @media (max-width: 768px) { .prediksi-bola-marquee-text { font-size: 16px !important; animation: prediksi-bola-marquee-animation 20s linear infinite !important; } }\n`;
         htmlForBlog += `        @media (max-width: 480px) { .prediksi-bola-marquee-text { font-size: 14px !important; animation: prediksi-bola-marquee-animation 15s linear infinite !important; } }\n`;
         htmlForBlog += `    </style>\n\n`;
-
         currentLeagues.forEach(league => {
             htmlForBlog += `    <div style="margin-bottom: 25px; border: 1px solid ${tableBorderColor}; border-radius: 8px; overflow: hidden;">\n`;
             htmlForBlog += `        <div style="background: ${headerBackgroundForBlog}; color: ${headerTextColorAuto}; padding: 12px; text-align: center; font-weight: bold; font-size: ${parseInt(settings.fontSize) + 4}px;">${league.name}</div>\n`;
@@ -889,56 +571,38 @@ ENGLISH PREMIER LEAGUE
             htmlForBlog += `        </table>\n`;
             htmlForBlog += `    </div>\n\n`;
         });
-
         htmlForBlog += `</div>\n<!-- END PREDIKSI BOLA -->`;
-
         window.htmlForBlog = htmlForBlog;
         preview.textContent = htmlForBlog;
-        
-        // Simpan ke localStorage
-        saveDataToLocalStorage();
-        
-        showNotification('✓ Tabel berhasil digenerate! Data sudah tersimpan.', true);
+        showNotification('✓ Tabel berhasil digenerate!', true);
     }
 
     function getBrightness(hexColor) {
         hexColor = hexColor.replace('#', '');
-        if (hexColor.length === 3) {
-            hexColor = hexColor.split('').map(char => char + char).join('');
-        }
-        const r = parseInt(hexColor.substr(0, 2), 16);
-        const g = parseInt(hexColor.substr(2, 2), 16);
-        const b = parseInt(hexColor.substr(4, 2), 16);
-        return (r * 299 + g * 587 + b * 114) / 1000;
+        if (hexColor.length === 3) hexColor = hexColor.split('').map(c => c + c).join('');
+        return (parseInt(hexColor.substr(0,2),16)*299 + parseInt(hexColor.substr(2,2),16)*587 + parseInt(hexColor.substr(4,2),16)*114)/1000;
     }
 
     function copyHTML() {
-        if (!window.htmlForBlog) {
-            showNotification('Generate tabel dulu!', false);
-            return;
-        }
-        navigator.clipboard.writeText(window.htmlForBlog)
-            .then(() => showNotification('✓ HTML berhasil disalin!', true))
-            .catch(() => showNotification('✗ Gagal menyalin', false));
+        if (!window.htmlForBlog) { showNotification('Generate tabel dulu!', false); return; }
+        navigator.clipboard.writeText(window.htmlForBlog).then(() => showNotification('✓ HTML berhasil disalin!', true)).catch(() => showNotification('✗ Gagal menyalin', false));
     }
 
     function publishToBlog() {
-        if (currentLeagues.length === 0) {
-            showNotification('Generate tabel dulu sebelum publish!', false);
-            return;
-        }
-
-        // Simpan data terlebih dahulu
-        const savedData = saveDataToLocalStorage();
+        if (currentLeagues.length === 0) { showNotification('Generate tabel dulu sebelum publish!', false); return; }
+        const { todayStr, tomorrowStr } = getDates();
         
-        // Dapatkan URL dashboard saat ini
-        const dashboardUrl = window.location.href.split('?')[0];
-        
-        // Buat script embed yang akan mengambil data dari dashboard ini
+        // Buat script embed yang berisi data LENGKAP (STATIS)
         const embedScript = `<div id="prediksi-bola-widget"></div>
 <script>
 (function() {
-    const DASHBOARD_URL = '${dashboardUrl}';
+    const prediksiData = ${JSON.stringify({
+        lastUpdate: new Date().toISOString(),
+        settings: settings,
+        leagues: currentLeagues,
+        todayStr: todayStr,
+        tomorrowStr: tomorrowStr
+    })};
     
     function renderPrediksi(data) {
         const container = document.getElementById('prediksi-bola-widget');
@@ -946,8 +610,11 @@ ENGLISH PREMIER LEAGUE
         
         const s = data.settings;
         const headerBackground = 'linear-gradient(90deg, #1a1a1a, ' + s.headerColor + ', #1a1a1a)';
-        const headerBrightness = (parseInt(s.headerColor.slice(1,3), 16) * 299 + parseInt(s.headerColor.slice(3,5), 16) * 587 + parseInt(s.headerColor.slice(5,7), 16) * 114) / 1000;
-        const headerTextColorAuto = headerBrightness > 128 ? '#000000' : '#FFFFFF';
+        const r = parseInt(s.headerColor.slice(1,3), 16);
+        const g = parseInt(s.headerColor.slice(3,5), 16);
+        const b = parseInt(s.headerColor.slice(5,7), 16);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        const headerTextColorAuto = brightness > 128 ? '#000000' : '#FFFFFF';
         
         let html = '<div class="prediksi-bola-container" style="max-width:100%;margin:20px auto;padding:0;background:transparent!important;border:none!important;font-family:' + s.fontFamily + '!important;">';
         html += '<div class="prediksi-bola-marquee-container" style="background:linear-gradient(90deg,#000000,#1a1a1a,#000000)!important;padding:12px 15px!important;margin:0 0 20px 0!important;border-radius:8px!important;border:1px solid ' + s.borderColor + '!important;overflow:hidden!important;">';
@@ -970,86 +637,35 @@ ENGLISH PREMIER LEAGUE
                 html += '<td style="padding:8px 10px;color:' + s.scoreColor + ';font-weight:bold;border-bottom:1px solid ' + s.borderColor + '22;">' + match.score1 + ' : ' + match.score2 + '</td>';
                 html += '</tr>';
             }
-            html += '</tbody></tr></div>';
+            html += '</tbody></td></div>';
         }
         html += '</div>';
         
         container.innerHTML = html;
     }
     
-    function loadData() {
-        // Coba ambil data dari localStorage dashboard (jika iframe) atau dari server
-        try {
-            // Cek apakah data tersedia di localStorage (jika dashboard dan blog satu domain)
-            const localData = localStorage.getItem('prediksiBolaData');
-            if (localData) {
-                const data = JSON.parse(localData);
-                if (data && data.leagues && data.leagues.length > 0) {
-                    renderPrediksi(data);
-                    return;
-                }
-            }
-        } catch(e) {}
-        
-        // Jika tidak ada, coba fetch dari dashboard
-        fetch(DASHBOARD_URL)
-            .then(response => response.text())
-            .then(html => {
-                // Extract data dari script di halaman dashboard
-                const match = html.match(/localStorage\.setItem\('prediksiBolaData', (\[.*?)\);/s);
-                if (match && match[1]) {
-                    try {
-                        const data = JSON.parse(match[1]);
-                        renderPrediksi(data);
-                    } catch(e) {
-                        console.error('Gagal parse data');
-                    }
-                } else {
-                    // Fallback: tampilkan pesan
-                    document.getElementById('prediksi-bola-widget').innerHTML = '<div style="text-align:center;padding:40px;">⚠️ Belum ada data prediksi. Silakan generate di dashboard terlebih dahulu.</div>';
-                }
-            })
-            .catch(error => {
-                console.error('Gagal mengambil data:', error);
-                document.getElementById('prediksi-bola-widget').innerHTML = '<div style="text-align:center;padding:40px;">⚠️ Gagal mengambil data prediksi. Pastikan dashboard aktif.</div>';
-            });
-    }
-    
-    loadData();
+    renderPrediksi(prediksiData);
 })();
 <\/script>`;
 
         document.getElementById('embedCode').innerHTML = escapeHtml(embedScript);
         document.getElementById('embedInfo').style.display = 'block';
         window.embedScript = embedScript;
-        showNotification('✅ Script untuk blog sudah siap! Copy dan tempel ke blog Anda SEKALI SAJA.', true);
+        showNotification('✅ Script untuk blog sudah siap! Copy dan tempel ke blog Anda.', true);
     }
 
     function copyEmbedScript() {
-        if (!window.embedScript) {
-            showNotification('Publish dulu untuk mendapatkan script!', false);
-            return;
-        }
-        navigator.clipboard.writeText(window.embedScript)
-            .then(() => showNotification('✓ Script berhasil disalin! Tempelkan ke blog Anda SEKALI SAJA.', true))
-            .catch(() => showNotification('✗ Gagal menyalin', false));
+        if (!window.embedScript) { showNotification('Publish dulu untuk mendapatkan script!', false); return; }
+        navigator.clipboard.writeText(window.embedScript).then(() => showNotification('✓ Script berhasil disalin! Tempelkan ke blog Anda.', true)).catch(() => showNotification('✗ Gagal menyalin', false));
     }
 
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-
+    function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
     function showNotification(message, success) {
         const notif = document.getElementById('notification');
         notif.textContent = message;
         notif.style.background = success ? '#10b981' : '#ef4444';
-        notif.style.color = '#fff';
         notif.classList.add('show');
-        setTimeout(() => {
-            notif.classList.remove('show');
-        }, 3000);
+        setTimeout(() => notif.classList.remove('show'), 3000);
     }
 
     window.addEventListener('load', () => {
@@ -1065,21 +681,7 @@ ENGLISH PREMIER LEAGUE
 LA LIGA
 02/06 23:00 WIB Barcelona VS Real Madrid 2 : 2
 03/06 01:00 WIB Atletico Madrid VS Sevilla 1 : 0`;
-        
         setTimeout(() => applyPreset('dashboard_asli'), 100);
-        
-        // Coba load data yang tersimpan
-        const savedData = localStorage.getItem('prediksiBolaData');
-        if (savedData) {
-            try {
-                const data = JSON.parse(savedData);
-                if (data.leagues && data.leagues.length > 0) {
-                    currentLeagues = data.leagues;
-                    Object.assign(settings, data.settings);
-                    generateTables();
-                }
-            } catch(e) {}
-        }
     });
 </script>
 </body>
