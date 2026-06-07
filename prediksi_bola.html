@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prediksi Bola Dashboard - Master Control</title>
+    <title>Prediksi Bola Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -145,17 +145,6 @@
             background: var(--bg-secondary);
             color: var(--bg-dark);
             border: 1px solid var(--border);
-        }
-
-        .btn-publish {
-            background: #C19A5B;
-            color: #000;
-            border: none;
-        }
-
-        .btn-publish:hover {
-            background: #d4af6a;
-            transform: translateY(-2px);
         }
 
         .btn-generate:hover, .btn-copy:hover {
@@ -398,48 +387,6 @@
             border-top: 1px solid var(--border);
         }
 
-        /* JSONBin Settings Panel */
-        .jsonbin-panel {
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid #C19A5B;
-        }
-
-        .jsonbin-panel .settings-title {
-            color: #C19A5B;
-        }
-
-        .jsonbin-panel label {
-            color: #aaa;
-        }
-
-        .jsonbin-panel input {
-            background: #0f0f1a;
-            border: 1px solid #333;
-            color: #C19A5B;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            margin-left: 10px;
-        }
-
-        .status-connected {
-            background: #10b981;
-            color: white;
-        }
-
-        .status-disconnected {
-            background: #ef4444;
-            color: white;
-        }
-
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
@@ -485,7 +432,7 @@
 <div class="container">
     <div class="header">
         <h1>⚽ PREDIKSI BOLA PULITOTO ⚽</h1>
-        <p>Generator Tabel Prediksi Pertandingan Sepak Bola + Auto Update ke Blog</p>
+        <p>Generator Tabel Prediksi Pertandingan Sepak Bola</p>
     </div>
 
     <div class="panel">
@@ -507,34 +454,7 @@ ENGLISH PREMIER LEAGUE
                 <button class="btn btn-copy" onclick="copyHTML()">
                     📋 Copy HTML
                 </button>
-                <button class="btn btn-publish" id="publishToBlogBtn" onclick="publishToBlog()">
-                    🌐 PUBLISH KE BLOG (Auto Update)
-                </button>
             </div>
-        </div>
-
-        <!-- JSONBin Configuration Panel -->
-        <div class="jsonbin-panel">
-            <div class="settings-title">
-                🔗 KONFIGURASI AUTO UPDATE KE BLOG
-                <span id="connectionStatus" class="status-badge status-disconnected">Belum Setting</span>
-            </div>
-            <div class="settings-grid">
-                <div class="setting-group">
-                    <label>JSONBin.io - BIN ID:</label>
-                    <input type="text" id="jsonbinBinId" placeholder="Masukkan Bin ID dari JSONBin.io" style="width:100%; padding:10px; border-radius:8px;">
-                </div>
-                <div class="setting-group">
-                    <label>JSONBin.io - API KEY (Master Key):</label>
-                    <input type="password" id="jsonbinApiKey" placeholder="Masukkan API Key dari JSONBin.io" style="width:100%; padding:10px; border-radius:8px;">
-                </div>
-            </div>
-            <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
-                <button class="preset-btn" onclick="saveJsonbinConfig()" style="background: #C19A5B; color: #000;">💾 Simpan Konfigurasi</button>
-                <button class="preset-btn" onclick="testConnection()" style="background: #2c3e50; color: #fff;">🔌 Test Koneksi</button>
-                <button class="preset-btn" onclick="openJsonbinTutorial()" style="background: #3498db; color: #fff;">📖 Cara Dapatkan Bin ID & API Key</button>
-            </div>
-            <div id="jsonbinStatus" style="margin-top: 15px; font-size: 12px; color: #aaa;"></div>
         </div>
 
         <!-- SETTINGS SECTION -->
@@ -632,7 +552,7 @@ ENGLISH PREMIER LEAGUE
     </div>
 
     <div class="footer">
-        Dashboard Prediksi Bola © 2026 • Insight & Discipline by KEN • Auto Update ke Blog
+        Dashboard Prediksi Bola © 2026 • Insight & Discipline by KEN
     </div>
 </div>
 
@@ -889,7 +809,7 @@ ENGLISH PREMIER LEAGUE
             container.innerHTML += tableHTML;
         });
 
-        // HTML UNTUK BLOG
+        // HTML UNTUK BLOG - MENGGUNAKAN SETTINGS YANG SUDAH ADA
         const headerBackgroundForBlog = `linear-gradient(90deg, #1a1a1a, ${settings.headerColor}, #1a1a1a)`;
         const headerBrightness = getBrightness(settings.headerColor);
         const headerTextColorAuto = headerBrightness > 128 ? '#000000' : '#FFFFFF';
@@ -932,11 +852,6 @@ ENGLISH PREMIER LEAGUE
 
         window.htmlForBlog = htmlForBlog;
         preview.textContent = htmlForBlog;
-        
-        // Auto save input ke localStorage
-        localStorage.setItem('prediksiBola_inputData', input);
-        saveSettingsToLocal();
-        
         showNotification('✓ Tabel berhasil digenerate!', true);
     }
 
@@ -972,72 +887,7 @@ ENGLISH PREMIER LEAGUE
         }, 2000);
     }
 
-    // ========== FITUR AUTO SAVE ==========
-    function saveSettingsToLocal() {
-        const settingsToSave = {
-            borderColor: settings.borderColor,
-            headerColor: settings.headerColor,
-            headerTextColor: settings.headerTextColor,
-            tableBgColor: settings.tableBgColor,
-            scoreColor: settings.scoreColor,
-            textColor: settings.textColor,
-            fontSize: settings.fontSize,
-            fontFamily: settings.fontFamily
-        };
-        localStorage.setItem('prediksiBola_settings', JSON.stringify(settingsToSave));
-    }
-
-    // Load settings tersimpan
-    const savedSettings = localStorage.getItem('prediksiBola_settings');
-    if (savedSettings) {
-        try {
-            const loaded = JSON.parse(savedSettings);
-            settings.borderColor = loaded.borderColor;
-            settings.headerColor = loaded.headerColor;
-            settings.headerTextColor = loaded.headerTextColor;
-            settings.tableBgColor = loaded.tableBgColor;
-            settings.scoreColor = loaded.scoreColor;
-            settings.textColor = loaded.textColor;
-            settings.fontSize = loaded.fontSize;
-            settings.fontFamily = loaded.fontFamily;
-            
-            document.getElementById('borderColor').value = loaded.borderColor;
-            document.getElementById('headerColor').value = loaded.headerColor;
-            document.getElementById('headerTextColor').value = loaded.headerTextColor;
-            document.getElementById('tableBgColor').value = loaded.tableBgColor;
-            document.getElementById('scoreColor').value = loaded.scoreColor;
-            document.getElementById('fontSize').value = loaded.fontSize;
-            document.getElementById('fontSizeValue').textContent = loaded.fontSize + 'px';
-            
-            document.getElementById('borderColorPreview').style.background = loaded.borderColor;
-            document.getElementById('headerColorPreview').style.background = loaded.headerColor;
-            document.getElementById('headerTextColorPreview').style.background = loaded.headerTextColor;
-            document.getElementById('tableBgColorPreview').style.background = loaded.tableBgColor;
-            document.getElementById('scoreColorPreview').style.background = loaded.scoreColor;
-            
-            const fontMap = {
-                'Arial, sans-serif': 0,
-                'Georgia, serif': 1,
-                'Courier New, monospace': 2,
-                'Verdana, sans-serif': 3,
-                'Tahoma, sans-serif': 4,
-                'Trebuchet MS, sans-serif': 5
-            };
-            const fontIndex = fontMap[loaded.fontFamily];
-            if (fontIndex !== undefined) {
-                document.querySelectorAll('.font-option').forEach((opt, idx) => {
-                    if (idx === fontIndex) opt.classList.add('active');
-                    else opt.classList.remove('active');
-                });
-            }
-        } catch(e) {}
-    }
-
-    // Load input tersimpan
-    const savedInput = localStorage.getItem('prediksiBola_inputData');
-    if (savedInput) {
-        document.getElementById('matchInput').value = savedInput;
-    } else {
+    window.addEventListener('load', () => {
         document.getElementById('matchInput').value = `LITHUANIA A LEAGUE
 31/05 23:00 WIB Kauno Zalgiris VS DFK Dainava 2 : 1
 01/06 20:00 WIB FK Riteriai VS FK Panevezys 1 : 2
@@ -1050,168 +900,9 @@ ENGLISH PREMIER LEAGUE
 LA LIGA
 02/06 23:00 WIB Barcelona VS Real Madrid 2 : 2
 03/06 01:00 WIB Atletico Madrid VS Sevilla 1 : 0`;
-    }
-
-    // Auto save input saat diketik
-    document.getElementById('matchInput').addEventListener('input', function() {
-        localStorage.setItem('prediksiBola_inputData', this.value);
+        
+        setTimeout(() => applyPreset('dashboard_asli'), 100);
     });
-
-    // ========== FITUR PUBLISH KE BLOG (JSONBin.io) ==========
-    let jsonbinBinId = localStorage.getItem('jsonbin_bin_id') || '';
-    let jsonbinApiKey = localStorage.getItem('jsonbin_api_key') || '';
-
-    // Load saved config
-    if (jsonbinBinId) document.getElementById('jsonbinBinId').value = jsonbinBinId;
-    if (jsonbinApiKey) document.getElementById('jsonbinApiKey').value = jsonbinApiKey;
-    updateConnectionStatus();
-
-    function saveJsonbinConfig() {
-        jsonbinBinId = document.getElementById('jsonbinBinId').value.trim();
-        jsonbinApiKey = document.getElementById('jsonbinApiKey').value.trim();
-        
-        if (jsonbinBinId && jsonbinApiKey) {
-            localStorage.setItem('jsonbin_bin_id', jsonbinBinId);
-            localStorage.setItem('jsonbin_api_key', jsonbinApiKey);
-            showNotification('✅ Konfigurasi tersimpan!', true);
-            updateConnectionStatus();
-            testConnection();
-        } else {
-            showNotification('⚠️ Bin ID dan API Key harus diisi!', false);
-        }
-    }
-
-    async function testConnection() {
-        if (!jsonbinBinId) {
-            showNotification('⚠️ Masukkan Bin ID dulu!', false);
-            return;
-        }
-        
-        showNotification('🔌 Testing koneksi...', true);
-        
-        try {
-            const response = await fetch(`https://api.jsonbin.io/v3/b/${jsonbinBinId}/latest`, {
-                method: 'GET',
-                headers: {
-                    'X-Master-Key': jsonbinApiKey
-                }
-            });
-            
-            if (response.ok) {
-                showNotification('✅ Koneksi berhasil! Bin ID valid.', true);
-                document.getElementById('jsonbinStatus').innerHTML = '<span style="color: #10b981;">✅ Terhubung ke JSONBin.io</span>';
-                updateConnectionStatus(true);
-            } else {
-                showNotification('❌ Gagal: Bin ID atau API Key salah!', false);
-                document.getElementById('jsonbinStatus').innerHTML = '<span style="color: #ef4444;">❌ Gagal terhubung. Periksa Bin ID dan API Key.</span>';
-                updateConnectionStatus(false);
-            }
-        } catch(e) {
-            showNotification('❌ Error: ' + e.message, false);
-            document.getElementById('jsonbinStatus').innerHTML = '<span style="color: #ef4444;">❌ Error: ' + e.message + '</span>';
-            updateConnectionStatus(false);
-        }
-    }
-
-    function updateConnectionStatus(isConnected = null) {
-        const statusSpan = document.getElementById('connectionStatus');
-        if (isConnected === true) {
-            statusSpan.className = 'status-badge status-connected';
-            statusSpan.textContent = 'Terhubung';
-        } else if (isConnected === false) {
-            statusSpan.className = 'status-badge status-disconnected';
-            statusSpan.textContent = 'Gagal Konek';
-        } else {
-            if (jsonbinBinId && jsonbinApiKey) {
-                statusSpan.className = 'status-badge status-disconnected';
-                statusSpan.textContent = 'Belum Test';
-            } else {
-                statusSpan.className = 'status-badge status-disconnected';
-                statusSpan.textContent = 'Belum Setting';
-            }
-        }
-    }
-
-    async function publishToBlog() {
-        if (!window.htmlForBlog) {
-            showNotification('⚠️ Generate tabel dulu!', false);
-            return;
-        }
-        
-        if (!jsonbinBinId || !jsonbinApiKey) {
-            showNotification('⚠️ Isi konfigurasi JSONBin.io dulu (Bin ID & API Key)!', false);
-            document.querySelector('.jsonbin-panel').scrollIntoView({ behavior: 'smooth' });
-            return;
-        }
-        
-        showNotification('📤 Mempublish ke blog...', true);
-        
-        try {
-            const response = await fetch(`https://api.jsonbin.io/v3/b/${jsonbinBinId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Master-Key': jsonbinApiKey
-                },
-                body: JSON.stringify({
-                    htmlForBlog: window.htmlForBlog,
-                    lastUpdate: new Date().toLocaleString('id-ID'),
-                    settings: {
-                        borderColor: settings.borderColor,
-                        headerColor: settings.headerColor,
-                        fontSize: settings.fontSize,
-                        fontFamily: settings.fontFamily
-                    },
-                    version: 2
-                })
-            });
-            
-            if (response.ok) {
-                const lastPublish = new Date().toLocaleString('id-ID');
-                localStorage.setItem('lastPublish', lastPublish);
-                showNotification(`✅ BERHASIL! Blog akan update dalam 1-2 menit. (${lastPublish})`, true);
-                document.getElementById('jsonbinStatus').innerHTML = `<span style="color: #10b981;">✅ Terakhir publish: ${lastPublish}</span>`;
-                updateConnectionStatus(true);
-            } else {
-                const error = await response.text();
-                showNotification('❌ Gagal: ' + error.substring(0, 100), false);
-                document.getElementById('jsonbinStatus').innerHTML = '<span style="color: #ef4444;">❌ Gagal publish. Cek Bin ID dan API Key.</span>';
-                updateConnectionStatus(false);
-            }
-        } catch(e) {
-            showNotification('❌ Error: ' + e.message, false);
-            document.getElementById('jsonbinStatus').innerHTML = '<span style="color: #ef4444;">❌ Error: ' + e.message + '</span>';
-            updateConnectionStatus(false);
-        }
-    }
-
-    function openJsonbinTutorial() {
-        const tutorial = `
-📖 CARA DAPATKAN BIN ID & API KEY DARI JSONBIN.IO:
-
-1. Buka https://jsonbin.io
-2. Daftar gratis (pakai Google atau email)
-3. Setelah login, klik "Create Bin"
-4. Isi sembarang: { "test": "data" }
-5. Klik "Create"
-6. Di halaman bin, copy BIN ID (contoh: 67f0f5a68960c979a574e3b5)
-7. Klik avatar di pojok kanan → Account
-8. Klik "API Keys" → Copy "Master Key"
-
-Masukkan kedua kode tersebut ke kolom di atas.
-
-⚠️ GRATIS! Bisa untuk 100.000 request per bulan.
-        `;
-        alert(tutorial);
-    }
-
-    // Auto generate pertama kali
-    setTimeout(() => {
-        generateTables();
-        if (jsonbinBinId && jsonbinApiKey) {
-            testConnection();
-        }
-    }, 100);
 </script>
 </body>
 </html>
