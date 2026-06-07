@@ -233,7 +233,6 @@
             font-size: 1em;
         }
 
-        /* Settings Panel */
         .settings-panel {
             background: var(--bg-secondary);
             border-radius: 16px;
@@ -433,21 +432,6 @@
             .font-options {
                 grid-template-columns: repeat(2, 1fr);
             }
-            .match-table-preview {
-                display: block;
-                width: 100%;
-                overflow: visible;
-            }
-            .match-table-preview th,
-            .match-table-preview td {
-                padding: 10px 8px;
-                font-size: 12px;
-                word-break: break-word;
-            }
-            .preview-area {
-                overflow-x: visible;
-                padding: 12px;
-            }
         }
     </style>
 </head>
@@ -486,7 +470,7 @@ ENGLISH PREMIER LEAGUE
             </div>
         </div>
 
-        <!-- SETTINGS SECTION - LENGKAP SEBELUMNYA -->
+        <!-- SETTINGS SECTION -->
         <div class="settings-panel">
             <div class="settings-title">🎨 Pengaturan Tampilan</div>
             
@@ -565,7 +549,7 @@ ENGLISH PREMIER LEAGUE
             </div>
         </div>
 
-        <!-- EMBED INFO SECTION (Muncul saat klik Publish) -->
+        <!-- EMBED INFO SECTION -->
         <div class="embed-info" id="embedInfo" style="display: none;">
             <div style="font-weight: 700; margin-bottom: 10px;">✅ SCRIPT UNTUK BLOG (Cukup Pasang SEKALI):</div>
             <div class="embed-code" id="embedCode"></div>
@@ -584,7 +568,7 @@ ENGLISH PREMIER LEAGUE
             <div id="tablesContainer" class="tables-container"></div>
             
             <label style="color: var(--bg-dark); font-size: 1.1em; margin: 30px 0 15px 0; display: block; font-weight: 700;">
-                📝 HTML untuk Blog:
+                📝 HTML untuk Blog (Copy-paste Manual):
             </label>
             <div class="preview-area">
                 <pre id="previewOutput">Generate tabel untuk melihat HTML...</pre>
@@ -600,7 +584,6 @@ ENGLISH PREMIER LEAGUE
 <div class="notification" id="notification">✓ Berhasil disalin!</div>
 
 <script>
-    // ========== SEMUA FUNGSI ASLI TIDAK DIUBAH ==========
     const settings = {
         borderColor: '#FFD700',
         headerColor: '#FFD700',
@@ -852,7 +835,7 @@ ENGLISH PREMIER LEAGUE
             container.innerHTML += tableHTML;
         });
 
-        // HTML UNTUK BLOG - MENGGUNAKAN SETTINGS YANG SUDAH ADA
+        // HTML UNTUK BLOG - SAMA PERSIS DENGAN HASIL GENERATE PERTAMA
         const headerBackgroundForBlog = `linear-gradient(90deg, #1a1a1a, ${settings.headerColor}, #1a1a1a)`;
         const headerBrightness = getBrightness(settings.headerColor);
         const headerTextColorAuto = headerBrightness > 128 ? '#000000' : '#FFFFFF';
@@ -928,11 +911,11 @@ ENGLISH PREMIER LEAGUE
 
         const { todayStr, tomorrowStr } = getDates();
         
-        // Generate embed script untuk blog
+        // Generate embed script untuk blog - DIPERBAIKI
         const embedScript = `<div id="prediksi-bola-widget"></div>
 <script>
 (function() {
-    const data = ${JSON.stringify({
+    const prediksiData = ${JSON.stringify({
         lastUpdate: new Date().toISOString(),
         settings: settings,
         leagues: currentLeagues,
@@ -955,31 +938,29 @@ ENGLISH PREMIER LEAGUE
         html += '</div>';
         html += '<style>@keyframes prediksi-bola-marquee-animation{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}.prediksi-bola-table{width:100%!important;table-layout:fixed!important;border-collapse:collapse!important}.prediksi-bola-table th,.prediksi-bola-table td{overflow-wrap:break-word!important;word-break:break-word!important;white-space:normal!important}@media (max-width:768px){.prediksi-bola-marquee-text{font-size:16px!important;animation:prediksi-bola-marquee-animation 20s linear infinite!important}}@media (max-width:480px){.prediksi-bola-marquee-text{font-size:14px!important;animation:prediksi-bola-marquee-animation 15s linear infinite!important}}</style>';
         
-        data.leagues.forEach(league => {
+        for (let i = 0; i < data.leagues.length; i++) {
+            const league = data.leagues[i];
             html += '<div style="margin-bottom:25px;border:1px solid ' + s.borderColor + ';border-radius:8px;overflow:hidden;">';
             html += '<div style="background:' + headerBackground + ';color:' + headerTextColorAuto + ';padding:12px;text-align:center;font-weight:bold;font-size:' + (parseInt(s.fontSize) + 4) + 'px;">' + league.name + '</div>';
             html += '<table class="prediksi-bola-table" style="background:' + s.tableBgColor + ';font-size:' + s.fontSize + 'px;">';
             html += '<thead><tr style="background:' + s.headerColor + '15;"><th style="padding:10px;color:' + s.headerColor + ';border-bottom:1px solid ' + s.borderColor + ';">Tanggal & Waktu</th><th style="padding:10px;color:' + s.headerColor + ';border-bottom:1px solid ' + s.borderColor + ';">Pertandingan</th><th style="padding:10px;color:' + s.headerColor + ';border-bottom:1px solid ' + s.borderColor + ';">Skor</th></tr></thead>';
             html += '<tbody>';
-            league.matches.forEach(match => {
-                html += '<tr><td style="padding:8px 10px;color:' + s.textColor + 'cc;border-bottom:1px solid ' + s.borderColor + '22;">' + match.date + ' ' + match.time + '<br><small>' + match.timezone + '</small></td>';
+            for (let j = 0; j < league.matches.length; j++) {
+                const match = league.matches[j];
+                html += '<tr>';
+                html += '<td style="padding:8px 10px;color:' + s.textColor + 'cc;border-bottom:1px solid ' + s.borderColor + '22;">' + match.date + ' ' + match.time + '<br><small>' + match.timezone + '</small></td>';
                 html += '<td style="padding:8px 10px;color:' + s.textColor + ';border-bottom:1px solid ' + s.borderColor + '22;"><strong>' + match.team1 + '</strong> VS <strong>' + match.team2 + '</strong></td>';
                 html += '<td style="padding:8px 10px;color:' + s.scoreColor + ';font-weight:bold;border-bottom:1px solid ' + s.borderColor + '22;">' + match.score1 + ' : ' + match.score2 + '</td>';
-                html += '}</tr>';
-            });
+                html += '</tr>';
+            }
             html += '</tbody></table></div>';
-        });
+        }
         html += '</div>';
         
         container.innerHTML = html;
     }
     
-    renderPrediksi(data);
-    
-    // Auto refresh setiap 5 menit
-    setInterval(function() {
-        location.reload();
-    }, 300000);
+    renderPrediksi(prediksiData);
 })();
 <\/script>`;
 
