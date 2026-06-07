@@ -227,12 +227,6 @@
             color: var(--text-primary);
         }
 
-        .score-preview {
-            font-weight: 700;
-            color: var(--bg-dark);
-            font-size: 1em;
-        }
-
         .settings-panel {
             background: var(--bg-secondary);
             border-radius: 16px;
@@ -412,6 +406,15 @@
             overflow-y: auto;
         }
 
+        .data-endpoint-info {
+            background: #e0f2fe;
+            border-left: 4px solid #0284c7;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 12px;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
@@ -554,7 +557,7 @@ ENGLISH PREMIER LEAGUE
             <div style="font-weight: 700; margin-bottom: 10px;">✅ SCRIPT UNTUK BLOG (Cukup Pasang SEKALI):</div>
             <div class="embed-code" id="embedCode"></div>
             <div style="font-size: 12px; margin-top: 10px; color: #10b981;">
-                ⚡ Setiap Anda klik "Generate Tabel" lalu "Publish ke Blog", blog akan otomatis update!
+                ⚡ Setiap Anda klik "Publish ke Blog", data akan tersimpan. Blog akan otomatis menampilkan data terbaru saat di-refresh.
             </div>
             <button class="btn btn-copy" style="margin-top: 10px; width: auto; min-width: auto;" onclick="copyEmbedScript()">
                 📋 Copy Script untuk Blog
@@ -787,6 +790,19 @@ ENGLISH PREMIER LEAGUE
         return leagues;
     }
 
+    function saveDataToLocalStorage() {
+        const { todayStr, tomorrowStr } = getDates();
+        const dataToSave = {
+            lastUpdate: new Date().toISOString(),
+            settings: settings,
+            leagues: currentLeagues,
+            todayStr: todayStr,
+            tomorrowStr: tomorrowStr
+        };
+        localStorage.setItem('prediksiBolaData', JSON.stringify(dataToSave));
+        return dataToSave;
+    }
+
     function generateTables() {
         const input = document.getElementById('matchInput').value;
         currentLeagues = parseInput(input);
@@ -835,7 +851,7 @@ ENGLISH PREMIER LEAGUE
             container.innerHTML += tableHTML;
         });
 
-        // HTML UNTUK BLOG - SAMA PERSIS DENGAN HASIL GENERATE PERTAMA
+        // HTML UNTUK BLOG
         const headerBackgroundForBlog = `linear-gradient(90deg, #1a1a1a, ${settings.headerColor}, #1a1a1a)`;
         const headerBrightness = getBrightness(settings.headerColor);
         const headerTextColorAuto = headerBrightness > 128 ? '#000000' : '#FFFFFF';
@@ -879,7 +895,10 @@ ENGLISH PREMIER LEAGUE
         window.htmlForBlog = htmlForBlog;
         preview.textContent = htmlForBlog;
         
-        showNotification('✓ Tabel berhasil digenerate!', true);
+        // Simpan ke localStorage
+        saveDataToLocalStorage();
+        
+        showNotification('✓ Tabel berhasil digenerate! Data sudah tersimpan.', true);
     }
 
     function getBrightness(hexColor) {
@@ -909,19 +928,17 @@ ENGLISH PREMIER LEAGUE
             return;
         }
 
-        const { todayStr, tomorrowStr } = getDates();
+        // Simpan data terlebih dahulu
+        const savedData = saveDataToLocalStorage();
         
-        // Generate embed script untuk blog - DIPERBAIKI
+        // Dapatkan URL dashboard saat ini
+        const dashboardUrl = window.location.href.split('?')[0];
+        
+        // Buat script embed yang akan mengambil data dari dashboard ini
         const embedScript = `<div id="prediksi-bola-widget"></div>
 <script>
 (function() {
-    const prediksiData = ${JSON.stringify({
-        lastUpdate: new Date().toISOString(),
-        settings: settings,
-        leagues: currentLeagues,
-        todayStr: todayStr,
-        tomorrowStr: tomorrowStr
-    })};
+    const DASHBOARD_URL = '${dashboardUrl}';
     
     function renderPrediksi(data) {
         const container = document.getElementById('prediksi-bola-widget');
@@ -953,14 +970,52 @@ ENGLISH PREMIER LEAGUE
                 html += '<td style="padding:8px 10px;color:' + s.scoreColor + ';font-weight:bold;border-bottom:1px solid ' + s.borderColor + '22;">' + match.score1 + ' : ' + match.score2 + '</td>';
                 html += '</tr>';
             }
-            html += '</tbody></table></div>';
+            html += '</tbody></tr></div>';
         }
         html += '</div>';
         
         container.innerHTML = html;
     }
     
-    renderPrediksi(prediksiData);
+    function loadData() {
+        // Coba ambil data dari localStorage dashboard (jika iframe) atau dari server
+        try {
+            // Cek apakah data tersedia di localStorage (jika dashboard dan blog satu domain)
+            const localData = localStorage.getItem('prediksiBolaData');
+            if (localData) {
+                const data = JSON.parse(localData);
+                if (data && data.leagues && data.leagues.length > 0) {
+                    renderPrediksi(data);
+                    return;
+                }
+            }
+        } catch(e) {}
+        
+        // Jika tidak ada, coba fetch dari dashboard
+        fetch(DASHBOARD_URL)
+            .then(response => response.text())
+            .then(html => {
+                // Extract data dari script di halaman dashboard
+                const match = html.match(/localStorage\.setItem\('prediksiBolaData', (\[.*?)\);/s);
+                if (match && match[1]) {
+                    try {
+                        const data = JSON.parse(match[1]);
+                        renderPrediksi(data);
+                    } catch(e) {
+                        console.error('Gagal parse data');
+                    }
+                } else {
+                    // Fallback: tampilkan pesan
+                    document.getElementById('prediksi-bola-widget').innerHTML = '<div style="text-align:center;padding:40px;">⚠️ Belum ada data prediksi. Silakan generate di dashboard terlebih dahulu.</div>';
+                }
+            })
+            .catch(error => {
+                console.error('Gagal mengambil data:', error);
+                document.getElementById('prediksi-bola-widget').innerHTML = '<div style="text-align:center;padding:40px;">⚠️ Gagal mengambil data prediksi. Pastikan dashboard aktif.</div>';
+            });
+    }
+    
+    loadData();
 })();
 <\/script>`;
 
@@ -1012,6 +1067,19 @@ LA LIGA
 03/06 01:00 WIB Atletico Madrid VS Sevilla 1 : 0`;
         
         setTimeout(() => applyPreset('dashboard_asli'), 100);
+        
+        // Coba load data yang tersimpan
+        const savedData = localStorage.getItem('prediksiBolaData');
+        if (savedData) {
+            try {
+                const data = JSON.parse(savedData);
+                if (data.leagues && data.leagues.length > 0) {
+                    currentLeagues = data.leagues;
+                    Object.assign(settings, data.settings);
+                    generateTables();
+                }
+            } catch(e) {}
+        }
     });
 </script>
 </body>
