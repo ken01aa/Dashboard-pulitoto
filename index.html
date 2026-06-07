@@ -3,463 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CS LINE PULITOTO - Management System | Secure Login</title>
+    <title>CS LINE PULITOTO - Management System | Real-time Logs</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
     <style>
-        * {
-            transition: all 0.2s ease;
-        }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #eef2f7 100%);
-        }
-        
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(0,0,0,0.05);
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            border-radius: 10px;
-        }
-        
-        .sidebar-modern {
-            background: linear-gradient(180deg, #0f172a 0%, #1e2937 100%);
-            border-right: 1px solid rgba(255,255,255,0.08);
-        }
-        
-        .menu-item {
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .menu-item::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 0;
-            height: 100%;
-            background: linear-gradient(90deg, rgba(59,130,246,0.2), transparent);
-            transition: width 0.3s ease;
-        }
-        .menu-item:hover::before {
-            width: 100%;
-        }
-        
-        .card-modern {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.5);
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.02);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .card-modern:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.15);
-            border-color: rgba(59,130,246,0.3);
-        }
-        
-        .header-modern {
-            background: rgba(255,255,255,0.98);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-        }
-        
-        body.dark-mode {
-            background: linear-gradient(135deg, #0f172a 0%, #1e1b2e 100%);
-        }
-        body.dark-mode .header-modern {
-            background: rgba(30, 41, 59, 0.98);
-            border-bottom-color: rgba(255,255,255,0.05);
-        }
-        body.dark-mode .header-modern .text-gray-700 {
-            color: #e2e8f0;
-        }
-        body.dark-mode .card-modern {
-            background: rgba(30, 41, 59, 0.95);
-            border-color: rgba(255,255,255,0.08);
-        }
-        body.dark-mode .bg-white {
-            background-color: #1e293b !important;
-        }
-        body.dark-mode .text-gray-800,
-        body.dark-mode .text-gray-700 {
-            color: #f1f5f9 !important;
-        }
-        body.dark-mode .text-gray-500 {
-            color: #94a3b8 !important;
-        }
-        body.dark-mode .bg-gray-50 {
-            background-color: #0f172a !important;
-        }
-        body.dark-mode .border-gray-200 {
-            border-color: #334155 !important;
-        }
-        
-        #content-frame {
-            transition: opacity 0.3s ease;
-        }
-        #content-frame.loading {
-            opacity: 0;
-        }
-        
-        .dark-mode-toggle {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            box-shadow: 0 4px 12px rgba(245,158,11,0.3);
-        }
-        .dark-mode-toggle:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 16px rgba(245,158,11,0.4);
-        }
-        
-        .marquee-container {
-            overflow: hidden;
-            white-space: nowrap;
-        }
-        .marquee-content {
-            display: inline-block;
-            animation: marquee 25s linear infinite;
-        }
-        @keyframes marquee {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-        }
-        
-        /* Login Overlay */
-        #login-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #0f172a 0%, #1e2937 100%);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .login-card {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(20px);
-            border-radius: 32px;
-            padding: 48px;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-        }
-        
-        .google-btn {
-            background: white;
-            color: #1e293b;
-            padding: 14px 32px;
-            border-radius: 100px;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            transition: all 0.3s;
-            cursor: pointer;
-            border: none;
-            font-size: 16px;
-        }
-        
-        .google-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
-        }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: rgba(255,255,255,0.1);
-            padding: 8px 16px 8px 12px;
-            border-radius: 100px;
-            margin-right: 16px;
-        }
-        
-        .user-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-        
-        .logout-btn {
-            background: rgba(239, 68, 68, 0.2);
-            color: #ef4444;
-            padding: 8px 16px;
-            border-radius: 100px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .logout-btn:hover {
-            background: #ef4444;
-            color: white;
-        }
-        
-        #main-app {
-            display: none;
-        }
+        /* [STYLE SAMA SEPERTI SEBELUMNYA - TIDAK SAYA UBAH] */
+        * { transition: all 0.2s ease; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #eef2f7 100%); }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #3b82f6, #2563eb); border-radius: 10px; }
+        .sidebar-modern { background: linear-gradient(180deg, #0f172a 0%, #1e2937 100%); border-right: 1px solid rgba(255,255,255,0.08); }
+        .menu-item { position: relative; overflow: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .menu-item::before { content: ''; position: absolute; left: 0; top: 0; width: 0; height: 100%; background: linear-gradient(90deg, rgba(59,130,246,0.2), transparent); transition: width 0.3s ease; }
+        .menu-item:hover::before { width: 100%; }
+        .card-modern { background: rgba(255, 255, 255, 0.95); border-radius: 20px; border: 1px solid rgba(255,255,255,0.5); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.02); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card-modern:hover { transform: translateY(-5px); box-shadow: 0 20px 30px -12px rgba(0,0,0,0.15); border-color: rgba(59,130,246,0.3); }
+        .header-modern { background: rgba(255,255,255,0.98); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0,0,0,0.05); }
+        body.dark-mode { background: linear-gradient(135deg, #0f172a 0%, #1e1b2e 100%); }
+        body.dark-mode .header-modern { background: rgba(30, 41, 59, 0.98); border-bottom-color: rgba(255,255,255,0.05); }
+        body.dark-mode .header-modern .text-gray-700 { color: #e2e8f0; }
+        body.dark-mode .card-modern { background: rgba(30, 41, 59, 0.95); border-color: rgba(255,255,255,0.08); }
+        body.dark-mode .bg-white { background-color: #1e293b !important; }
+        body.dark-mode .text-gray-800, body.dark-mode .text-gray-700 { color: #f1f5f9 !important; }
+        body.dark-mode .text-gray-500 { color: #94a3b8 !important; }
+        body.dark-mode .bg-gray-50 { background-color: #0f172a !important; }
+        body.dark-mode .border-gray-200 { border-color: #334155 !important; }
+        #content-frame { transition: opacity 0.3s ease; }
+        #content-frame.loading { opacity: 0; }
+        .dark-mode-toggle { background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 4px 12px rgba(245,158,11,0.3); }
+        .dark-mode-toggle:hover { transform: scale(1.05); box-shadow: 0 6px 16px rgba(245,158,11,0.4); }
+        .marquee-container { overflow: hidden; white-space: nowrap; }
+        .marquee-content { display: inline-block; animation: marquee 25s linear infinite; }
+        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #0f172a 0%, #1e2937 100%); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+        .login-card { background: rgba(255,255,255,0.1); backdrop-filter: blur(20px); border-radius: 32px; padding: 48px; text-align: center; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
+        .google-btn { background: white; color: #1e293b; padding: 14px 32px; border-radius: 100px; font-weight: 600; display: inline-flex; align-items: center; gap: 12px; transition: all 0.3s; cursor: pointer; border: none; font-size: 16px; }
+        .google-btn:hover { transform: scale(1.05); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2); }
+        .user-info { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.1); padding: 8px 16px 8px 12px; border-radius: 100px; margin-right: 16px; }
+        .user-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
+        .logout-btn { background: rgba(239, 68, 68, 0.2); color: #ef4444; padding: 8px 16px; border-radius: 100px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+        .logout-btn:hover { background: #ef4444; color: white; }
+        #main-app { display: none; }
+        .online-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: #10b981; margin-right: 6px; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        .offline-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: #ef4444; margin-right: 6px; }
     </style>
 </head>
 <body>
 
-    <!-- LOGIN OVERLAY -->
     <div id="login-overlay">
         <div class="login-card">
-            <div class="flex justify-center mb-6">
-                <img src="https://puli32217.com/resources/images/logo.png" alt="Logo" class="h-20 w-auto">
-            </div>
+            <div class="flex justify-center mb-6"><img src="https://puli32217.com/resources/images/logo.png" alt="Logo" class="h-20 w-auto"></div>
             <h1 class="text-3xl font-bold text-white mb-2">CS LINE PULITOTO</h1>
             <p class="text-slate-300 mb-8">Management System v2.0</p>
-            <button id="google-login-btn" class="google-btn">
-                <i class="fab fa-google text-xl"></i>
-                Login dengan Google
-            </button>
+            <button id="google-login-btn" class="google-btn"><i class="fab fa-google text-xl"></i> Login dengan Google</button>
             <p class="text-slate-400 text-xs mt-6">Akses terbatas - Hanya email terdaftar</p>
         </div>
     </div>
 
-    <!-- MAIN APP -->
     <div id="main-app">
         <div class="flex h-screen overflow-hidden">
-            
-            <!-- SIDEBAR -->
             <aside class="w-64 sidebar-modern text-white flex-shrink-0 flex flex-col">
                 <div class="p-6 border-b border-slate-700/50">
-                    <div class="flex justify-center mb-4">
-                        <img src="https://puli32217.com/resources/images/logo.png" alt="Logo PULITOTO" class="h-12 w-auto drop-shadow-lg">
-                    </div>
+                    <div class="flex justify-center mb-4"><img src="https://puli32217.com/resources/images/logo.png" alt="Logo PULITOTO" class="h-12 w-auto drop-shadow-lg"></div>
                     <h1 class="text-xl font-bold text-white tracking-wide bg-gradient-to-r from-blue-400 to-white bg-clip-text text-transparent">CS LINE PULITOTO</h1>
                     <p class="text-xs text-slate-400 mt-1">Management System v2.0</p>
                 </div>
-
                 <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-                    <a href="#" onclick="loadPage('dashboard', this)" data-title="Dashboard Overview" data-menu="dashboard" class="menu-item flex items-center gap-3 px-4 py-3 bg-blue-600 rounded-lg text-white font-medium shadow-lg shadow-blue-500/30">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
-                        Dashboard
-                    </a>
-                    <a href="#" onclick="loadPage('prediksi_bola.html', this)" data-title="Prediksi Bola" data-menu="prediksi" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
-                        PREDIKSI BOLA
-                    </a>
-                    <a href="#" onclick="loadPage('bukti_jp.html', this)" data-title="Bukti Jackpot" data-menu="bukti_jp" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"/></svg>
-                        BUKTI JP
-                    </a>
-                    <a href="#" onclick="loadPage('syair_togel.html', this)" data-title="Syair Togel" data-menu="syair" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/></svg>
-                        SYAIR TOGEL
-                    </a>
-                    <a href="#" onclick="loadPage('RESULT_TOGEL.html', this)" data-title="Result Togel" data-menu="result" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/></svg>
-                        RESULT TOGEL
-                    </a>
-                    <a href="#" onclick="loadPage('CEK_SALDO.HTML', this)" data-title="Cek Saldo" data-menu="saldo" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"/></svg>
-                        CEK SALDO
-                    </a>
-                    <a href="#" onclick="loadPage('LinkPrediksiBola.html', this)" data-title="Link Prediksi Bola" data-menu="link_prediksi" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clip-rule="evenodd"/></svg>
-                        LINK PREDIKSI BOLA
-                    </a>
-                    <a href="#" onclick="loadPage('generator-result.html', this)" data-title="Hasil Result" data-menu="hasil_result" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2H6zm1 2a1 1 0 000 2h6a1 1 0 100-2H7zm6 7a1 1 0 011 1v3a1 1 0 11-2 0v-3a1 1 0 011-1zm-3 3a1 1 0 100 2h.01a1 1 0 100-2H10zm-4 1a1 1 0 011-1h.01a1 1 0 110 2H7a1 1 0 01-1-1zm1-4a1 1 0 100 2h.01a1 1 0 100-2H7zm2 1a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1zm4-4a1 1 0 100 2h.01a1 1 0 100-2H13zM9 9a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd"/></svg>
-                        HASIL RESULT
-                    </a>
-                    <a href="#" onclick="loadPage('notepad-online.html', this)" data-title="Reportan" data-menu="reportan" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/></svg>
-                        REPORTAN
-                    </a>
-                    <a href="#" onclick="loadPage('MINERAYSELISIH.html', this)" data-title="Selisih Mineray" data-menu="selisih_mineray" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/></svg>
-                        SELISIH MINERAY
-                    </a>
-                    <a href="#" onclick="loadPage('JOBDESK.HTML', this)" data-title="Tugas Line" data-menu="tugas_line" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2H6zm1 2a1 1 0 000 2h6a1 1 0 100-2H7zm6 7a1 1 0 011 1v3a1 1 0 11-2 0v-3a1 1 0 011-1zm-3 3a1 1 0 100 2h.01a1 1 0 100-2H10zm-4 1a1 1 0 011-1h.01a1 1 0 110 2H7a1 1 0 01-1-1zm1-4a1 1 0 100 2h.01a1 1 0 100-2H7zm2 1a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1zm4-4a1 1 0 100 2h.01a1 1 0 100-2H13zM9 9a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd"/></svg>
-                        TUGAS LINE
-                    </a>
-                    <a href="#" onclick="loadPage('YOUTUBE.HTML', this)" data-title="YouTube" data-menu="youtube" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
-                        YOUTUBE
-                    </a>
+                    <a href="#" onclick="loadPage('dashboard', this)" data-title="Dashboard Overview" data-menu="dashboard" class="menu-item flex items-center gap-3 px-4 py-3 bg-blue-600 rounded-lg text-white font-medium shadow-lg shadow-blue-500/30"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg> Dashboard</a>
+                    <a href="#" onclick="loadPage('prediksi_bola.html', this)" data-title="Prediksi Bola" data-menu="prediksi" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg> PREDIKSI BOLA</a>
+                    <a href="#" onclick="loadPage('bukti_jp.html', this)" data-title="Bukti Jackpot" data-menu="bukti_jp" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"/></svg> BUKTI JP</a>
+                    <a href="#" onclick="loadPage('syair_togel.html', this)" data-title="Syair Togel" data-menu="syair" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/></svg> SYAIR TOGEL</a>
+                    <a href="#" onclick="loadPage('RESULT_TOGEL.html', this)" data-title="Result Togel" data-menu="result" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/></svg> RESULT TOGEL</a>
+                    <a href="#" onclick="loadPage('CEK_SALDO.HTML', this)" data-title="Cek Saldo" data-menu="saldo" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"/></svg> CEK SALDO</a>
+                    <a href="#" onclick="loadPage('LinkPrediksiBola.html', this)" data-title="Link Prediksi Bola" data-menu="link_prediksi" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clip-rule="evenodd"/></svg> LINK PREDIKSI BOLA</a>
+                    <a href="#" onclick="loadPage('generator-result.html', this)" data-title="Hasil Result" data-menu="hasil_result" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2H6zm1 2a1 1 0 000 2h6a1 1 0 100-2H7zm6 7a1 1 0 011 1v3a1 1 0 11-2 0v-3a1 1 0 011-1zm-3 3a1 1 0 100 2h.01a1 1 0 100-2H10zm-4 1a1 1 0 011-1h.01a1 1 0 110 2H7a1 1 0 01-1-1zm1-4a1 1 0 100 2h.01a1 1 0 100-2H7zm2 1a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1zm4-4a1 1 0 100 2h.01a1 1 0 100-2H13zM9 9a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd"/></svg> HASIL RESULT</a>
+                    <a href="#" onclick="loadPage('notepad-online.html', this)" data-title="Reportan" data-menu="reportan" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/></svg> REPORTAN</a>
+                    <a href="#" onclick="loadPage('MINERAYSELISIH.html', this)" data-title="Selisih Mineray" data-menu="selisih_mineray" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/></svg> SELISIH MINERAY</a>
+                    <a href="#" onclick="loadPage('JOBDESK.HTML', this)" data-title="Tugas Line" data-menu="tugas_line" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2H6zm1 2a1 1 0 000 2h6a1 1 0 100-2H7zm6 7a1 1 0 011 1v3a1 1 0 11-2 0v-3a1 1 0 011-1zm-3 3a1 1 0 100 2h.01a1 1 0 100-2H10zm-4 1a1 1 0 011-1h.01a1 1 0 110 2H7a1 1 0 01-1-1zm1-4a1 1 0 100 2h.01a1 1 0 100-2H7zm2 1a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1zm4-4a1 1 0 100 2h.01a1 1 0 100-2H13zM9 9a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd"/></svg> TUGAS LINE</a>
+                    <a href="#" onclick="loadPage('YOUTUBE.HTML', this)" data-title="YouTube" data-menu="youtube" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg> YOUTUBE</a>
                 </nav>
-
-                <div class="p-4 border-t border-slate-700/50">
-                    <p class="text-xs text-slate-500 text-center">© 2025 CS LINE PULITOTO</p>
-                </div>
+                <div class="p-4 border-t border-slate-700/50"><p class="text-xs text-slate-500 text-center">© 2025 CS LINE PULITOTO</p></div>
             </aside>
 
-            <!-- AREA KANAN -->
             <div class="flex-1 flex flex-col overflow-hidden">
-                
                 <header class="header-modern shadow-sm px-8 py-3 flex items-center justify-between">
-                    <div class="flex-1 marquee-container">
-                        <div class="marquee-content text-md font-semibold text-gray-700">
-                            <i class="fas fa-chart-line text-blue-500 mr-2"></i>
-                            Selamat Datang di Dashboard Tools PULITOTO — Gunakan menu di sebelah kiri untuk mengakses berbagai fitur.
-                        </div>
-                    </div>
+                    <div class="flex-1 marquee-container"><div class="marquee-content text-md font-semibold text-gray-700"><i class="fas fa-chart-line text-blue-500 mr-2"></i> Selamat Datang di Dashboard Tools PULITOTO — Realtime monitoring aktivitas user.</div></div>
                     <div class="flex items-center gap-3">
-                        <div id="user-info-container" class="user-info">
-                            <img id="user-avatar" class="user-avatar" src="" alt="Avatar">
-                            <span id="user-name" class="text-white text-sm font-medium"></span>
-                        </div>
-                        <button id="logout-btn" class="logout-btn">
-                            <i class="fas fa-sign-out-alt mr-1"></i> Logout
-                        </button>
-                        <button id="darkModeToggle" class="dark-mode-toggle p-2 rounded-full text-white w-10 h-10 flex items-center justify-center">
-                            <i class="fas fa-moon"></i>
-                        </button>
+                        <div id="user-info-container" class="user-info"><img id="user-avatar" class="user-avatar" src=""><span id="user-name" class="text-white text-sm font-medium"></span></div>
+                        <button id="logout-btn" class="logout-btn"><i class="fas fa-sign-out-alt mr-1"></i> Logout</button>
+                        <button id="darkModeToggle" class="dark-mode-toggle p-2 rounded-full text-white w-10 h-10 flex items-center justify-center"><i class="fas fa-moon"></i></button>
                     </div>
                 </header>
 
                 <main class="flex-1 overflow-hidden bg-gray-50 relative">
-                    
                     <div id="content-dashboard" class="p-8 h-full overflow-y-auto">
-                        
-                        <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                            <i class="fas fa-chart-pie text-blue-500"></i> 
-                            Rekap Total Penggunaan Aplikasi
-                        </h2>
-                        
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6"><i class="fas fa-chart-pie text-blue-500 mr-2"></i> Rekap Total Penggunaan Aplikasi (Realtime)</h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                            <div class="card-modern bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-6 text-white col-span-1 md:col-span-2 lg:col-span-1">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <p class="text-sm uppercase font-semibold opacity-80">Total User Akses</p>
-                                        <p class="text-4xl font-bold mt-2" id="stat-total-user">0</p>
-                                        <p class="text-xs mt-1 opacity-70">User Unik (by Email)</p>
-                                    </div>
-                                    <i class="fas fa-users text-5xl opacity-25"></i>
-                                </div>
-                            </div>
-                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-green-500 hover:shadow-xl transition-all">
-                                <div class="flex items-center justify-between">
-                                    <div><p class="text-sm text-gray-500 font-medium">Prediksi Bola</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-prediksi">0</p></div>
-                                    <div class="bg-green-100 p-3 rounded-full"><i class="fas fa-futbol text-green-600 text-xl"></i></div>
-                                </div>
-                            </div>
-                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-yellow-500 hover:shadow-xl transition-all">
-                                <div class="flex items-center justify-between">
-                                    <div><p class="text-sm text-gray-500 font-medium">Bukti JP</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-bukti_jp">0</p></div>
-                                    <div class="bg-yellow-100 p-3 rounded-full"><i class="fas fa-trophy text-yellow-600 text-xl"></i></div>
-                                </div>
-                            </div>
-                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-purple-500 hover:shadow-xl transition-all">
-                                <div class="flex items-center justify-between">
-                                    <div><p class="text-sm text-gray-500 font-medium">Syair Togel</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-syair">0</p></div>
-                                    <div class="bg-purple-100 p-3 rounded-full"><i class="fas fa-feather-alt text-purple-600 text-xl"></i></div>
-                                </div>
-                            </div>
-                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-red-500 hover:shadow-xl transition-all">
-                                <div class="flex items-center justify-between">
-                                    <div><p class="text-sm text-gray-500 font-medium">Result Togel</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-result">0</p></div>
-                                    <div class="bg-red-100 p-3 rounded-full"><i class="fas fa-chart-line text-red-600 text-xl"></i></div>
-                                </div>
-                            </div>
-                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-teal-500 hover:shadow-xl transition-all">
-                                <div class="flex items-center justify-between">
-                                    <div><p class="text-sm text-gray-500 font-medium">Cek Saldo</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-saldo">0</p></div>
-                                    <div class="bg-teal-100 p-3 rounded-full"><i class="fas fa-wallet text-teal-600 text-xl"></i></div>
-                                </div>
-                            </div>
-                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-indigo-500 hover:shadow-xl transition-all">
-                                <div class="flex items-center justify-between">
-                                    <div><p class="text-sm text-gray-500 font-medium">Hasil Result</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-hasil_result">0</p></div>
-                                    <div class="bg-indigo-100 p-3 rounded-full"><i class="fas fa-database text-indigo-600 text-xl"></i></div>
-                                </div>
-                            </div>
-                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-orange-500 hover:shadow-xl transition-all">
-                                <div class="flex items-center justify-between">
-                                    <div><p class="text-sm text-gray-500 font-medium">Reportan</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-reportan">0</p></div>
-                                    <div class="bg-orange-100 p-3 rounded-full"><i class="fas fa-edit text-orange-600 text-xl"></i></div>
-                                </div>
-                            </div>
-                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-pink-500 hover:shadow-xl transition-all">
-                                <div class="flex items-center justify-between">
-                                    <div><p class="text-sm text-gray-500 font-medium">Selisih Mineray</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-selisih_mineray">0</p></div>
-                                    <div class="bg-pink-100 p-3 rounded-full"><i class="fas fa-calculator text-pink-600 text-xl"></i></div>
-                                </div>
-                            </div>
-                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-cyan-500 hover:shadow-xl transition-all">
-                                <div class="flex items-center justify-between">
-                                    <div><p class="text-sm text-gray-500 font-medium">Tugas Line</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-tugas_line">0</p></div>
-                                    <div class="bg-cyan-100 p-3 rounded-full"><i class="fas fa-clipboard-list text-cyan-600 text-xl"></i></div>
-                                </div>
-                            </div>
-                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-red-600 hover:shadow-xl transition-all">
-                                <div class="flex items-center justify-between">
-                                    <div><p class="text-sm text-gray-500 font-medium">YouTube</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-youtube">0</p></div>
-                                    <div class="bg-red-100 p-3 rounded-full"><i class="fab fa-youtube text-red-600 text-xl"></i></div>
-                                </div>
-                            </div>
+                            <div class="card-modern bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-6 text-white col-span-1 md:col-span-2 lg:col-span-1"><div><p class="text-sm uppercase font-semibold opacity-80">User Online Sekarang</p><p class="text-4xl font-bold mt-2" id="stat-online-users">0</p><p class="text-xs mt-1 opacity-70">Yang sedang login aktif</p></div><i class="fas fa-circle text-green-400 text-2xl opacity-50"></i></div>
+                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-green-500"><div><p class="text-sm text-gray-500 font-medium">Prediksi Bola</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-prediksi">0</p></div><div class="bg-green-100 p-3 rounded-full"><i class="fas fa-futbol text-green-600 text-xl"></i></div></div>
+                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-yellow-500"><div><p class="text-sm text-gray-500 font-medium">Bukti JP</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-bukti_jp">0</p></div><div class="bg-yellow-100 p-3 rounded-full"><i class="fas fa-trophy text-yellow-600 text-xl"></i></div></div>
+                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-purple-500"><div><p class="text-sm text-gray-500 font-medium">Syair Togel</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-syair">0</p></div><div class="bg-purple-100 p-3 rounded-full"><i class="fas fa-feather-alt text-purple-600 text-xl"></i></div></div>
+                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-red-500"><div><p class="text-sm text-gray-500 font-medium">Result Togel</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-result">0</p></div><div class="bg-red-100 p-3 rounded-full"><i class="fas fa-chart-line text-red-600 text-xl"></i></div></div>
+                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-teal-500"><div><p class="text-sm text-gray-500 font-medium">Cek Saldo</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-saldo">0</p></div><div class="bg-teal-100 p-3 rounded-full"><i class="fas fa-wallet text-teal-600 text-xl"></i></div></div>
+                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-indigo-500"><div><p class="text-sm text-gray-500 font-medium">Hasil Result</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-hasil_result">0</p></div><div class="bg-indigo-100 p-3 rounded-full"><i class="fas fa-database text-indigo-600 text-xl"></i></div></div>
+                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-orange-500"><div><p class="text-sm text-gray-500 font-medium">Reportan</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-reportan">0</p></div><div class="bg-orange-100 p-3 rounded-full"><i class="fas fa-edit text-orange-600 text-xl"></i></div></div>
+                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-pink-500"><div><p class="text-sm text-gray-500 font-medium">Selisih Mineray</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-selisih_mineray">0</p></div><div class="bg-pink-100 p-3 rounded-full"><i class="fas fa-calculator text-pink-600 text-xl"></i></div></div>
+                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-cyan-500"><div><p class="text-sm text-gray-500 font-medium">Tugas Line</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-tugas_line">0</p></div><div class="bg-cyan-100 p-3 rounded-full"><i class="fas fa-clipboard-list text-cyan-600 text-xl"></i></div></div>
+                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-red-600"><div><p class="text-sm text-gray-500 font-medium">YouTube</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-youtube">0</p></div><div class="bg-red-100 p-3 rounded-full"><i class="fab fa-youtube text-red-600 text-xl"></i></div></div>
                         </div>
 
-                        <!-- LOG AKTIVITAS -->
                         <div class="card-modern bg-white rounded-xl p-6">
-                            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                                <i class="fas fa-history text-blue-500"></i>
-                                Log Aktivitas Terbaru (by Nama User)
-                            </h3>
+                            <h3 class="text-lg font-bold text-gray-800 mb-4"><i class="fas fa-history text-blue-500 mr-2"></i> Log Aktivitas Terbaru (Update Realtime)</h3>
                             <div class="overflow-x-auto">
                                 <table class="min-w-full text-sm text-left text-gray-500">
-                                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-                                        <tr><th class="px-6 py-3">Waktu</th><th class="px-6 py-3">User</th><th class="px-6 py-3">Email</th><th class="px-6 py-3">Aplikasi</th></tr>
-                                    </thead>
-                                    <tbody id="log-body">
-                                        <tr><td colspan="4" class="text-center py-8 text-gray-400">Memuat data...</td></tr>
-                                    </tbody>
+                                    <thead class="text-xs text-gray-700 uppercase bg-gray-50"><tr><th class="px-6 py-3">Waktu (Server)</th><th class="px-6 py-3">User</th><th class="px-6 py-3">Email</th><th class="px-6 py-3">Aplikasi</th></tr></thead>
+                                    <tbody id="log-body"><tr><td colspan="4" class="text-center py-8 text-gray-400">Memuat data...</td></tr></tbody>
                                 </table>
                             </div>
                         </div>
 
-                        <!-- DAFTAR USER -->
                         <div class="card-modern bg-white rounded-xl p-6 mt-6">
-                            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                                <i class="fas fa-users text-blue-500"></i>
-                                Daftar User (Gmail) yang Pernah Mengakses Dashboard
-                            </h3>
+                            <h3 class="text-lg font-bold text-gray-800 mb-4"><i class="fas fa-users text-blue-500 mr-2"></i> Daftar User (Gmail) & Status Online</h3>
                             <div class="overflow-x-auto">
                                 <table class="min-w-full text-sm text-left text-gray-500">
-                                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-                                        <tr><th class="px-6 py-3">No</th><th class="px-6 py-3">Nama User</th><th class="px-6 py-3">Email (Gmail)</th><th class="px-6 py-3">Total Akses</th><th class="px-6 py-3">Terakhir Akses</th></tr>
-                                    </thead>
-                                    <tbody id="user-stats-body">
-                                        <tr><td colspan="5" class="text-center py-8 text-gray-400">Memuat data...</td></tr>
-                                    </tbody>
+                                    <thead class="text-xs text-gray-700 uppercase bg-gray-50"><tr><th class="px-6 py-3">Status</th><th class="px-6 py-3">Nama User</th><th class="px-6 py-3">Email</th><th class="px-6 py-3">Total Akses</th><th class="px-6 py-3">Terakhir Aktif</th></tr></thead>
+                                    <tbody id="user-stats-body"><tr><td colspan="5" class="text-center py-8 text-gray-400">Memuat data...</td></tr></tbody>
                                 </table>
                             </div>
                         </div>
-
                     </div>
-
                     <iframe id="content-frame" class="w-full h-full absolute top-0 left-0 hidden bg-white" src=""></iframe>
-
                 </main>
             </div>
         </div>
     </div>
 
     <script>
-        // ========== KONFIGURASI FIREBASE ==========
         const firebaseConfig = {
             apiKey: "AIzaSyDehQb6iredmcc-xFGHxe_axBUvDbUOOxM",
             authDomain: "cs-line-pulitoto.firebaseapp.com",
@@ -475,70 +160,80 @@
         const auth = firebase.auth();
         const provider = new firebase.auth.GoogleAuthProvider();
 
-        // ========== DAFTAR EMAIL YANG DIIZINKAN ==========
-        // 🔧 GANTI DENGAN 5 EMAIL ANDA DI SINI 🔧
-        const allowedEmails = [
-            "robbyviera.smb88@gmail.com",
-            "jerrykenny.1122@gmail.com", 
-            "muhammaderfinsyah21@gmail.com",
-            "dandypulungan38@gmail.com",
-            "arifin00cc@gmail.com"
-        ];
+        // DAFTAR EMAIL YANG DIIZINKAN (GANTI SESUAI)
+        const allowedEmails = ["email1@gmail.com", "email2@gmail.com", "email3@gmail.com", "email4@gmail.com", "email5@gmail.com"];
 
         let currentUser = null;
-        let localStats = {
-            prediksi: 0, bukti_jp: 0, syair: 0, result: 0, saldo: 0,
-            link_prediksi: 0, hasil_result: 0, reportan: 0, selisih_mineray: 0,
-            tugas_line: 0, youtube: 0, logs: []
-        };
+        let onlineUsers = new Set();
 
-        function updateUserUI(user) {
-            if (user) {
-                document.getElementById('user-name').innerText = user.displayName || user.email;
-                document.getElementById('user-avatar').src = user.photoURL || 'https://ui-avatars.com/api/?name=' + (user.displayName || 'User');
-                document.getElementById('user-info-container').style.display = 'flex';
-            } else {
-                document.getElementById('user-info-container').style.display = 'none';
+        // Fungsi untuk mendapatkan waktu server Firebase
+        function getServerTime() {
+            const offsetRef = database.ref('.info/serverTimeOffset');
+            return new Promise((resolve) => {
+                offsetRef.once('value', (snap) => {
+                    const offset = snap.val() || 0;
+                    const serverTime = new Date(Date.now() + offset);
+                    const formatted = serverTime.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' ' + serverTime.toLocaleDateString('id-ID');
+                    resolve(formatted);
+                });
+            });
+        }
+
+        // Update status online user
+        async function updateOnlineStatus(isOnline) {
+            if (currentUser) {
+                const statusRef = database.ref('online_users/' + currentUser.uid);
+                if (isOnline) {
+                    await statusRef.set({
+                        name: currentUser.displayName || currentUser.email,
+                        email: currentUser.email,
+                        lastSeen: await getServerTime(),
+                        timestamp: firebase.database.ServerValue.TIMESTAMP
+                    });
+                    // Hapus saat disconnect
+                    statusRef.onDisconnect().remove();
+                } else {
+                    await statusRef.remove();
+                }
             }
         }
 
-        async function saveLoginRecord(user) {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' ' + now.toLocaleDateString('id-ID');
-            try {
-                await database.ref('user_list/' + user.uid).set({
-                    name: user.displayName || user.email,
-                    email: user.email,
-                    photo: user.photoURL || '',
-                    lastLogin: timeString
-                });
-            } catch(e) { console.error(e); }
+        // Hitung user online
+        function countOnlineUsers() {
+            database.ref('online_users').on('value', (snap) => {
+                const count = snap.numChildren();
+                document.getElementById('stat-online-users').innerText = count;
+            });
         }
 
+        // Format timestamp
+        function formatTimestamp(timestamp) {
+            if (!timestamp) return '-';
+            const date = new Date(timestamp);
+            return date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' ' + date.toLocaleDateString('id-ID');
+        }
+
+        let localStats = { prediksi: 0, bukti_jp: 0, syair: 0, result: 0, saldo: 0, link_prediksi: 0, hasil_result: 0, reportan: 0, selisih_mineray: 0, tugas_line: 0, youtube: 0, logs: [] };
+
         async function syncStatsFromFirebase() {
-            try {
-                const snapshot = await database.ref('stats').once('value');
+            database.ref('stats').on('value', (snapshot) => {
                 const firebaseStats = snapshot.val();
                 if (firebaseStats) {
-                    Object.keys(firebaseStats).forEach(key => {
-                        if (key !== 'logs') localStats[key] = firebaseStats[key] || 0;
-                    });
+                    Object.keys(firebaseStats).forEach(key => { if (key !== 'logs') localStats[key] = firebaseStats[key] || 0; });
                     if (firebaseStats.logs) localStats.logs = firebaseStats.logs;
                 }
                 updateStatsView();
-            } catch(e) { updateStatsView(); }
+            });
         }
 
         async function saveToFirebase() {
-            try {
-                await database.ref('stats').set({
-                    prediksi: localStats.prediksi, bukti_jp: localStats.bukti_jp, syair: localStats.syair,
-                    result: localStats.result, saldo: localStats.saldo, link_prediksi: localStats.link_prediksi,
-                    hasil_result: localStats.hasil_result, reportan: localStats.reportan,
-                    selisih_mineray: localStats.selisih_mineray, tugas_line: localStats.tugas_line,
-                    youtube: localStats.youtube, logs: localStats.logs
-                });
-            } catch(e) { console.error(e); }
+            await database.ref('stats').set({
+                prediksi: localStats.prediksi, bukti_jp: localStats.bukti_jp, syair: localStats.syair,
+                result: localStats.result, saldo: localStats.saldo, link_prediksi: localStats.link_prediksi,
+                hasil_result: localStats.hasil_result, reportan: localStats.reportan,
+                selisih_mineray: localStats.selisih_mineray, tugas_line: localStats.tugas_line,
+                youtube: localStats.youtube, logs: localStats.logs
+            });
         }
 
         function saveStats() { saveToFirebase(); }
@@ -547,19 +242,27 @@
             const userMap = {};
             localStats.logs.forEach(log => {
                 if (log.email && log.email !== 'undefined') {
-                    if (!userMap[log.email]) {
-                        userMap[log.email] = { name: log.userName || log.email, email: log.email, total: 0, lastAccess: log.time };
-                    }
+                    if (!userMap[log.email]) userMap[log.email] = { name: log.userName || log.email, email: log.email, total: 0, lastAccess: log.time };
                     userMap[log.email].total++;
                     if (log.time > userMap[log.email].lastAccess) userMap[log.email].lastAccess = log.time;
                 }
             });
-            const tbody = document.getElementById('user-stats-body');
-            if (Object.keys(userMap).length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-400">Belum ada user</td></tr>'; return; }
-            tbody.innerHTML = '';
-            let no = 1;
-            Object.values(userMap).forEach(u => {
-                tbody.innerHTML += `<tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4">${no++}</td><td class="px-6 py-4 font-medium">${u.name}</td><td class="px-6 py-4 text-blue-600">${u.email}</td><td class="px-6 py-4"><span class="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">${u.total} kali</span></td><td class="px-6 py-4">${u.lastAccess}</td></tr>`;
+            database.ref('online_users').on('value', (snap) => {
+                const onlineEmails = new Set();
+                snap.forEach(child => { if (child.val().email) onlineEmails.add(child.val().email); });
+                const tbody = document.getElementById('user-stats-body');
+                if (Object.keys(userMap).length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-400">Belum ada user</td></tr>'; return; }
+                tbody.innerHTML = '';
+                Object.values(userMap).forEach(u => {
+                    const isOnline = onlineEmails.has(u.email);
+                    tbody.innerHTML += `<tr class="bg-white border-b hover:bg-gray-50">
+                        <td class="px-6 py-4">${isOnline ? '<span class="online-dot"></span><span class="text-green-600 text-xs">Online</span>' : '<span class="offline-dot"></span><span class="text-red-500 text-xs">Offline</span>'}</td>
+                        <td class="px-6 py-4 font-medium">${u.name}</td>
+                        <td class="px-6 py-4 text-blue-600">${u.email}</td>
+                        <td class="px-6 py-4"><span class="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">${u.total} kali</span></td>
+                        <td class="px-6 py-4">${u.lastAccess}</td>
+                    </tr>`;
+                });
             });
         }
 
@@ -574,36 +277,31 @@
             document.getElementById('stat-selisih_mineray').innerText = localStats.selisih_mineray;
             document.getElementById('stat-tugas_line').innerText = localStats.tugas_line;
             document.getElementById('stat-youtube').innerText = localStats.youtube;
-            
-            const uniqueEmails = [...new Set(localStats.logs.filter(l => l.email && l.email !== 'undefined').map(l => l.email))];
-            document.getElementById('stat-total-user').innerText = uniqueEmails.length;
 
             const logBody = document.getElementById('log-body');
             if (!localStats.logs || localStats.logs.length === 0) {
                 logBody.innerHTML = '<tr><td colspan="4" class="text-center py-8 text-gray-400">Belum ada aktivitas</td></tr>';
             } else {
                 logBody.innerHTML = '';
-                [...localStats.logs].reverse().slice(-20).forEach(log => {
-                    logBody.innerHTML += `<tr class="bg-white border-b hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap">${log.time || '-'}</td><td class="px-6 py-4 font-medium">${log.userName || log.email || 'Tidak dikenal'}</td><td class="px-6 py-4 text-blue-600">${log.email || '-'}</td><td class="px-6 py-4"><span class="px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">${log.app || '-'}</span></td></tr>`;
+                [...localStats.logs].reverse().slice(-50).forEach(log => {
+                    logBody.innerHTML += `<tr class="bg-white border-b hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap">${log.time || '-'}</td>
+                        <td class="px-6 py-4 font-medium">${log.userName || log.email || 'Tidak dikenal'}</td>
+                        <td class="px-6 py-4 text-blue-600">${log.email || '-'}</td>
+                        <td class="px-6 py-4"><span class="px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">${log.app || '-'}</span></td>
+                    </tr>`;
                 });
             }
             displayUserList();
         }
 
-        function addStat(menuKey, appName) {
+        async function addStat(menuKey, appName) {
             if (menuKey !== 'dashboard' && currentUser) {
                 localStats[menuKey] = (localStats[menuKey] || 0) + 1;
-                const now = new Date();
-                const timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' ' + now.toLocaleDateString('id-ID');
-                localStats.logs.unshift({
-                    app: appName, time: timeString,
-                    userName: currentUser.displayName || currentUser.email,
-                    email: currentUser.email,
-                    uid: currentUser.uid
-                });
-                if (localStats.logs.length > 200) localStats.logs = localStats.logs.slice(0, 200);
+                const serverTime = await getServerTime();
+                localStats.logs.unshift({ app: appName, time: serverTime, userName: currentUser.displayName || currentUser.email, email: currentUser.email, uid: currentUser.uid });
+                if (localStats.logs.length > 500) localStats.logs = localStats.logs.slice(0, 500);
                 saveStats();
-                updateStatsView();
             }
         }
 
@@ -611,57 +309,45 @@
             const contentDashboard = document.getElementById('content-dashboard');
             const contentFrame = document.getElementById('content-frame');
             const allMenus = document.querySelectorAll('.menu-item');
-            allMenus.forEach(menu => {
-                menu.classList.remove('bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-500/30');
-                menu.classList.add('text-slate-300', 'hover:bg-slate-800');
-            });
+            allMenus.forEach(menu => { menu.classList.remove('bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-500/30'); menu.classList.add('text-slate-300', 'hover:bg-slate-800'); });
             element.classList.remove('text-slate-300', 'hover:bg-slate-800');
             element.classList.add('bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-500/30');
-            const title = element.getAttribute('data-title');
-            const menuKey = element.getAttribute('data-menu');
+            const title = element.getAttribute('data-title'), menuKey = element.getAttribute('data-menu');
             if (page === 'dashboard') {
-                contentDashboard.classList.remove('hidden');
-                contentFrame.classList.add('hidden');
-                contentFrame.src = "";
-                syncStatsFromFirebase();
+                contentDashboard.classList.remove('hidden'); contentFrame.classList.add('hidden'); contentFrame.src = "";
             } else {
                 addStat(menuKey, title);
-                contentFrame.classList.add('loading');
-                contentDashboard.classList.add('hidden');
-                contentFrame.classList.remove('hidden');
-                contentFrame.src = page;
+                contentFrame.classList.add('loading'); contentDashboard.classList.add('hidden'); contentFrame.classList.remove('hidden'); contentFrame.src = page;
                 setTimeout(() => contentFrame.classList.remove('loading'), 500);
             }
         }
 
+        function updateUserUI(user) {
+            if (user) { document.getElementById('user-name').innerText = user.displayName || user.email; document.getElementById('user-avatar').src = user.photoURL || 'https://ui-avatars.com/api/?name=' + (user.displayName || 'User'); document.getElementById('user-info-container').style.display = 'flex'; }
+            else { document.getElementById('user-info-container').style.display = 'none'; }
+        }
+
         auth.onAuthStateChanged(async (user) => {
             if (user) {
-                if (!allowedEmails.map(e => e.toLowerCase()).includes(user.email.toLowerCase())) {
-                    await auth.signOut();
-                    alert("⚠️ AKSES DITOLAK!\n\nEmail " + user.email + " tidak terdaftar.\nHubungi admin untuk mendapatkan akses.");
-                    return;
-                }
+                if (!allowedEmails.map(e => e.toLowerCase()).includes(user.email.toLowerCase())) { await auth.signOut(); alert("⚠️ AKSES DITOLAK!\n\nEmail " + user.email + " tidak terdaftar."); return; }
                 currentUser = user;
                 document.getElementById('login-overlay').style.display = 'none';
                 document.getElementById('main-app').style.display = 'block';
                 updateUserUI(user);
-                await saveLoginRecord(user);
+                await updateOnlineStatus(true);
+                countOnlineUsers();
                 await syncStatsFromFirebase();
             } else {
+                if (currentUser) await updateOnlineStatus(false);
                 currentUser = null;
                 document.getElementById('login-overlay').style.display = 'flex';
                 document.getElementById('main-app').style.display = 'none';
             }
         });
 
-        document.getElementById('google-login-btn').onclick = () => auth.signInWithPopup(provider).catch(e => alert("Login gagal: " + e.message));
-        document.getElementById('logout-btn').onclick = () => auth.signOut();
-        document.getElementById('darkModeToggle').onclick = () => {
-            document.body.classList.toggle('dark-mode');
-            const icon = document.getElementById('darkModeToggle').querySelector('i');
-            icon.classList.toggle('fa-moon');
-            icon.classList.toggle('fa-sun');
-        };
+        document.getElementById('google-login-btn').onclick = () => auth.signInWithPopup(provider);
+        document.getElementById('logout-btn').onclick = async () => { await updateOnlineStatus(false); auth.signOut(); };
+        document.getElementById('darkModeToggle').onclick = () => { document.body.classList.toggle('dark-mode'); const icon = document.getElementById('darkModeToggle').querySelector('i'); icon.classList.toggle('fa-moon'); icon.classList.toggle('fa-sun'); };
     </script>
 </body>
 </html>
