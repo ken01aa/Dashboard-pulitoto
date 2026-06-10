@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Auto Hapus Komentar YouTube - OAuth</title>
+<title>Komentar Negatif YouTube - Firebase Sync</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
 }
 
 :root {
@@ -21,15 +21,14 @@
     --accent-info: #3b82f6;
     --accent-danger: #ef4444;
     --accent-success: #10b981;
-    --accent-warning: #f59e0b;
 }
 
-body {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    background: #f8fafc;
-    color: var(--text-primary);
-    padding: 25px;
-    min-height: 100vh;
+body{
+font-family: 'Plus Jakarta Sans', sans-serif;
+background: #f8fafc;
+color: var(--text-primary);
+padding: 25px;
+min-height: 100vh;
 }
 
 .bg-pattern {
@@ -43,109 +42,109 @@ body {
     clip-path: ellipse(120% 100% at 50% 0%);
 }
 
-.container {
-    position: relative;
-    z-index: 10;
-    max-width: 1700px;
-    margin: auto;
+.container{
+position: relative;
+z-index: 10;
+max-width: 1700px;
+margin: auto;
 }
 
-.topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    margin-bottom: 25px;
-    background: white;
-    padding: 20px 28px;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+.topbar{
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 20px;
+flex-wrap: wrap;
+margin-bottom: 25px;
+background: white;
+padding: 20px 28px;
+border-radius: 20px;
+border: 1px solid var(--border);
+box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
 }
 
-.logo {
-    font-size: 28px;
-    font-weight: 700;
-    font-family: 'Space Grotesk', sans-serif;
-    color: var(--cover-color);
+.logo{
+font-size: 28px;
+font-weight: 700;
+font-family: 'Space Grotesk', sans-serif;
+color: var(--cover-color);
 }
 
-.logo span {
-    color: var(--accent-danger);
+.logo span{
+color: var(--accent-info);
 }
 
-.status-grid {
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
+.status-grid{
+display: flex;
+gap: 15px;
+flex-wrap: wrap;
 }
 
-.status-card {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border);
-    padding: 14px 20px;
-    border-radius: 16px;
-    min-width: 140px;
+.status-card{
+background: var(--bg-secondary);
+border: 1px solid var(--border);
+padding: 14px 20px;
+border-radius: 16px;
+min-width: 140px;
 }
 
-.status-title {
-    font-size: 11px;
-    color: var(--text-secondary);
-    margin-bottom: 5px;
-    font-weight: 600;
+.status-title{
+font-size: 11px;
+color: var(--text-muted);
+margin-bottom: 5px;
+font-weight: 600;
 }
 
-.status-value {
-    font-size: 20px;
-    font-weight: 700;
-    font-family: 'Space Grotesk', sans-serif;
+.status-value{
+font-size: 20px;
+font-weight: 700;
+font-family: 'Space Grotesk', sans-serif;
 }
 
-.online {
-    color: #10b981;
+.online{
+color: #10b981;
 }
 
-.setting-panel {
-    background: white;
-    border: 1px solid var(--border);
-    padding: 20px 24px;
-    border-radius: 20px;
-    margin-bottom: 25px;
+.setting-panel{
+background: white;
+border: 1px solid var(--border);
+padding: 20px 24px;
+border-radius: 20px;
+margin-bottom: 25px;
 }
 
-.setting-row {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    flex-wrap: wrap;
+.setting-row{
+display: flex;
+gap: 15px;
+align-items: center;
+flex-wrap: wrap;
 }
 
-input, select {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border);
-    padding: 12px 16px;
-    border-radius: 12px;
-    font-size: 14px;
-    outline: none;
-    width: 200px;
+input{
+background: var(--bg-secondary);
+border: 1px solid var(--border);
+padding: 12px 16px;
+border-radius: 12px;
+font-size: 14px;
+outline: none;
+width: 200px;
 }
 
-button {
-    background: var(--cover-color);
-    border: none;
-    padding: 12px 22px;
-    border-radius: 12px;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 13px;
-    transition: 0.3s;
+button{
+background: var(--cover-color);
+border: none;
+padding: 12px 22px;
+border-radius: 12px;
+color: white;
+font-weight: 600;
+cursor: pointer;
+font-size: 13px;
+transition: 0.3s;
 }
 
-button:hover {
-    transform: translateY(-2px);
-    background: #1e293b;
+button:hover{
+transform: translateY(-2px);
+background: #1e293b;
 }
 
 button.danger-btn {
@@ -160,37 +159,6 @@ button.success-btn {
 }
 button.success-btn:hover {
     background: #059669;
-}
-
-button.warning-btn {
-    background: var(--accent-warning);
-}
-button.warning-btn:hover {
-    background: #d97706;
-}
-
-.btn-google {
-    background: #fff;
-    color: #333;
-    border: 1px solid #ddd;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-}
-.btn-google:hover {
-    background: #f5f5f5;
-    transform: none;
-}
-
-.login-info {
-    background: #e0f2fe;
-    border: 1px solid #7dd3fc;
-    border-radius: 12px;
-    padding: 8px 16px;
-    font-size: 13px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
 }
 
 .tabs {
@@ -223,129 +191,111 @@ button.warning-btn:hover {
     display: block;
 }
 
-.video-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 25px;
+.video-grid{
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+gap: 25px;
 }
 
-.video-card {
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    overflow: hidden;
-    transition: 0.3s;
+.video-card{
+background: white;
+border: 1px solid var(--border);
+border-radius: 20px;
+overflow: hidden;
+transition: 0.3s;
 }
 
-.video-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 25px rgba(15, 23, 42, 0.1);
+.video-card:hover{
+transform: translateY(-2px);
+box-shadow: 0 12px 25px rgba(15, 23, 42, 0.1);
 }
 
-.video-header {
-    padding: 14px 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    border-bottom: 1px solid var(--border);
+.video-header{
+padding: 14px 16px;
+display: flex;
+justify-content: space-between;
+align-items: flex-start;
+border-bottom: 1px solid var(--border);
 }
 
-.video-title {
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 1.4;
-    flex: 1;
+.video-title{
+font-size: 14px;
+font-weight: 600;
+line-height: 1.4;
+flex: 1;
 }
 
-.comment-count {
-    background: var(--bg-secondary);
-    padding: 4px 12px;
-    border-radius: 30px;
-    font-size: 11px;
-    font-weight: 600;
+.comment-count{
+background: var(--bg-secondary);
+padding: 4px 12px;
+border-radius: 30px;
+font-size: 11px;
+font-weight: 600;
 }
 
-.thumbnail-box {
-    display: block;
-    width: 100%;
-    height: 200px;
-    overflow: hidden;
+.thumbnail-box{
+display: block;
+width: 100%;
+height: 200px;
+overflow: hidden;
 }
 
-.thumbnail-box img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: 0.3s;
+.thumbnail-box img{
+width: 100%;
+height: 100%;
+object-fit: cover;
+transition: 0.3s;
 }
 
-.thumbnail-box:hover img {
-    transform: scale(1.03);
+.thumbnail-box:hover img{
+transform: scale(1.03);
 }
 
-.comment-section {
-    padding: 16px;
-    max-height: 350px;
-    overflow-y: auto;
-    background: var(--bg-secondary);
+.comment-section{
+padding: 16px;
+max-height: 350px;
+overflow-y: auto;
+background: var(--bg-secondary);
 }
 
-.comment-item {
-    background: white;
-    border: 1px solid var(--border);
-    padding: 12px;
-    border-radius: 14px;
-    margin-bottom: 12px;
-    position: relative;
+.comment-item{
+background: white;
+border: 1px solid var(--border);
+padding: 12px;
+border-radius: 14px;
+margin-bottom: 12px;
 }
 
-.comment-item.auto-deleted {
-    background: #fef2f2;
-    border-left: 3px solid var(--accent-danger);
+.comment-user{
+display: flex;
+align-items: center;
+gap: 10px;
+margin-bottom: 10px;
 }
 
-.comment-user {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
+.comment-user img{
+width: 36px;
+height: 36px;
+border-radius: 50%;
+border: 1.5px solid var(--accent-info);
+object-fit: cover;
 }
 
-.comment-user img {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: 1.5px solid var(--accent-info);
-    object-fit: cover;
+.comment-name{
+font-size: 13px;
+font-weight: 700;
 }
 
-.comment-name {
-    font-size: 13px;
-    font-weight: 700;
+.comment-time{
+font-size: 10px;
+color: var(--text-muted);
+margin-top: 3px;
 }
 
-.comment-time {
-    font-size: 10px;
-    color: var(--text-secondary);
-    margin-top: 3px;
-}
-
-.comment-text {
-    font-size: 12px;
-    line-height: 1.5;
-    color: var(--text-secondary);
-}
-
-.delete-badge {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: var(--accent-danger);
-    color: white;
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 9px;
-    font-weight: 600;
+.comment-text{
+font-size: 12px;
+line-height: 1.5;
+color: var(--text-secondary);
 }
 
 .deleted-table-container {
@@ -383,46 +333,35 @@ button.warning-btn:hover {
     font-weight: 600;
 }
 
-.toast {
-    position: fixed;
-    top: 25px;
-    right: -400px;
-    width: 360px;
-    background: white;
-    border-left: 4px solid #10b981;
-    border-radius: 16px;
-    padding: 16px;
-    transition: 0.4s;
-    z-index: 999;
-    box-shadow: 0 10px 35px rgba(0,0,0,0.15);
+.toast{
+position: fixed;
+top: 25px;
+right: -400px;
+width: 360px;
+background: white;
+border-left: 4px solid #10b981;
+border-radius: 16px;
+padding: 16px;
+transition: 0.4s;
+z-index: 999;
+box-shadow: 0 10px 35px rgba(0,0,0,0.15);
 }
 
-.toast.show {
-    right: 25px;
+.toast.show{
+right: 25px;
 }
 
-.toast-text {
-    font-size: 13px;
-    color: var(--text-secondary);
+.toast-text{
+font-size: 13px;
+color: var(--text-secondary);
 }
 
-.auto-delete-active {
-    background: #dc2626;
-    animation: pulse 1s infinite;
-}
-
-@keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.7; }
-    100% { opacity: 1; }
-}
-
-@media(max-width: 768px) {
-    body { padding: 15px; }
-    .video-grid { grid-template-columns: 1fr; }
-    .thumbnail-box { height: 180px; }
-    button, input, select { width: 100%; }
-    .toast { width: 90%; right: -90%; }
+@media(max-width: 768px){
+body{padding:15px;}
+.video-grid{grid-template-columns:1fr;}
+.thumbnail-box{height:180px;}
+button,input{width:100%;}
+.toast{width:90%;right:-90%;}
 }
 </style>
 </head>
@@ -431,81 +370,67 @@ button.warning-btn:hover {
 <div class="bg-pattern"></div>
 
 <div class="toast" id="toast">
-    <div class="toast-title">🔔 KOMENTAR BARU</div>
-    <div class="toast-text" id="toastText"></div>
+<div class="toast-title">🔔 KOMENTAR BARU</div>
+<div class="toast-text" id="toastText"></div>
 </div>
 
 <div class="container">
-    <div class="topbar">
-        <div class="logo">
-            AUTO <span>HAPUS KOMENTAR</span>
-        </div>
-        <div class="status-grid">
-            <div class="status-card"><div class="status-title">STATUS</div><div class="status-value online">● ONLINE</div></div>
-            <div class="status-card"><div class="status-title">TOTAL VIDEO</div><div class="status-value" id="totalVideos">0</div></div>
-            <div class="status-card"><div class="status-title">AUTO HAPUS</div><div class="status-value" id="autoDeleteStatus">OFF</div></div>
-            <div class="status-card"><div class="status-title">KOMENTAR DIHAPUS</div><div class="status-value" id="deletedCount">0</div></div>
-        </div>
-    </div>
+<div class="topbar">
+<div class="logo">
+KOMENTAR <span>NEGATIF YOUTUBE</span>
+</div>
+<div class="status-grid">
+<div class="status-card"><div class="status-title">STATUS</div><div class="status-value online">● ONLINE</div></div>
+<div class="status-card"><div class="status-title">TOTAL VIDEO</div><div class="status-value" id="totalVideos">0</div></div>
+<div class="status-card"><div class="status-title">AUTO REFRESH</div><div class="status-value" id="refreshText">30 MENIT</div></div>
+<div class="status-card"><div class="status-title">KOMENTAR DIHAPUS</div><div class="status-value" id="deletedCount">0</div></div>
+</div>
+</div>
 
-    <div class="setting-panel">
-        <div class="setting-row">
-            <div id="loginSection">
-                <button id="googleLoginBtn" class="btn-google">🔑 LOGIN DENGAN GOOGLE</button>
-            </div>
-            <div id="userInfoSection" style="display:none;">
-                <div class="login-info">
-                    <span>✅</span>
-                    <span id="userEmail">-</span>
-                    <button id="logoutBtn" class="danger-btn" style="padding:4px 12px;font-size:11px;">LOGOUT</button>
-                </div>
-            </div>
-            <button id="toggleAutoDeleteBtn" class="danger-btn" disabled>🗑️ AKTIFKAN AUTO HAPUS</button>
-            <button onclick="manualRefresh()">🔄 REFRESH KOMENTAR</button>
-            <button onclick="clearAllHistory()" class="danger-btn">🗑️ HAPUS HISTORY</button>
-            <button onclick="testSound()" class="success-btn">🔊 TEST SUARA</button>
-        </div>
-    </div>
+<div class="setting-panel">
+<div class="setting-row">
+<input type="number" id="refreshInput" placeholder="Menit Refresh" value="30" min="1">
+<button onclick="saveRefresh()">SIMPAN REFRESH</button>
+<button onclick="manualRefresh()">REFRESH SEKARANG</button>
+<button onclick="clearAllHistory()" class="danger-btn">HAPUS SEMUA HISTORY</button>
+<button onclick="testSound()" class="success-btn">🔊 TEST SUARA </button>
+</div>
+</div>
 
-    <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('monitor')">📺 MONITOR KOMENTAR</button>
-        <button class="tab-btn" onclick="switchTab('deleted')">🗑️ KOMENTAR YANG DIHAPUS</button>
-    </div>
+<div class="tabs">
+<button class="tab-btn active" onclick="switchTab('monitor')">📺 MONITOR KOMENTAR</button>
+<button class="tab-btn" onclick="switchTab('deleted')">🗑️ KOMENTAR YANG DIHAPUS</button>
+</div>
 
-    <div id="monitorTab" class="tab-content active">
-        <div class="video-grid" id="videoGrid"></div>
-    </div>
+<div id="monitorTab" class="tab-content active">
+<div class="video-grid" id="videoGrid"></div>
+</div>
 
-    <div id="deletedTab" class="tab-content">
-        <div class="deleted-table-container">
-            <table class="deleted-table">
-                <thead>
-                    <tr><th>Waktu Dihapus</th><th>Pengguna</th><th>Komentar</th><th>Video</th><th>Status</th></tr>
-                </thead>
-                <tbody id="deletedTableBody">
-                    <tr><td colspan="5" style="text-align:center;padding:40px;">⏳ Memuat data dari Firebase...</td></tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+<div id="deletedTab" class="tab-content">
+<div class="deleted-table-container">
+<table class="deleted-table">
+<thead><tr><th>Waktu Dihapus</th><th>Pengguna</th><th>Komentar</th><th>Video</th><th>Status</th></tr></thead>
+<tbody id="deletedTableBody"><tr><td colspan="5" style="text-align:center;padding:40px;">⏳ Memuat data dari Firebase......</td></tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 
 <script>
-// ==================== KONFIGURASI ====================
-// GANTI CLIENT_ID_INI_DENGAN_CLIENT_ID_ANDA dari Google Cloud Console!
-const GOOGLE_CLIENT_ID = "1054729621150-hihuerg6afgn7vmgimhnaf98arel6pjd.apps.googleusercontent.com"; // <=== GANTI INI!
-
+// ==================== FIREBASE CONFIG ====================
 const FIREBASE_URL = "https://monitor-5432a-default-rtdb.asia-southeast1.firebasedatabase.app/";
+const API_KEY = "AIzaSyC0QKWbbW4M9_kRu2e0PQ3psM8RYXv4GDI";
 
 const rawVideos = [
-    { url: "https://youtu.be/dgiQObBtcOY", title: "PULITOTO - Tutorial Lengkap"},
-    { url: "https://youtu.be/b18cWbAKIWw", title: "CARA DAFTAR AKUN BARU"},
-    { url: "https://youtu.be/FwxvsPpT5hk", title: "CARA DEPOSIT VIA BANK & E-WALLET"},
-    { url: "https://youtu.be/4TDTgBHmO4w", title: "CARA WITHDRAW SALDO KE REKENING"},
-    { url: "https://youtu.be/e1y9fQzjISc", title: "DEPOSIT QRIS INSTANT"},
-    { url: "https://youtu.be/XVHQZdBVowI", title: "CARIKAN ID USERNAME"},
-    { url: "https://youtu.be/vjgSH6y7PQ0", title: "APK ANDROID - Install & Login"},
-    { url: "https://youtu.be/vSoh5-Ecg2U", title: "APK IOS - Panduan Lengkap"}
+{ url: "https://youtu.be/dgiQObBtcOY", title: "PULITOTO - Tutorial Lengkap"},
+{ url: "https://youtu.be/b18cWbAKIWw", title: "CARA DAFTAR AKUN BARU"},
+{ url: "https://youtu.be/FwxvsPpT5hk", title: "CARA DEPOSIT VIA BANK & E-WALLET"},
+{ url: "https://youtu.be/4TDTgBHmO4w", title: "CARA WITHDRAW SALDO KE REKENING"},
+{ url: "https://youtu.be/e1y9fQzjISc", title: "DEPOSIT QRIS INSTANT"},
+{ url: "https://youtu.be/XVHQZdBVowI", title: "CARIKAN ID USERNAME"},
+{ url: "https://youtu.be/vjgSH6y7PQ0", title: "APK ANDROID - Install & Login"},
+{ url: "https://youtu.be/vSoh5-Ecg2U", title: "APK IOS - Panduan Lengkap"}
 ];
 
 function extractVideoId(url) {
@@ -519,295 +444,306 @@ function extractVideoId(url) {
 const videos = rawVideos.map(v => ({id: extractVideoId(v.url), title: v.title})).filter(v => v.id);
 document.getElementById("totalVideos").innerText = videos.length;
 
-// ==================== VARIABEL GLOBAL ====================
-let accessToken = null;
-let currentUser = null;
-let autoDeleteActive = false;
-let deletedCommentsLog = [];
+let refreshMinutes = parseInt(localStorage.getItem("refreshMinutes")) || 30;
+let refreshInterval;
 let savedComments = {};
 let savedCommentsDetail = {};
+let deletedCommentsLog = [];
 let isFirstLoad = true;
-let refreshInterval = null;
-let deleteQueue = [];
-let isDeleting = false;
 
-// ==================== OAUTH 2.0 GOOGLE LOGIN ====================
-function initGoogleAuth() {
-    if (!GOOGLE_CLIENT_ID || GOOGLE_CLIENT_ID === "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com") {
-        console.warn("⚠️ Google Client ID belum diisi! Login tidak akan berfungsi.");
-        showToast("⚠️ Silakan ganti GOOGLE_CLIENT_ID dengan Client ID dari Google Cloud Console!");
-        return;
-    }
-    
-    google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: handleCredentialResponse,
-        auto_select: false,
-        cancel_on_tap_outside: true
-    });
-    
-    // Render tombol login
-    google.accounts.id.renderButton(
-        document.getElementById("googleLoginBtn"),
-        { theme: "outline", size: "large", width: 200 }
-    );
-}
-
-function handleCredentialResponse(response) {
-    console.log("🔐 Login response received");
-    
-    // Decode JWT token untuk mendapatkan user info
-    const payload = parseJwt(response.credential);
-    currentUser = {
-        email: payload.email,
-        name: payload.name,
-        picture: payload.picture
-    };
-    
-    // Sekarang dapatkan access token untuk YouTube API
-    requestAccessToken();
-}
-
-function parseJwt(token) {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-    return JSON.parse(jsonPayload);
-}
-
-function requestAccessToken() {
-    // Token endpoint untuk mendapatkan access token
-    // Google One Tap hanya memberikan ID token, perlu request terpisah untuk access token
-    
-    // Metode alternatif: Gunakan token client-side
-    // Untuk YouTube API, kita perlu scope yang tepat
-    
-    // Redirect ke OAuth flow untuk mendapatkan access token dengan scope yang benar
-    const redirectUri = window.location.origin + window.location.pathname;
-    const scope = "https://www.googleapis.com/auth/youtube.force-ssl";
-    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=${encodeURIComponent(scope)}&prompt=consent`;
-    
-    // Simpan current URL untuk redirect balik
-    localStorage.setItem("oauth_redirect", window.location.href);
-    window.location.href = authUrl;
-}
-
-// Handle redirect setelah OAuth
-function handleOAuthRedirect() {
-    const hash = window.location.hash;
-    if (hash && hash.includes("access_token")) {
-        const params = new URLSearchParams(hash.substring(1));
-        accessToken = params.get("access_token");
-        
-        if (accessToken) {
-            localStorage.setItem("youtube_access_token", accessToken);
-            // Ambil user info dari token
-            fetchUserInfo();
-            window.location.hash = "";
-        }
-    }
-    
-    // Cek token yang tersimpan
-    const savedToken = localStorage.getItem("youtube_access_token");
-    if (savedToken && !accessToken) {
-        accessToken = savedToken;
-        fetchUserInfo();
-    }
-}
-
-async function fetchUserInfo() {
-    try {
-        const response = await fetch("https://www.googleapis.com/youtube/v3/channels?part=snippet&mine=true", {
-            headers: { "Authorization": `Bearer ${accessToken}` }
-        });
-        
-        if (response.ok) {
-            const data = await response.json();
-            if (data.items && data.items[0]) {
-                currentUser = {
-                    email: data.items[0].snippet.title,
-                    name: data.items[0].snippet.title,
-                    picture: data.items[0].snippet.thumbnails.default.url
-                };
-                updateUILoginSuccess();
-            }
-        } else if (response.status === 401) {
-            // Token expired
-            localStorage.removeItem("youtube_access_token");
-            accessToken = null;
-            updateUILogout();
-        }
-    } catch(e) {
-        console.error("Error fetching user info:", e);
-    }
-}
-
-function updateUILoginSuccess() {
-    document.getElementById("loginSection").style.display = "none";
-    document.getElementById("userInfoSection").style.display = "block";
-    document.getElementById("userEmail").innerText = currentUser?.email || "Logged In";
-    document.getElementById("toggleAutoDeleteBtn").disabled = false;
-    showToast(`✅ Login berhasil sebagai ${currentUser?.email}`);
-    
-    // Mulai monitoring
-    silentLoadAll();
-}
-
-function updateUILogout() {
-    document.getElementById("loginSection").style.display = "block";
-    document.getElementById("userInfoSection").style.display = "none";
-    document.getElementById("toggleAutoDeleteBtn").disabled = true;
-    document.getElementById("toggleAutoDeleteBtn").innerText = "🗑️ AKTIFKAN AUTO HAPUS";
-    document.getElementById("toggleAutoDeleteBtn").classList.remove("auto-delete-active");
-    autoDeleteActive = false;
-    document.getElementById("autoDeleteStatus").innerText = "OFF";
-    accessToken = null;
-    currentUser = null;
-    localStorage.removeItem("youtube_access_token");
-}
-
-function logout() {
-    autoDeleteActive = false;
-    updateUILogout();
-    showToast("✅ Logout berhasil");
-}
-
-// ==================== AUTO DELETE COMMENT ====================
-async function deleteComment(commentId, videoId, authorName, commentText, videoTitle) {
-    if (!accessToken) {
-        console.log("❌ Tidak ada access token, skip hapus");
-        return false;
-    }
-    
-    try {
-        const response = await fetch(`https://www.googleapis.com/youtube/v3/comments?id=${commentId}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`,
-                'Content-Type': 'application/json'
-            }
-        });
-        
-        if (response.ok) {
-            console.log(`✅ Berhasil menghapus komentar dari ${authorName}`);
-            
-            // Simpan ke history
-            await addDeletedCommentToFirebase(authorName, commentText, videoTitle, videoId, commentId);
-            
-            // Notifikasi dengan suara
-            speakText("SATU KOMENTAR TELAH DIHAPUS");
-            showToast(`🗑️ Komentar dari ${authorName} telah dihapus dari YouTube!`);
-            
-            return true;
-        } else {
-            const error = await response.text();
-            console.error(`❌ Gagal hapus komentar: ${error}`);
-            if (response.status === 401) {
-                // Token expired, minta login ulang
-                showToast("⚠️ Token expired, silakan login ulang");
-                logout();
-            }
-            return false;
-        }
-    } catch(e) {
-        console.error("Error deleting comment:", e);
-        return false;
-    }
-}
-
-// Proses antrian hapus komentar
-async function processDeleteQueue() {
-    if (isDeleting || deleteQueue.length === 0) return;
-    
-    isDeleting = true;
-    
-    while (deleteQueue.length > 0) {
-        const item = deleteQueue.shift();
-        if (autoDeleteActive) {
-            await deleteComment(item.commentId, item.videoId, item.authorName, item.commentText, item.videoTitle);
-            // Delay untuk menghindari rate limit
-            await new Promise(resolve => setTimeout(resolve, 1500));
-        }
-    }
-    
-    isDeleting = false;
-}
-
-// ==================== SUARA CEWEK LEMBUT ====================
+// ==================== SUARA CEWEK LEMBUT BAHASA INDONESIA ====================
 let speechEnabled = true;
+let speechSynthesis = window.speechSynthesis;
+let notificationPermission = false;
 let selectedVoice = null;
 
+// Fungsi untuk mendapatkan suara cewek Indonesia yang lembut
 function getIndonesianFemaleVoice() {
     const voices = speechSynthesis.getVoices();
-    const priorityList = ["Google Bahasa Indonesia", "Microsoft Siti Online", "Siti", "Female", "Perempuan"];
     
+    // Daftar prioritas suara cewek Indonesia (dari yang terbaik)
+    const priorityList = [
+        "Google Bahasa Indonesia",      // Google Assistant (cewek, lembut)
+        "Microsoft Siti Online",        // Microsoft Siti (cewek Indonesia)
+        "Google Bahasa Indonesia",      // alternatif
+        "Siti",                         // Siti Indonesia
+        "Female",                       // generic female
+        "Perempuan"                     // generic perempuan
+    ];
+    
+    // Cari suara yang match dengan prioritas
     for (const priority of priorityList) {
-        const voice = voices.find(v => (v.lang === "id-ID" || v.lang === "id") && v.name.includes(priority));
+        const voice = voices.find(v => 
+            (v.lang === "id-ID" || v.lang === "id") && 
+            v.name.includes(priority)
+        );
         if (voice) return voice;
     }
+    
+    // Fallback: cari suara dengan lang id-ID (Indonesia)
     const indonesianVoice = voices.find(v => v.lang === "id-ID");
     if (indonesianVoice) return indonesianVoice;
+    
+    // Fallback terakhir: cari suara female dengan bahasa apapun
+    const femaleVoice = voices.find(v => 
+        v.name.toLowerCase().includes("female") || 
+        v.name.toLowerCase().includes("perempuan")
+    );
+    if (femaleVoice) return femaleVoice;
+    
+    // Default: suara pertama yang available
     return voices[0];
 }
 
+// Inisialisasi suara (panggil setelah voices loaded)
 function initVoice() {
     const voices = speechSynthesis.getVoices();
     if (voices.length > 0) {
         selectedVoice = getIndonesianFemaleVoice();
+        console.log("✅ Suara terpilih:", selectedVoice?.name, selectedVoice?.lang);
     }
 }
 
+// Load voices (karena kadang perlu waktu)
 if (speechSynthesis) {
-    speechSynthesis.onvoiceschanged = () => initVoice();
+    speechSynthesis.onvoiceschanged = () => {
+        initVoice();
+    };
+    // Coba langsung
     setTimeout(() => initVoice(), 500);
 }
 
+// Fungsi untuk mengucapkan teks dengan suara cewek lembut
 function speakText(text) {
     if (!speechEnabled) return;
+    
     try {
-        if (speechSynthesis.speaking) speechSynthesis.cancel();
+        // Hentikan suara yang sedang berlangsung
+        if (speechSynthesis.speaking) {
+            speechSynthesis.cancel();
+        }
+        
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = "id-ID";
-        utterance.rate = 0.85;
-        utterance.pitch = 1.15;
-        utterance.volume = 1.0;
-        if (selectedVoice) utterance.voice = selectedVoice;
+        utterance.lang = "id-ID"; // Bahasa Indonesia
+        utterance.rate = 0.85;    // Sedikit lebih lambat (lembut)
+        utterance.pitch = 1.15;   // Nada lebih tinggi (khas cewek)
+        utterance.volume = 1.0;   // Volume maksimal
+        
+        // Gunakan suara cewek yang sudah dipilih
+        if (selectedVoice) {
+            utterance.voice = selectedVoice;
+        } else {
+            // Coba cari lagi suara cewek Indonesia
+            const voices = speechSynthesis.getVoices();
+            const femaleIndo = voices.find(v => 
+                (v.lang === "id-ID" || v.lang === "id") && 
+                (v.name.toLowerCase().includes("female") || v.name.toLowerCase().includes("google") || v.name.toLowerCase().includes("siti"))
+            );
+            if (femaleIndo) utterance.voice = femaleIndo;
+        }
+        
         speechSynthesis.speak(utterance);
-    } catch(e) { console.log("Speech error:", e); }
-}
-
-function testSound() {
-    speakText("SATU KOMENTAR TELAH DIHAPUS");
-    showToast("🔊 Test suara! Seharusnya terdengar 'SATU KOMENTAR TELAH DIHAPUS'");
-}
-
-function showDesktopNotification(title, body) {
-    if ("Notification" in window && Notification.permission === "granted") {
-        new Notification(title, { body: body, icon: "https://www.youtube.com/s/desktop/014d2e5f/img/favicon_144x144.png" });
+        console.log(`🔊 (Suara cewek lembut) Mengucapkan: "${text}"`);
+    } catch(e) {
+        console.log("Speech error:", e);
+        playFallbackBeep();
     }
 }
 
-function showToast(msg) {
-    const toast = document.getElementById("toast");
-    document.getElementById("toastText").innerHTML = escapeHtml(msg);
-    toast.classList.add("show");
-    setTimeout(() => toast.classList.remove("show"), 4000);
+// Fallback jika speech synthesis gagal
+function playFallbackBeep() {
+    try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioContext.state === "suspended") {
+            audioContext.resume();
+        }
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        oscillator.frequency.value = 880;
+        gainNode.gain.value = 0.3;
+        oscillator.start();
+        gainNode.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 1);
+        oscillator.stop(audioContext.currentTime + 0.8);
+    } catch(e) {
+        console.log("Beep fallback gagal");
+    }
 }
 
-// ==================== FIREBASE HISTORY ====================
+// Minta izin notifikasi
+function requestNotificationPermission() {
+    if ("Notification" in window) {
+        if (Notification.permission === "default") {
+            Notification.requestPermission().then(perm => {
+                notificationPermission = perm === "granted";
+                if (notificationPermission) console.log("✅ Notifikasi diizinkan");
+            });
+        } else if (Notification.permission === "granted") {
+            notificationPermission = true;
+        }
+    }
+}
+
+// Tampilkan notifikasi desktop
+function showDesktopNotification(title, body) {
+    if (notificationPermission && "Notification" in window) {
+        try {
+            const notification = new Notification(title, {
+                body: body,
+                icon: "https://www.youtube.com/s/desktop/014d2e5f/img/favicon_144x144.png",
+                silent: false
+            });
+            notification.onclick = () => {
+                window.focus();
+                notification.close();
+            };
+            setTimeout(() => notification.close(), 5000);
+        } catch(e) {
+            console.log("Notifikasi error:", e);
+        }
+    }
+}
+
+// Tampilkan notifikasi komentar baru DENGAN SUARA CEWEK LEMBUT
+function showNewCommentNotification(username, videoTitle, commentText) {
+    // 1. SUARA UCAPAN CEWEK LEMBUT: "SATU KOMENTAR NEGATIF YOUTUBE"
+    speakText("SATU KOMENTAR NEGATIF YOUTUBE");
+    
+    // 2. Toast di dalam halaman
+    const toast = document.getElementById("toast");
+    document.getElementById("toastText").innerHTML = `💬 <strong>${escapeHtml(username)}</strong> berkomentar di <strong>${escapeHtml(videoTitle)}</strong><br><span style="font-size:11px;">${escapeHtml(commentText.substring(0,80))}${commentText.length>80?'...':''}</span>`;
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 5000);
+    
+    // 3. Notifikasi desktop
+    showDesktopNotification(`💬 Komentar baru dari ${username}`, `${videoTitle}\n"${commentText.substring(0,100)}${commentText.length>100?'...':''}"`);
+}
+
+// Test suara (tombol TEST SUARA)
+function testSound() {
+    speakText("SATU KOMENTAR NEGATIF YOUTUBE");
+    showToast("🔊 Test suara cewek lembut! Seharusnya terdengar 'SATU KOMENTAR NEGATIF YOUTUBE' dengan suara perempuan");
+    
+    // Test notifikasi desktop
+    if (notificationPermission) {
+        new Notification("Test Notifikasi", { body: "Notifikasi berfungsi dengan baik!" });
+    } else {
+        showToast("⚠️ Izin notifikasi belum diberikan. Klik izinkan saat popup muncul.");
+        Notification.requestPermission();
+    }
+}
+
+// Panggil minta izin saat halaman dimuat
+requestNotificationPermission();
+
+// Aktifkan Speech Synthesis (butuh interaksi user pertama)
+function enableSpeech() {
+    speechEnabled = true;
+    if (speechSynthesis) {
+        const dummy = new SpeechSynthesisUtterance("");
+        speechSynthesis.speak(dummy);
+        speechSynthesis.cancel();
+    }
+    console.log("✅ Speech diaktifkan");
+}
+
+setTimeout(() => enableSpeech(), 1000);
+
+document.getElementById("refreshInput").value = refreshMinutes;
+document.getElementById("refreshText").innerText = refreshMinutes + " MENIT";
+
+function saveRefresh() {
+    let val = parseInt(document.getElementById("refreshInput").value);
+    if(isNaN(val) || val < 1) val = 1;
+    refreshMinutes = val;
+    localStorage.setItem("refreshMinutes", refreshMinutes);
+    document.getElementById("refreshText").innerText = refreshMinutes + " MENIT";
+    startAutoRefresh();
+    showToast("✅ Refresh diatur ke " + refreshMinutes + " menit");
+}
+
+function startAutoRefresh() {
+    if(refreshInterval) clearInterval(refreshInterval);
+    refreshInterval = setInterval(() => loadAllComments(), refreshMinutes * 60 * 1000);
+}
+
+// ==================== FIREBASE SYNC ====================
 async function loadHistoryFromFirebase() {
     try {
         const response = await fetch(`${FIREBASE_URL}deletedHistory.json`);
         const data = await response.json();
+        
         if(data) {
             deletedCommentsLog = Object.values(data);
             deletedCommentsLog.sort((a,b) => b.timestamp - a.timestamp);
             updateDeletedCount();
             renderDeletedTable();
+            console.log(`✅ Loaded ${deletedCommentsLog.length} history from Firebase`);
+        } else {
+            deletedCommentsLog = [];
+            updateDeletedCount();
+            renderDeletedTable();
         }
-    } catch(e) { console.error("Gagal load dari Firebase:", e); }
+    } catch(e) {
+        console.error("Gagal load dari Firebase:", e);
+        showToast("⚠️ Gagal sync dari Firebase");
+    }
+}
+
+async function addHistoryToFirebase(comment) {
+    try {
+        const newId = Date.now() + "_" + Math.random().toString(36).substr(2, 6);
+        await fetch(`${FIREBASE_URL}deletedHistory/${newId}.json`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(comment)
+        });
+        console.log("✅ History saved to Firebase");
+    } catch(e) {
+        console.error("Gagal save ke Firebase:", e);
+    }
+}
+
+async function clearAllHistory() {
+    if(!confirm("⚠️ PERINGATAN: Ini akan menghapus SEMUA history untuk SEMUA pengguna! Yakin?")) return;
+    
+    try {
+        await fetch(`${FIREBASE_URL}deletedHistory.json`, {
+            method: 'PUT',
+            body: JSON.stringify(null)
+        });
+        deletedCommentsLog = [];
+        updateDeletedCount();
+        renderDeletedTable();
+        showToast("✅ Semua history telah dihapus dari Firebase");
+    } catch(e) {
+        showToast("❌ Gagal menghapus history");
+    }
+}
+
+function updateDeletedCount() {
+    document.getElementById("deletedCount").innerText = deletedCommentsLog.length;
+}
+
+function renderDeletedTable() {
+    const tbody = document.getElementById("deletedTableBody");
+    if(!tbody) return;
+    
+    if(deletedCommentsLog.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;">✨ Belum ada komentar yang dihapus ✨</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = deletedCommentsLog.map(log => `
+        <tr>
+            <td style="white-space:nowrap;">${escapeHtml(log.deletedAt)}</td>
+            <td><strong>${escapeHtml(log.authorName)}</strong></td>
+            <td style="max-width:300px;">${escapeHtml(log.commentText)}</td>
+            <td style="max-width:250px;">${escapeHtml(log.videoTitle)}</td>
+            <td><span class="badge-deleted">TERHAPUS</span></td>
+        </tr>
+    `).join('');
 }
 
 async function addDeletedCommentToFirebase(authorName, commentText, videoTitle, videoId, commentId) {
@@ -832,51 +768,11 @@ async function addDeletedCommentToFirebase(authorName, commentText, videoTitle, 
     
     updateDeletedCount();
     renderDeletedTable();
-    
-    try {
-        const newId = Date.now() + "_" + Math.random().toString(36).substr(2, 6);
-        await fetch(`${FIREBASE_URL}deletedHistory/${newId}.json`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newComment)
-        });
-    } catch(e) { console.error("Gagal save ke Firebase:", e); }
+    await addHistoryToFirebase(newComment);
+    showToast(`🗑️ Komentar dari ${authorName} dihapus dari YouTube & tersimpan di cloud`);
 }
 
-async function clearAllHistory() {
-    if(!confirm("⚠️ PERINGATAN: Ini akan menghapus SEMUA history! Yakin?")) return;
-    try {
-        await fetch(`${FIREBASE_URL}deletedHistory.json`, { method: 'PUT', body: JSON.stringify(null) });
-        deletedCommentsLog = [];
-        updateDeletedCount();
-        renderDeletedTable();
-        showToast("✅ Semua history telah dihapus");
-    } catch(e) { showToast("❌ Gagal menghapus history"); }
-}
-
-function updateDeletedCount() {
-    document.getElementById("deletedCount").innerText = deletedCommentsLog.length;
-}
-
-function renderDeletedTable() {
-    const tbody = document.getElementById("deletedTableBody");
-    if(!tbody) return;
-    if(deletedCommentsLog.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;">✨ Belum ada komentar yang dihapus ✨</td></tr>';
-        return;
-    }
-    tbody.innerHTML = deletedCommentsLog.map(log => `
-        <tr>
-            <td style="white-space:nowrap;">${escapeHtml(log.deletedAt)}</td>
-            <td><strong>${escapeHtml(log.authorName)}</strong></td>
-            <td style="max-width:300px;">${escapeHtml(log.commentText)}</td>
-            <td style="max-width:250px;">${escapeHtml(log.videoTitle)}</td>
-            <td><span class="badge-deleted">TERHAPUS</span></td>
-        </tr>
-    `).join('');
-}
-
-// ==================== LOAD COMMENTS DARI YOUTUBE ====================
+// ==================== LOAD COMMENTS ====================
 async function loadAllComments() {
     const grid = document.getElementById("videoGrid");
     if(grid) grid.innerHTML = '<div style="text-align:center;padding:50px;">🔄 Memuat video...</div>';
@@ -892,7 +788,7 @@ async function loadAllComments() {
 
 async function loadVideoCard(video) {
     try {
-        const apiUrl = `https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=${video.id}&maxResults=10&order=time&key=AIzaSyC0QKWbbW4M9_kRu2e0PQ3psM8RYXv4GDI`;
+        const apiUrl = `https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=${video.id}&maxResults=10&order=time&key=${API_KEY}`;
         const response = await fetch(apiUrl);
         if(!response.ok) return createErrorCard(video);
         
@@ -910,33 +806,17 @@ async function loadVideoCard(video) {
                 currentCommentIds.push(commentId);
                 currentCommentsMap.set(commentId, {
                     authorName: comment.authorDisplayName,
-                    commentText: comment.textDisplay,
-                    videoTitle: video.title,
-                    videoId: video.id
+                    commentText: comment.textDisplay
                 });
                 
                 const oldList = savedComments[video.id] || [];
-                if(!isFirstLoad && !oldList.includes(commentId) && autoDeleteActive && accessToken) {
-                    // KOMENTAR BARU! LANGSUNG HAPUS OTOMATIS
-                    speakText("SATU KOMENTAR NEGATIF YOUTUBE");
-                    showToast(`⚠️ Komentar baru dari ${comment.authorDisplayName} - Sedang dihapus...`);
-                    
-                    // Tambahkan ke antrian hapus
-                    deleteQueue.push({
-                        commentId: commentId,
-                        videoId: video.id,
-                        authorName: comment.authorDisplayName,
-                        commentText: comment.textDisplay,
-                        videoTitle: video.title
-                    });
-                    processDeleteQueue();
+                if(!isFirstLoad && !oldList.includes(commentId)) {
+                    // NOTIFIKASI KOMENTAR BARU dengan SUARA CEWEK LEMBUT
+                    showNewCommentNotification(comment.authorDisplayName, video.title, comment.textDisplay);
                 }
                 
-                const isMarkedDeleted = deletedCommentsLog.some(log => log.commentId === commentId);
-                
                 commentsHTML += `
-                    <div class="comment-item ${isMarkedDeleted ? 'auto-deleted' : ''}">
-                        ${isMarkedDeleted ? '<div class="delete-badge">🗑️ DIHAPUS</div>' : ''}
+                    <div class="comment-item">
                         <div class="comment-user">
                             <img src="${comment.authorProfileImageUrl || 'https://ui-avatars.com/api/?background=0F172A&color=fff&name='+encodeURIComponent(comment.authorDisplayName?.charAt(0)||'U')}">
                             <div><div class="comment-name">${escapeHtml(comment.authorDisplayName)}</div>
@@ -945,6 +825,18 @@ async function loadVideoCard(video) {
                         <div class="comment-text">${escapeHtml(comment.textDisplay)}</div>
                     </div>
                 `;
+            }
+        }
+        
+        const oldList = savedComments[video.id] || [];
+        if(!isFirstLoad && oldList.length > 0) {
+            for(const oldCommentId of oldList) {
+                if(!currentCommentsMap.has(oldCommentId)) {
+                    const oldDetail = savedCommentsDetail[video.id]?.[oldCommentId];
+                    if(oldDetail) {
+                        await addDeletedCommentToFirebase(oldDetail.authorName, oldDetail.commentText, video.title, video.id, oldCommentId);
+                    }
+                }
             }
         }
         
@@ -980,6 +872,13 @@ function createErrorCard(video) {
     return card;
 }
 
+function showToast(msg) {
+    const toast = document.getElementById("toast");
+    document.getElementById("toastText").innerHTML = escapeHtml(msg);
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 4000);
+}
+
 function escapeHtml(str) {
     if(!str) return "";
     return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
@@ -1007,89 +906,84 @@ function switchTab(tab) {
     }
 }
 
-function toggleAutoDelete() {
-    if (!accessToken) {
-        showToast("⚠️ Silakan login terlebih dahulu!");
-        return;
-    }
-    
-    autoDeleteActive = !autoDeleteActive;
-    const btn = document.getElementById("toggleAutoDeleteBtn");
-    const statusSpan = document.getElementById("autoDeleteStatus");
-    
-    if (autoDeleteActive) {
-        btn.innerText = "⏹️ NONAKTIFKAN AUTO HAPUS";
-        btn.classList.add("auto-delete-active");
-        statusSpan.innerText = "ON";
-        statusSpan.style.color = "#ef4444";
-        showToast("🗑️ AUTO HAPUS AKTIF! Semua komentar baru akan otomatis dihapus dari YouTube");
-        speakText("AUTO HAPUS TELAH DIAKTIFKAN");
-    } else {
-        btn.innerText = "🗑️ AKTIFKAN AUTO HAPUS";
-        btn.classList.remove("auto-delete-active");
-        statusSpan.innerText = "OFF";
-        statusSpan.style.color = "";
-        showToast("⏹️ Auto hapus dinonaktifkan");
-        speakText("AUTO HAPUS DINONAKTIFKAN");
-    }
-}
-
 async function silentLoadAll() {
     await loadHistoryFromFirebase();
-    await loadAllComments();
-    isFirstLoad = false;
     
-    // Auto refresh setiap 15 detik (lebih cepat untuk deteksi komentar baru)
-    if(refreshInterval) clearInterval(refreshInterval);
-    refreshInterval = setInterval(() => {
-        if (autoDeleteActive) {
-            loadAllComments();
+    const grid = document.getElementById("videoGrid");
+    if(grid) grid.innerHTML = '<div style="text-align:center;padding:50px;">⏳ Memuat video...</div>';
+    
+    const promises = videos.map(async (video) => {
+        try {
+            const apiUrl = `https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=${video.id}&maxResults=10&order=time&key=${API_KEY}`;
+            const response = await fetch(apiUrl);
+            if(!response.ok) return createErrorCard(video);
+            
+            const data = await response.json();
+            let commentsHTML = "";
+            let totalComments = 0;
+            const currentCommentIds = [];
+            const currentCommentsMap = new Map();
+            
+            if(data.items && data.items.length > 0) {
+                totalComments = data.items.length;
+                for(const item of data.items) {
+                    const comment = item.snippet.topLevelComment.snippet;
+                    const commentId = item.snippet.topLevelComment.id;
+                    currentCommentIds.push(commentId);
+                    currentCommentsMap.set(commentId, {
+                        authorName: comment.authorDisplayName,
+                        commentText: comment.textDisplay
+                    });
+                    commentsHTML += `
+                        <div class="comment-item">
+                            <div class="comment-user">
+                                <img src="${comment.authorProfileImageUrl || 'https://ui-avatars.com/api/?background=0F172A&color=fff&name='+encodeURIComponent(comment.authorDisplayName?.charAt(0)||'U')}">
+                                <div><div class="comment-name">${escapeHtml(comment.authorDisplayName)}</div>
+                                <div class="comment-time">${new Date(comment.publishedAt).toLocaleString('id-ID')}</div></div>
+                            </div>
+                            <div class="comment-text">${escapeHtml(comment.textDisplay)}</div>
+                        </div>
+                    `;
+                }
+            }
+            
+            if(!savedCommentsDetail[video.id]) savedCommentsDetail[video.id] = {};
+            for(const [cid, detail] of currentCommentsMap) {
+                savedCommentsDetail[video.id][cid] = detail;
+            }
+            savedComments[video.id] = currentCommentIds;
+            
+            const card = document.createElement("div");
+            card.className = "video-card";
+            card.innerHTML = `
+                <div class="video-header">
+                    <div class="video-title">${escapeHtml(video.title)}</div>
+                    <div class="comment-count">💬 ${totalComments}</div>
+                </div>
+                <a href="https://www.youtube.com/watch?v=${video.id}" target="_blank" class="thumbnail-box">
+                    <img src="https://img.youtube.com/vi/${video.id}/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/${video.id}/hqdefault.jpg'">
+                </a>
+                <div class="comment-section">${commentsHTML || '<div style="padding:20px;text-align:center;">✨ Belum ada komentar ✨</div>'}</div>
+            `;
+            return card;
+        } catch(e) {
+            return createErrorCard(video);
         }
-    }, 15000);
-}
-
-// ==================== INIT ====================
-// Minta izin notifikasi
-if ("Notification" in window && Notification.permission === "default") {
-    Notification.requestPermission();
-}
-
-// Handle OAuth redirect
-handleOAuthRedirect();
-
-// Cek apakah sudah login dari localStorage
-const savedToken = localStorage.getItem("youtube_access_token");
-if (savedToken) {
-    accessToken = savedToken;
-    fetchUserInfo();
-}
-
-// Event listeners
-document.getElementById("toggleAutoDeleteBtn").addEventListener("click", toggleAutoDelete);
-document.getElementById("logoutBtn").addEventListener("click", logout);
-
-// Load Google Identity Services
-const script = document.createElement("script");
-script.src = "https://accounts.google.com/gsi/client";
-script.async = true;
-script.defer = true;
-script.onload = () => {
-    if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_ID !== "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com") {
-        initGoogleAuth();
+    });
+    
+    const cards = await Promise.all(promises);
+    if(grid) {
+        grid.innerHTML = "";
+        cards.forEach(c => grid.appendChild(c));
     }
-};
-document.head.appendChild(script);
+    isFirstLoad = false;
+}
 
-// Initial load
-loadHistoryFromFirebase();
-setTimeout(() => {
-    if (!accessToken) {
-        // Tampilkan video tanpa login
-        loadAllComments();
-    }
-}, 1000);
+// START
+silentLoadAll();
+startAutoRefresh();
 
-// Global functions
+window.saveRefresh = saveRefresh;
 window.manualRefresh = manualRefresh;
 window.clearAllHistory = clearAllHistory;
 window.switchTab = switchTab;
