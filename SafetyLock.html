@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safety Lock - OCR Otomatis Validasi Nama</title>
+    <!-- Tesseract.js untuk OCR -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #FFD700;
+            --gold-dark: #FFA500;
+            --dark-bg: #0F172A;
+            --card-bg: #ffffff;
+            --text-main: #0F172A;
+            --text-muted: #475569;
+            --border: #e2e8f0;
+            --input-bg: #f8fafc;
+            --accent-gold: #FFD700;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+        }
+
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #f8fafc;
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 260px;
+            background: var(--dark-bg);
+            z-index: 0;
+            clip-path: ellipse(120% 100% at 50% 0%);
+        }
+
+        .dashboard {
+            position: relative;
+            z-index: 10;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 35px -10px rgba(15, 23, 42, 0.15);
+            border: 1px solid var(--border);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            color: var(--dark-bg);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .lock-icon {
+            font-size: 28px;
+        }
+
+        .header p {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .card {
+            flex: 1;
+            min-width: 320px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            background: var(--input-bg);
+        }
+
+        .card h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: var(--dark-bg);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 18px;
+            border-left: 4px solid var(--gold);
+            padding-left: 12px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 140px;
+            padding: 12px;
+            font-size: 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: white;
+            resize: vertical;
+            font-family: 'Plus Jakarta Sans', monospace;
+            transition: all 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--dark-bg);
+            box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
+        }
+
+        .info-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 10px 16px;
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .count-badge {
+            background: var(--dark-bg);
+            color: var(--gold);
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            font-family: 'Space Grotesk', monospace;
+        }
+
+        .result-diff {
+            background: var(--dark-bg);
+            color: var(--gold);
+            padding: 16px 24px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 24px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .ocr-paste-area {
+            background: white;
+            border: 2px dashed var(--gold);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-top: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--dark-bg);
+        }
+
+        .ocr-paste-area:hover {
+            background: #fffbe6;
+            border-color: var(--gold-dark);
+            transform: translateY(-2px);
+        }
+
+        .ocr-status {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid var(--gold);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--dark-bg);
+            color: var(--gold);
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        @media (max-width: 800px) {
+            .dashboard { padding: 20px; }
+            .container { flex-direction: column; }
+            .result-diff { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-pattern"></div>
+
+<div class="dashboard">
+    <div class="header">
+        <h1>
+            <span class="lock-icon">🔒</span>
+            SAFETY LOCK
+        </h1>
+    </div>
+
+    <div class="container">
+        <!-- KOLOM 1 : NAMA TERDAFTAR + OCR OTOMATIS -->
+        <div class="card">
+            <h3>📋 KOLOM 1 : NAMA TERDAFTAR</h3>
+            <textarea id="namaTerdaftar" placeholder="Bisa diisi manual atau tempel gambar di bawah..."></textarea>
+            <div class="ocr-paste-area" id="pasteZone1">
+                📸 Klik lalu Ctrl+V (tempel gambar screenshot)
+            </div>
+            <div class="ocr-status" id="ocrStatus1">
+                💡 Siap terima gambar
+            </div>
+            <div class="info-panel">
+                <span>🔢 JUMLAH HURUF</span>
+                <span class="count-badge" id="jmlTerdaftar">0</span>
+            </div>
+        </div>
+
+        <!-- KOLOM 2 : HASIL VALIDASI + OCR OTOMATIS -->
+        <div class="card">
+            <h3>✅ KOLOM 2 : HASIL VALIDASI</h3>
+            <textarea id="hasilValidasi" placeholder="Bisa diisi manual atau tempel gambar di bawah..."></textarea>
+            <div class="ocr-paste-area" id="pasteZone2">
+                📸 Klik lalu Ctrl+V (tempel gambar screenshot)
+            </div>
+            <div class="ocr-status" id="ocrStatus2">
+                💡 Siap terima gambar
+            </div>
+            <div class="info-panel">
+                <span>🔢 JUMLAH HURUF</span>
+                <span class="count-badge" id="jmlValidasi">0</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="result-diff" id="resultBox">
+        ⏳ Silakan tempel data
+    </div>
+</div>
+
+<div id="notif" class="notification">✅ Berhasil!</div>
+
+<script>
+    // Elemen DOM
+    const textareaKolom1 = document.getElementById('namaTerdaftar');
+    const textareaKolom2 = document.getElementById('hasilValidasi');
+    const pasteZone1 = document.getElementById('pasteZone1');
+    const pasteZone2 = document.getElementById('pasteZone2');
+    const ocrStatus1 = document.getElementById('ocrStatus1');
+    const ocrStatus2 = document.getElementById('ocrStatus2');
+
+    // Fungsi notifikasi
+    function showNotif(message, isError = false) {
+        const notif = document.getElementById('notif');
+        notif.textContent = isError ? '❌ ' + message : '✅ ' + message;
+        notif.classList.add('show');
+        setTimeout(() => {
+            notif.classList.remove('show');
+        }, 2000);
+    }
+
+    // Fungsi hitung huruf
+    function countLetters(str) {
+        if (!str) return 0;
+        return str.length;
+    }
+
+    // Update dashboard dan perbandingan
+    function updateDashboard() {
+        const count1 = countLetters(textareaKolom1.value);
+        const count2 = countLetters(textareaKolom2.value);
+
+        document.getElementById('jmlTerdaftar').innerText = count1;
+        document.getElementById('jmlValidasi').innerText = count2;
+
+        const resultBox = document.getElementById('resultBox');
+
+        // Jika kolom 2 kosong
+        if (textareaKolom2.value.trim() === "") {
+            resultBox.innerHTML = "📌 SILAKAN TEMPEL HASIL VALIDASI";
+            return;
+        }
+
+        const kekurangan = count1 - count2;
+        if (kekurangan === 0) {
+            resultBox.innerHTML = "✅ JUMLAH NAMA SAMA";
+        } else {
+            const selisihAbs = Math.abs(kekurangan);
+            resultBox.innerHTML = `⚠️ JUMLAH NAMA BEDA KURANG ${selisihAbs} HURUF`;
+        }
+    }
+
+    // ========== FUNGSI OCR OTOMATIS ==========
+    async function processOCR(gambarDataURL, targetKolom) {
+        const statusElement = targetKolom === 1 ? ocrStatus1 : ocrStatus2;
+        const textareaTarget = targetKolom === 1 ? textareaKolom1 : textareaKolom2;
+        
+        statusElement.innerHTML = "<span class='loading-spinner'></span> Memproses OCR (5-10 detik)...";
+        
+        try {
+            const { data: { text } } = await Tesseract.recognize(
+                gambarDataURL,
+                'ind+eng',
+                {
+                    logger: m => console.log(m)
+                }
+            );
+            
+            // Bersihkan teks
+            let cleanedText = text.trim();
+            const lines = cleanedText.split('\n');
+            let namaResult = lines[0].trim();
+            
+            // Filter karakter aneh
+            namaResult = namaResult.replace(/[^a-zA-Z0-9\s\.\-\&\'\(\)]/g, '');
+            
+            if (namaResult === "") {
+                statusElement.innerHTML = "❌ Gagal baca teks. Coba gambar lebih jelas.";
+                showNotif("OCR gagal membaca teks", true);
+                return false;
+            }
+            
+            // LANGSUNG MASUKKAN KE TEXTAREA
+            textareaTarget.value = namaResult;
+            statusElement.innerHTML = `✅ OCR berhasil: "${namaResult.substring(0, 40)}${namaResult.length > 40 ? '...' : ''}" → otomatis masuk`;
+            showNotif(`OCR berhasil: ${namaResult.substring(0, 30)}...`);
+            
+            // Trigger update dashboard
+            updateDashboard();
+            
+            // Reset status setelah 3 detik
+            setTimeout(() => {
+                if (statusElement.innerHTML.includes("berhasil")) {
+                    statusElement.innerHTML = "💡 Siap terima gambar lagi";
+                }
+            }, 3000);
+            
+            return true;
+        } catch (err) {
+            console.error(err);
+            statusElement.innerHTML = "❌ Error OCR: " + err.message;
+            showNotif("Error OCR: " + err.message, true);
+            return false;
+        }
+    }
+    
+    // Fungsi untuk menangani paste gambar di suatu zona
+    function setupPasteZone(zoneElement, targetKolom) {
+        zoneElement.addEventListener('paste', (e) => {
+            e.stopPropagation();
+            const items = e.clipboardData.items;
+            let foundImage = false;
+            
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf('image') !== -1) {
+                    foundImage = true;
+                    const blob = items[i].getAsFile();
+                    const reader = new FileReader();
+                    
+                    reader.onload = (event) => {
+                        const gambarDataURL = event.target.result;
+                        // Langsung proses OCR otomatis
+                        processOCR(gambarDataURL, targetKolom);
+                    };
+                    reader.readAsDataURL(blob);
+                    break;
+                }
+            }
+            
+            if (!foundImage) {
+                const statusElement = targetKolom === 1 ? ocrStatus1 : ocrStatus2;
+                statusElement.innerHTML = "⚠️ Bukan gambar! Tempel file gambar (screenshot).";
+                showNotif("Bukan gambar! Tempel screenshot yang benar", true);
+                setTimeout(() => {
+                    if (statusElement.innerHTML.includes("Bukan gambar")) {
+                        statusElement.innerHTML = "💡 Siap terima gambar";
+                    }
+                }, 2000);
+            }
+        });
+        
+        // Efek klik untuk fokus (agar paste berfungsi)
+        zoneElement.addEventListener('click', () => {
+            zoneElement.style.background = "#fffbe6";
+            setTimeout(() => {
+                zoneElement.style.background = "white";
+            }, 200);
+            const statusElement = targetKolom === 1 ? ocrStatus1 : ocrStatus2;
+            statusElement.innerHTML = "📸 Tekan Ctrl+V untuk tempel gambar";
+            setTimeout(() => {
+                if (statusElement.innerHTML.includes("Ctrl+V")) {
+                    statusElement.innerHTML = "💡 Siap terima gambar";
+                }
+            }, 2000);
+        });
+    }
+    
+    // Setup kedua paste zone
+    setupPasteZone(pasteZone1, 1);
+    setupPasteZone(pasteZone2, 2);
+    
+    // Event listener untuk manual edit
+    textareaKolom1.addEventListener('input', updateDashboard);
+    textareaKolom2.addEventListener('input', updateDashboard);
+    
+    // Inisialisasi
+    updateDashboard();
+</script>
+</body>
+</html>
