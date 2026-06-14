@@ -239,10 +239,178 @@
             opacity: 1;
         }
 
+        /* ========= COMING SOON SECTION ========= */
+        .coming-soon-section {
+            margin-top: 40px;
+            margin-bottom: 10px;
+        }
+
+        .coming-soon-card {
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+            border-radius: 24px;
+            padding: 2px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .coming-soon-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                115deg,
+                transparent 30%,
+                rgba(255, 215, 0, 0.15) 50%,
+                transparent 70%
+            );
+            transform: rotate(25deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(25deg); }
+            100% { transform: translateX(100%) rotate(25deg); }
+        }
+
+        .coming-soon-inner {
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+            border-radius: 22px;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            backdrop-filter: blur(2px);
+        }
+
+        .cs-icon {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            min-height: 280px;
+            margin: 0 auto 25px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s ease-in-out infinite;
+            filter: drop-shadow(0 0 35px rgba(255, 215, 0, 0.7));
+        }
+
+        .cs-icon img {
+            width: 100%;
+            height: auto;
+            max-height: 320px;
+            object-fit: contain;
+            border-radius: 32px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.95; }
+        }
+
+        .coming-soon-inner h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 44px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FFD700 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
+            letter-spacing: 3px;
+        }
+
+        .cs-badge {
+            display: inline-block;
+            background: rgba(255, 215, 0, 0.15);
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            padding: 10px 32px;
+            border-radius: 60px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #FFD700;
+            margin-bottom: 25px;
+            backdrop-filter: blur(4px);
+        }
+
+        .cs-description {
+            color: #94A3B8;
+            font-size: 17px;
+            max-width: 550px;
+            margin: 0 auto 30px auto;
+            line-height: 1.6;
+        }
+
+        .cs-progress {
+            max-width: 450px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.08);
+            border-radius: 100px;
+            height: 8px;
+            overflow: hidden;
+        }
+
+        .cs-progress-bar {
+            width: 68%;
+            height: 100%;
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+            border-radius: 100px;
+            position: relative;
+            animation: loadingProgress 2s ease-out;
+        }
+
+        @keyframes loadingProgress {
+            from { width: 0%; }
+            to { width: 68%; }
+        }
+
+        .cs-glow-text {
+            margin-top: 30px;
+            font-size: 15px;
+            color: #FFD700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            opacity: 0.8;
+        }
+
+        .sparkle {
+            animation: twinkle 1.5s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .hover-effect {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .coming-soon-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 25px 40px -15px rgba(0,0,0,0.5);
+        }
+
+        .coming-soon-card:hover .cs-icon {
+            animation: pulse 0.8s ease-in-out;
+        }
+
         @media (max-width: 800px) {
             .dashboard { padding: 20px; }
             .container { flex-direction: column; }
             .result-diff { font-size: 1rem; }
+            .coming-soon-inner h2 { font-size: 28px; }
+            .cs-icon { min-height: 180px; }
+            .cs-icon img { max-height: 200px; }
+            .cs-description { font-size: 14px; }
+            .cs-badge { font-size: 13px; padding: 6px 20px; }
         }
     </style>
 </head>
@@ -256,6 +424,7 @@
             <span class="lock-icon">🔒</span>
             SAFETY LOCK
         </h1>
+        <p>OCR Otomatis | Validasi Nama | Akurasi Maksimal</p>
     </div>
 
     <div class="container">
@@ -295,6 +464,33 @@
     <div class="result-diff" id="resultBox">
         ⏳ Silakan tempel data
     </div>
+
+    <!-- ========= COMING SOON : AUTO VALIDASI ========= -->
+    <div class="coming-soon-section">
+        <div class="coming-soon-card hover-effect" id="comingSoonCard">
+            <div class="coming-soon-inner">
+                <div class="cs-icon">
+                    <img src="https://cdn.areabermain.club/assets/cdn/az2/2026/06/14/20260614/2379bce71523af44e4347b802d66452d/chatgpt-image-jun-14-2026-04-50-54-pm.png" 
+                         alt="Auto Validasi Logo"
+                         onerror="this.onerror=null; this.parentElement.innerHTML='🤖⚡'; this.parentElement.style.fontSize='120px'; this.parentElement.style.lineHeight='1'; this.parentElement.style.width='auto'; this.parentElement.style.height='auto'; this.parentElement.style.minHeight='auto';">
+                </div>
+                <h2>AUTO VALIDASI</h2>
+                <div class="cs-badge">
+                    🚀 COMING SOON
+                </div>
+                <p class="cs-description">
+                    Sistem validasi otomatis cerdas yang akan membandingkan ribuan data dalam hitungan detik. 
+                    Fitur eksklusif untuk akurasi maksimal.
+                </p>
+                <div class="cs-progress">
+                    <div class="cs-progress-bar"></div>
+                </div>
+                <div class="cs-glow-text">
+                    <span class="sparkle">✨</span> Dalam pengembangan intensif <span class="sparkle">✨</span>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div id="notif" class="notification">✅ Berhasil!</div>
@@ -307,6 +503,7 @@
     const pasteZone2 = document.getElementById('pasteZone2');
     const ocrStatus1 = document.getElementById('ocrStatus1');
     const ocrStatus2 = document.getElementById('ocrStatus2');
+    const comingSoonCard = document.getElementById('comingSoonCard');
 
     // Fungsi notifikasi
     function showNotif(message, isError = false) {
@@ -464,6 +661,38 @@
     
     // Inisialisasi
     updateDashboard();
+
+    // Efek Coming Soon ketika di klik (Notifikasi keren)
+    comingSoonCard.addEventListener('click', () => {
+        // Efek getar/glow sementara
+        comingSoonCard.style.transform = 'scale(0.98)';
+        setTimeout(() => {
+            comingSoonCard.style.transform = '';
+        }, 150);
+        
+        // Notifikasi elegan
+        const notif = document.getElementById('notif');
+        notif.textContent = "✨ Fitur Auto Validasi akan segera hadir! ✨";
+        notif.classList.add('show');
+        setTimeout(() => {
+            notif.classList.remove('show');
+        }, 2500);
+        
+        // Juga efek pada badge
+        const badge = document.querySelector('.cs-badge');
+        badge.style.transform = 'scale(1.05)';
+        setTimeout(() => {
+            badge.style.transform = '';
+        }, 300);
+    });
+
+    // Efek hover tambahan untuk interaksi
+    comingSoonCard.addEventListener('mouseenter', () => {
+        const sparkles = document.querySelectorAll('.sparkle');
+        sparkles.forEach(s => {
+            s.style.animation = 'twinkle 0.6s ease-in-out';
+        });
+    });
 </script>
 </body>
 </html>
