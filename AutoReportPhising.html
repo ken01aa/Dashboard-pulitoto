@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Report Phishing — Coming Soon</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #FFD700;
+            --gold-dark: #FFA500;
+            --dark-bg: #0F172A;
+            --card-bg: #ffffff;
+            --text-main: #0F172A;
+            --text-muted: #475569;
+            --border: #e2e8f0;
+            --input-bg: #f8fafc;
+            --accent-gold: #FFD700;
+            --warning: #ef4444;
+            --warning-light: #fee2e2;
+            /* Warna Google */
+            --google-blue: #4285F4;
+            --google-red: #EA4335;
+            --google-yellow: #FBBC05;
+            --google-green: #34A853;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #f8fafc;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 260px;
+            background: var(--dark-bg);
+            z-index: 0;
+            clip-path: ellipse(120% 100% at 50% 0%);
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 50px 40px;
+            box-shadow: 0 20px 35px -10px rgba(15, 23, 42, 0.15);
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        /* LOGO BESAR */
+        .logo {
+            margin-bottom: 2rem;
+        }
+
+        .logo-img {
+            max-width: 280px;
+            width: 100%;
+            height: auto;
+            border-radius: 24px;
+            display: block;
+            margin: 0 auto;
+            transition: all 0.3s;
+            box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.15);
+        }
+
+        .logo-img:hover {
+            transform: scale(1.03);
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Judul Utama */
+        .title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--dark-bg);
+            font-family: 'Space Grotesk', sans-serif;
+            margin: 0.5rem 0 0.5rem;
+        }
+
+        /* Subtitle dengan efek Google (menyala) */
+        .subtitle {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .google-phishing {
+            display: inline-block;
+        }
+
+        .google-letter {
+            display: inline-block;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 800;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        /* Warna ala Google untuk setiap huruf P H I S H I N G */
+        .letter-p1 { color: var(--google-blue); animation-delay: 0s; }
+        .letter-h1 { color: var(--google-red); animation-delay: 0.15s; }
+        .letter-i1 { color: var(--google-yellow); animation-delay: 0.3s; }
+        .letter-s1 { color: var(--google-blue); animation-delay: 0.45s; }
+        .letter-h2 { color: var(--google-green); animation-delay: 0.6s; }
+        .letter-i2 { color: var(--google-red); animation-delay: 0.75s; }
+        .letter-n { color: var(--google-yellow); animation-delay: 0.9s; }
+        .letter-g { color: var(--google-blue); animation-delay: 1.05s; }
+
+        /* Efek menyala */
+        @keyframes glow {
+            0% {
+                text-shadow: 0 0 0px rgba(66, 133, 244, 0);
+                transform: scale(1);
+            }
+            50% {
+                text-shadow: 
+                    0 0 8px rgba(66, 133, 244, 0.6),
+                    0 0 15px rgba(234, 67, 53, 0.4),
+                    0 0 20px rgba(251, 188, 5, 0.3);
+                transform: scale(1.02);
+            }
+            100% {
+                text-shadow: 0 0 0px rgba(66, 133, 244, 0);
+                transform: scale(1);
+            }
+        }
+
+        /* Badge Coming Soon */
+        .coming-soon {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            padding: 8px 28px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--dark-bg);
+            letter-spacing: 2px;
+            margin: 1rem 0;
+            text-transform: uppercase;
+        }
+
+        /* Badge Fitur */
+        .feature-badge {
+            display: inline-block;
+            background: var(--warning-light);
+            border: 1px solid var(--warning);
+            padding: 5px 14px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--warning);
+            margin-bottom: 1.2rem;
+        }
+
+        /* Penjelasan */
+        .description {
+            max-width: 500px;
+            margin: 1rem auto;
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        /* Status */
+        .status {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin: 1rem 0 2rem;
+            display: inline-block;
+            padding: 5px 16px;
+            background: var(--input-bg);
+            border-radius: 40px;
+            border: 1px solid var(--border);
+        }
+
+        /* Countdown Timer */
+        .countdown {
+            margin: 2rem 0;
+        }
+
+        .timer {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .time-card {
+            background: var(--input-bg);
+            border-radius: 20px;
+            padding: 1.2rem 1.5rem;
+            min-width: 95px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .time-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.15);
+        }
+
+        .time-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--dark-bg);
+            line-height: 1;
+            font-feature-settings: "tnum";
+            font-family: 'Space Grotesk', monospace;
+        }
+
+        .time-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 0.5rem;
+        }
+
+        /* Garis dekorasi */
+        .decor-line {
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            margin: 2rem auto 0;
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 30px 20px; }
+            .title { font-size: 2.5rem; }
+            .subtitle { font-size: 1.5rem; }
+            .time-number { font-size: 2rem; }
+            .time-card { min-width: 70px; padding: 0.8rem 1rem; }
+            .logo-img { max-width: 200px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-pattern"></div>
+
+<div class="container">
+    <!-- LOGO BESAR DI ATAS TEKS -->
+    <div class="logo">
+        <img class="logo-img" src="https://cdn.areabermain.club/assets/cdn/az2/2026/06/14/20260614/5df412dfea25b1d53e321ce00f3141e0/jun-14-2026-06-28-09-pm.png" alt="Logo Auto Report Phishing">
+    </div>
+
+    <!-- NAMA DASHBOARD UTAMA -->
+    <h1 class="title">AUTO REPORT</h1>
+    
+    <!-- SUBTITLE DENGAN EFEK GOOGLE MENYALA -->
+    <div class="subtitle">
+        <div class="google-phishing">
+            <span class="google-letter letter-p1">P</span>
+            <span class="google-letter letter-h1">H</span>
+            <span class="google-letter letter-i1">I</span>
+            <span class="google-letter letter-s1">S</span>
+            <span class="google-letter letter-h2">H</span>
+            <span class="google-letter letter-i2">I</span>
+            <span class="google-letter letter-n">N</span>
+            <span class="google-letter letter-g">G</span>
+        </div>
+    </div>
+
+    <!-- COMING SOON BADGE -->
+    <div class="coming-soon">COMING SOON</div>
+
+    <!-- FITUR BADGE -->
+    <div class="feature-badge">
+        🛡️ REAL-TIME DETECTION
+    </div>
+
+    <!-- PENJELASAN DASHBOARD -->
+    <p class="description">
+        Dashboard otomatis untuk mendeteksi, melaporkan, dan memblokir situs phishing<br>
+        secara real-time dengan teknologi AI dan database terintegrasi.
+    </p>
+
+    <!-- STATUS PENGEMBANGAN -->
+    <div class="status">
+        🚀 Dalam pengembangan intensif
+    </div>
+
+    <!-- GRAFIK WAKTU MUNDUR - 5 HARI -->
+    <div class="countdown">
+        <div class="timer" id="timer">
+            <div class="time-card">
+                <div class="time-number" id="days">00</div>
+                <div class="time-label">HARI</div>
+            </div>
+            <div class="time-card">
+                <div class="time-number" id="hours">00</div>
+                <div class="time-label">JAM</div>
+            </div>
+            <div class="time-card">
+                <div class="time-number" id="minutes">00</div>
+                <div class="time-label">MENIT</div>
+            </div>
+            <div class="time-card">
+                <div class="time-number" id="seconds">00</div>
+                <div class="time-label">DETIK</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="decor-line"></div>
+</div>
+
+<script>
+    // COUNTDOWN 5 HARI DARI SEKARANG
+    const targetDate = new Date();
+    targetDate.setDate(targetDate.getDate() + 5);
+    targetDate.setHours(0, 0, 0, 0);
+
+    function updateCountdown() {
+        const now = new Date().getTime();
+        const distance = targetDate - now;
+
+        if (distance < 0) {
+            document.getElementById('days').innerText = "00";
+            document.getElementById('hours').innerText = "00";
+            document.getElementById('minutes').innerText = "00";
+            document.getElementById('seconds').innerText = "00";
+            return;
+        }
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (86400000)) / (3600000));
+        const minutes = Math.floor((distance % 3600000) / 60000);
+        const seconds = Math.floor((distance % 60000) / 1000);
+
+        document.getElementById('days').innerText = days.toString().padStart(2, '0');
+        document.getElementById('hours').innerText = hours.toString().padStart(2, '0');
+        document.getElementById('minutes').innerText = minutes.toString().padStart(2, '0');
+        document.getElementById('seconds').innerText = seconds.toString().padStart(2, '0');
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+</script>
+</body>
+</html>
