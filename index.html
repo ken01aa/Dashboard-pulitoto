@@ -85,6 +85,8 @@
                     <a href="#" onclick="loadPage('SafetyLock.html', this)" data-title="Safety Lock" data-menu="safety_lock" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"/></svg> SAFETY LOCK</a>
                     <!-- MENU KENDALA BANK -->
                     <a href="#" onclick="loadPage('KendalaBank.html', this)" data-title="Kendala Bank" data-menu="kendala_bank" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 2h12v8H4V6zm2 1v2h2V7H6zm4 0v2h2V7h-2zm4 0v2h2V7h-2z"/></svg> KENDALA BANK</a>
+                    <!-- MENU AUTO REPORT PHISING -->
+                    <a href="#" onclick="loadPage('AutoReportPhising.html', this)" data-title="Auto Report Phising" data-menu="auto_report_phising" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"/></svg> AUTO REPORT PHISING</a>
                 </nav>
                 <div class="p-4 border-t border-slate-700"><p class="text-xs text-slate-500 text-center">© 2025 CS LINE PULITOTO</p></div>
             </aside>
@@ -117,6 +119,7 @@
                             <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-red-600"><div><p class="text-sm text-gray-500 font-medium">YouTube</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-youtube">0</p></div><div class="bg-red-100 p-3 rounded-full"><i class="fab fa-youtube text-red-600"></i></div></div>
                             <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-blue-700"><div><p class="text-sm text-gray-500 font-medium">Safety Lock</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-safety_lock">0</p></div><div class="bg-blue-100 p-3 rounded-full"><i class="fas fa-shield-alt text-blue-600"></i></div></div>
                             <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-amber-600"><div><p class="text-sm text-gray-500 font-medium">Kendala Bank</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-kendala_bank">0</p></div><div class="bg-amber-100 p-3 rounded-full"><i class="fas fa-university text-amber-600"></i></div></div>
+                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-rose-600"><div><p class="text-sm text-gray-500 font-medium">Auto Report Phising</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-auto_report_phising">0</p></div><div class="bg-rose-100 p-3 rounded-full"><i class="fas fa-shield-virus text-rose-600"></i></div></div>
                         </div>
 
                         <div class="card-modern bg-white rounded-xl p-6">
@@ -134,8 +137,7 @@
                         <h3 class="text-lg font-bold text-gray-800 mb-4"><i class="fas fa-users text-blue-500 mr-2"></i> Daftar User (Gmail) yang Pernah Akses</h3>
                         <div class="overflow-x-auto">
                             <table class="min-w-full text-sm text-left text-gray-500">
-                                <thead class="text-xs text-gray-700 uppercase bg-gray-50"><tr><th class="px-6 py-3">No</th><th class="px-6 py-3">Nama User</th><th class="px-6 py-3">Email</th><th class="px-6 py-3">Total Akses</th><th class="px-6 py-3">Terakhir Akses</th></tr>
-                                </thead>
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-50"><tr><th class="px-6 py-3">No</th><th class="px-6 py-3">Nama User</th><th class="px-6 py-3">Email</th><th class="px-6 py-3">Total Akses</th><th class="px-6 py-3">Terakhir Akses</th></tr></thead>
                                 <tbody id="user-stats-body"><tr><td colspan="5" class="text-center py-8 text-gray-400">Memuat data...</td></tr>
                             </tbody>
                         </table>
@@ -177,7 +179,7 @@
     let statsData = {
         prediksi: 0, bukti_jp: 0, syair: 0, result: 0, saldo: 0,
         link_prediksi: 0, hasil_result: 0, reportan: 0, selisih_mineray: 0,
-        tugas_line: 0, youtube: 0, safety_lock: 0, kendala_bank: 0, logs: []
+        tugas_line: 0, youtube: 0, safety_lock: 0, kendala_bank: 0, auto_report_phising: 0, logs: []
     };
 
     function getWIBTime() {
@@ -195,7 +197,7 @@
                     result: data.result || 0, saldo: data.saldo || 0, link_prediksi: data.link_prediksi || 0,
                     hasil_result: data.hasil_result || 0, reportan: data.reportan || 0,
                     selisih_mineray: data.selisih_mineray || 0, tugas_line: data.tugas_line || 0,
-                    youtube: data.youtube || 0, safety_lock: data.safety_lock || 0, kendala_bank: data.kendala_bank || 0, logs: data.logs || []
+                    youtube: data.youtube || 0, safety_lock: data.safety_lock || 0, kendala_bank: data.kendala_bank || 0, auto_report_phising: data.auto_report_phising || 0, logs: data.logs || []
                 };
             }
             updateUI();
@@ -215,6 +217,7 @@
         document.getElementById('stat-youtube').innerText = statsData.youtube;
         document.getElementById('stat-safety_lock').innerText = statsData.safety_lock;
         document.getElementById('stat-kendala_bank').innerText = statsData.kendala_bank;
+        document.getElementById('stat-auto_report_phising').innerText = statsData.auto_report_phising;
 
         const uniqueEmails = [...new Set(statsData.logs.filter(l => l && l.email).map(l => l.email))];
         document.getElementById('stat-total-user').innerText = uniqueEmails.length;
@@ -231,7 +234,7 @@
                         <td class="px-6 py-4 font-medium">${log.userName || log.email || 'Tidak dikenal'}</td>
                         <td class="px-6 py-4 text-blue-600">${log.email || '-'}</td>
                         <td class="px-6 py-4"><span class="px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">${log.app}</span></td>
-                    </table>`;
+                    </tr>`;
                 }
             });
         }
@@ -271,7 +274,7 @@
             result: statsData.result, saldo: statsData.saldo, link_prediksi: statsData.link_prediksi,
             hasil_result: statsData.hasil_result, reportan: statsData.reportan,
             selisih_mineray: statsData.selisih_mineray, tugas_line: statsData.tugas_line,
-            youtube: statsData.youtube, safety_lock: statsData.safety_lock, kendala_bank: statsData.kendala_bank, logs: statsData.logs
+            youtube: statsData.youtube, safety_lock: statsData.safety_lock, kendala_bank: statsData.kendala_bank, auto_report_phising: statsData.auto_report_phising, logs: statsData.logs
         });
     }
 
