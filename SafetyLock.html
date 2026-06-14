@@ -17,6 +17,7 @@
             --text-muted: #475569;
             --border: #e2e8f0;
             --input-bg: #f8fafc;
+            --accent-gold: #FFD700;
             --success: #10b981;
             --warning: #f59e0b;
             --error: #ef4444;
@@ -261,7 +262,12 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: linear-gradient(115deg, transparent 30%, rgba(255, 215, 0, 0.15) 50%, transparent 70%);
+            background: linear-gradient(
+                115deg,
+                transparent 30%,
+                rgba(255, 215, 0, 0.15) 50%,
+                transparent 70%
+            );
             transform: rotate(25deg);
             animation: shine 3s infinite;
         }
@@ -274,135 +280,32 @@
         .coming-soon-inner {
             background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
             border-radius: 22px;
-            padding: 30px 20px;
+            padding: 40px 30px;
             text-align: center;
             position: relative;
             z-index: 2;
             backdrop-filter: blur(2px);
         }
 
-        /* Area logo kiri dan kanan */
-        .floating-logos {
-            display: flex;
-            justify-content: space-between;
-            align-items: stretch;
-            gap: 15px;
-            margin-bottom: 20px;
-            min-height: 320px;
-        }
-
-        .logo-side {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .logo-side.left-side {
-            align-items: flex-start;
-        }
-
-        .logo-side.right-side {
-            align-items: flex-end;
-        }
-
-        /* Animasi logo - muncul, diam, hilang */
-        .animated-logo {
-            background: rgba(255, 215, 0, 0.12);
-            backdrop-filter: blur(8px);
-            border-radius: 16px;
-            padding: 12px 18px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 14px;
-            color: var(--gold);
-            border: 1px solid rgba(255, 215, 0, 0.4);
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            font-family: 'Space Grotesk', sans-serif;
-            white-space: nowrap;
-            min-width: 130px;
-            cursor: default;
-            opacity: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            animation: slideUniform 4.5s ease-in-out infinite;
-        }
-
-        .animated-logo img {
-            width: 45px;
-            height: 45px;
-            object-fit: contain;
-            border-radius: 10px;
-        }
-
-        .animated-logo span {
-            font-size: 14px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-
-        .animated-logo:hover {
-            transform: scale(1.08);
-            background: rgba(255, 215, 0, 0.25);
-            border-color: var(--gold);
-            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
-        }
-
-        /* Animasi untuk sisi kiri */
-        @keyframes slideUniform {
-            0% { opacity: 0; transform: translateX(-25px); }
-            12% { opacity: 1; transform: translateX(0); }
-            35% { opacity: 1; transform: translateX(0); }
-            55% { opacity: 0; transform: translateX(25px); }
-            100% { opacity: 0; transform: translateX(25px); }
-        }
-
-        /* Animasi untuk sisi kanan (berlawanan) */
-        .right-side .animated-logo {
-            animation: slideUniformRight 4.5s ease-in-out infinite;
-        }
-
-        @keyframes slideUniformRight {
-            0% { opacity: 0; transform: translateX(25px); }
-            12% { opacity: 1; transform: translateX(0); }
-            35% { opacity: 1; transform: translateX(0); }
-            55% { opacity: 0; transform: translateX(-25px); }
-            100% { opacity: 0; transform: translateX(-25px); }
-        }
-
-        /* Delay berbeda untuk setiap logo */
-        .logo-side .animated-logo:nth-child(1) { animation-delay: 0s; }
-        .logo-side .animated-logo:nth-child(2) { animation-delay: 0.7s; }
-        .logo-side .animated-logo:nth-child(3) { animation-delay: 1.4s; }
-        .logo-side .animated-logo:nth-child(4) { animation-delay: 2.1s; }
-        .logo-side .animated-logo:nth-child(5) { animation-delay: 2.8s; }
-        .logo-side .animated-logo:nth-child(6) { animation-delay: 3.5s; }
-        .logo-side .animated-logo:nth-child(7) { animation-delay: 4.2s; }
-
         .cs-icon {
             width: 100%;
-            max-width: 300px;
+            max-width: 400px;
             height: auto;
-            min-height: 200px;
-            margin: 0 auto 20px auto;
+            min-height: 280px;
+            margin: 0 auto 25px auto;
             display: flex;
             align-items: center;
             justify-content: center;
             animation: pulse 2s ease-in-out infinite;
-            filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.6));
+            filter: drop-shadow(0 0 35px rgba(255, 215, 0, 0.7));
         }
 
         .cs-icon img {
             width: 100%;
             height: auto;
-            max-height: 220px;
+            max-height: 320px;
             object-fit: contain;
-            border-radius: 28px;
+            border-radius: 32px;
         }
 
         @keyframes pulse {
@@ -412,43 +315,43 @@
 
         .coming-soon-inner h2 {
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 38px;
+            font-size: 44px;
             font-weight: 800;
             background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FFD700 100%);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin-bottom: 15px;
-            letter-spacing: 2px;
+            margin-bottom: 20px;
+            letter-spacing: 3px;
         }
 
         .cs-badge {
             display: inline-block;
             background: rgba(255, 215, 0, 0.15);
             border: 1px solid rgba(255, 215, 0, 0.4);
-            padding: 8px 28px;
+            padding: 10px 32px;
             border-radius: 60px;
-            font-size: 15px;
+            font-size: 16px;
             font-weight: 600;
             color: #FFD700;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             backdrop-filter: blur(4px);
         }
 
         .cs-description {
             color: #94A3B8;
-            font-size: 16px;
-            max-width: 500px;
-            margin: 0 auto 25px auto;
+            font-size: 17px;
+            max-width: 550px;
+            margin: 0 auto 30px auto;
             line-height: 1.6;
         }
 
         .cs-progress {
-            max-width: 400px;
+            max-width: 450px;
             margin: 0 auto;
             background: rgba(255,255,255,0.08);
             border-radius: 100px;
-            height: 6px;
+            height: 8px;
             overflow: hidden;
         }
 
@@ -457,6 +360,7 @@
             height: 100%;
             background: linear-gradient(90deg, #FFD700, #FFA500);
             border-radius: 100px;
+            position: relative;
             animation: loadingProgress 2s ease-out;
         }
 
@@ -466,13 +370,13 @@
         }
 
         .cs-glow-text {
-            margin-top: 25px;
-            font-size: 14px;
+            margin-top: 30px;
+            font-size: 15px;
             color: #FFD700;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
             opacity: 0.8;
         }
 
@@ -494,20 +398,19 @@
             box-shadow: 0 25px 40px -15px rgba(0,0,0,0.5);
         }
 
-        @media (max-width: 900px) {
-            .floating-logos { gap: 10px; min-height: 280px; }
-            .animated-logo { padding: 8px 12px; min-width: 100px; gap: 8px; }
-            .animated-logo img { width: 35px; height: 35px; }
-            .animated-logo span { font-size: 11px; }
-            .cs-icon { max-width: 220px; min-height: 160px; }
-            .cs-icon img { max-height: 170px; }
-            .coming-soon-inner h2 { font-size: 28px; }
+        .coming-soon-card:hover .cs-icon {
+            animation: pulse 0.8s ease-in-out;
         }
 
-        @media (max-width: 700px) {
-            .floating-logos { flex-direction: column; align-items: center; gap: 15px; }
-            .logo-side { flex-direction: row; flex-wrap: wrap; justify-content: center; width: 100%; align-items: center !important; }
-            .animated-logo { min-width: auto; }
+        @media (max-width: 800px) {
+            .dashboard { padding: 20px; }
+            .container { flex-direction: column; }
+            .result-diff { font-size: 1rem; }
+            .coming-soon-inner h2 { font-size: 28px; }
+            .cs-icon { min-height: 180px; }
+            .cs-icon img { max-height: 200px; }
+            .cs-description { font-size: 14px; }
+            .cs-badge { font-size: 13px; padding: 6px 20px; }
         }
     </style>
 </head>
@@ -525,22 +428,32 @@
     </div>
 
     <div class="container">
+        <!-- KOLOM 1 : NAMA TERDAFTAR + OCR OTOMATIS -->
         <div class="card">
             <h3>📋 KOLOM 1 : NAMA TERDAFTAR</h3>
             <textarea id="namaTerdaftar" placeholder="Bisa diisi manual atau tempel gambar di bawah..."></textarea>
-            <div class="ocr-paste-area" id="pasteZone1">📸 Klik lalu Ctrl+V (tempel gambar screenshot)</div>
-            <div class="ocr-status" id="ocrStatus1">💡 Siap terima gambar</div>
+            <div class="ocr-paste-area" id="pasteZone1">
+                📸 Klik lalu Ctrl+V (tempel gambar screenshot)
+            </div>
+            <div class="ocr-status" id="ocrStatus1">
+                💡 Siap terima gambar
+            </div>
             <div class="info-panel">
                 <span>🔢 JUMLAH HURUF</span>
                 <span class="count-badge" id="jmlTerdaftar">0</span>
             </div>
         </div>
 
+        <!-- KOLOM 2 : HASIL VALIDASI + OCR OTOMATIS -->
         <div class="card">
             <h3>✅ KOLOM 2 : HASIL VALIDASI</h3>
             <textarea id="hasilValidasi" placeholder="Bisa diisi manual atau tempel gambar di bawah..."></textarea>
-            <div class="ocr-paste-area" id="pasteZone2">📸 Klik lalu Ctrl+V (tempel gambar screenshot)</div>
-            <div class="ocr-status" id="ocrStatus2">💡 Siap terima gambar</div>
+            <div class="ocr-paste-area" id="pasteZone2">
+                📸 Klik lalu Ctrl+V (tempel gambar screenshot)
+            </div>
+            <div class="ocr-status" id="ocrStatus2">
+                💡 Siap terima gambar
+            </div>
             <div class="info-panel">
                 <span>🔢 JUMLAH HURUF</span>
                 <span class="count-badge" id="jmlValidasi">0</span>
@@ -548,32 +461,33 @@
         </div>
     </div>
 
-    <div class="result-diff" id="resultBox">⏳ Silakan tempel data</div>
+    <div class="result-diff" id="resultBox">
+        ⏳ Silakan tempel data
+    </div>
 
-    <!-- COMING SOON : AUTO VALIDASI dengan LOGO GAMBAR -->
+    <!-- ========= COMING SOON : AUTO VALIDASI ========= -->
     <div class="coming-soon-section">
         <div class="coming-soon-card hover-effect" id="comingSoonCard">
             <div class="coming-soon-inner">
-                <div class="floating-logos">
-                    <!-- SISI KIRI - GANTI URL LOGO DI SINI -->
-                    <div class="logo-side left-side" id="leftLogos"></div>
-
-                    <!-- LOGO TENGAH (AUTO VALIDASI) -->
-                    <div class="cs-icon">
-                        <img src="https://cdn.areabermain.club/assets/cdn/az2/2026/06/14/20260614/2379bce71523af44e4347b802d66452d/chatgpt-image-jun-14-2026-04-50-54-pm.png" 
-                             alt="Auto Validasi Logo"
-                             onerror="this.onerror=null; this.parentElement.innerHTML='🤖⚡'; this.parentElement.style.fontSize='80px';">
-                    </div>
-
-                    <!-- SISI KANAN - GANTI URL LOGO DI SINI -->
-                    <div class="logo-side right-side" id="rightLogos"></div>
+                <div class="cs-icon">
+                    <img src="https://cdn.areabermain.club/assets/cdn/az2/2026/06/14/20260614/2379bce71523af44e4347b802d66452d/chatgpt-image-jun-14-2026-04-50-54-pm.png" 
+                         alt="Auto Validasi Logo"
+                         onerror="this.onerror=null; this.parentElement.innerHTML='🤖⚡'; this.parentElement.style.fontSize='120px'; this.parentElement.style.lineHeight='1'; this.parentElement.style.width='auto'; this.parentElement.style.height='auto'; this.parentElement.style.minHeight='auto';">
                 </div>
-
                 <h2>AUTO VALIDASI</h2>
-                <div class="cs-badge">🚀 COMING SOON</div>
-                <p class="cs-description">Sistem validasi otomatis cerdas yang akan membandingkan ribuan data dalam hitungan detik. Fitur eksklusif untuk akurasi maksimal.</p>
-                <div class="cs-progress"><div class="cs-progress-bar"></div></div>
-                <div class="cs-glow-text"><span class="sparkle">✨</span> Dalam pengembangan intensif <span class="sparkle">✨</span></div>
+                <div class="cs-badge">
+                    🚀 COMING SOON
+                </div>
+                <p class="cs-description">
+                    Sistem validasi otomatis cerdas yang akan membandingkan ribuan data dalam hitungan detik. 
+                    Fitur eksklusif untuk akurasi maksimal.
+                </p>
+                <div class="cs-progress">
+                    <div class="cs-progress-bar"></div>
+                </div>
+                <div class="cs-glow-text">
+                    <span class="sparkle">✨</span> Dalam pengembangan intensif <span class="sparkle">✨</span>
+                </div>
             </div>
         </div>
     </div>
@@ -582,71 +496,7 @@
 <div id="notif" class="notification">✅ Berhasil!</div>
 
 <script>
-    // ============================================================
-    // 🔥 TEMPEL URL LOGO ANDA DI BAWAH INI 🔥
-    // PANIN, USDT, QRIS SUDAH DIHAPUS
-    // ============================================================
-    
-    const logoUrls = {
-        // SISI KIRI (5 logo - SEABANK, JAGO, CIMB, OVO, MAYBANK)
-        left: [
-            { name: "SEABANK", url: "https://cdn.areabermain.club/assets/cdn/az9/2024/1…7/66113bc79116f0d601fd4655554cacbf/seabankpng.svg=SEABANK" },
-            { name: "JAGO", url: "https://cdn.areabermain.club/assets/cdn/az9/2024/1…02af34536e250a4d7d3f08c9f9a71f3/bank-jago-png.png" },
-            { name: "CIMB", url: "https://cdn.areabermain.club/assets/cdn/az9/2024/1…127/e0503f13b210ad617be2ca1a150da05c/cimb-png.png" },
-            { name: "OVO", url: "https://cdn.areabermain.club/assets/cdn/az9/2024/1…1127/373686f222a2825f5777ac58d2f7f45c/ovo-png.svg" },
-            { name: "MAYBANK", url: "https://cdn.areabermain.club/assets/cdn/az9/2024/1…/ed8f2d4138037a391bc8e845d11e9930/maybank-png.png" }
-        ],
-        // SISI KANAN (9 logo - MANDIRI, LINKAJA, GOPAY, DANAMON, DANA, BRI, BNI, BSI, BCA)
-        right: [
-            { name: "MANDIRI", url: "https://cdn.areabermain.club/assets/cdn/az9/2024/1…/89c06853de7863819e5997c0edcfa728/mandiri-png.png" },
-            { name: "LINKAJA", url: "https://cdn.areabermain.club/assets/cdn/az9/2024/1…b6335338e48896ba6e3c47a511/download-photoroom.png" },
-            { name: "GOPAY", url: "https://cdn.areabermain.club/assets/cdn/az9/2024/1…27/69dddf15bbab4a520183faa5bf027a9d/gopay-png.png" },
-            { name: "DANAMON", url: "https://cdn.areabermain.club/assets/cdn/az9/2024/1…/71008e251e65e4a2d5d929888ff4a8f8/danamon-png.png" },
-            { name: "DANA", url: "https://cdn.areabermain.club/assets/cdn/az9/2024/1…127/607c2871daa01187d8cb15c436bd2c36/dana-png.png" },
-            { name: "BRI", url: "https://cdn.areabermain.club/assets/cdn/az9/2024/1…127/4864e0fac9a28e7722560bbda9a08240/logo-bri.png" },
-            { name: "BNI", url: "https://cdn.areabermain.club/assets/cdn/az9/2024/1…1127/f54d50372413ffc93fdfa726a4dd8bcd/bni-png.png" },
-            { name: "BSI", url: "https://cdn.areabermain.club/assets/cdn/az9/2024/1…1127/11056336f102f73dd74196941f88f581/bsi-png.png" },
-            { name: "BCA", url: "https://cdn.areabermain.club/assets/cdn/az9/2024/1…1127/665203a044e176ea7dbda4377fbb9f74/bca-png.png" }
-        ]
-    };
-
-    // ============================================================
-    // JANGAN UBAH KODE DI BAWAH INI
-    // ============================================================
-
-    function renderLogos() {
-        const leftContainer = document.getElementById('leftLogos');
-        const rightContainer = document.getElementById('rightLogos');
-        
-        if (!leftContainer || !rightContainer) return;
-        
-        leftContainer.innerHTML = '';
-        rightContainer.innerHTML = '';
-        
-        logoUrls.left.forEach(logo => {
-            const logoDiv = document.createElement('div');
-            logoDiv.className = 'animated-logo';
-            logoDiv.innerHTML = `
-                <img src="${logo.url}" alt="${logo.name}" onerror="this.src='https://placehold.co/100x100/FFD700/0F172A?text=${logo.name}'">
-                <span>${logo.name}</span>
-            `;
-            leftContainer.appendChild(logoDiv);
-        });
-        
-        logoUrls.right.forEach(logo => {
-            const logoDiv = document.createElement('div');
-            logoDiv.className = 'animated-logo';
-            logoDiv.innerHTML = `
-                <img src="${logo.url}" alt="${logo.name}" onerror="this.src='https://placehold.co/100x100/FFD700/0F172A?text=${logo.name}'">
-                <span>${logo.name}</span>
-            `;
-            rightContainer.appendChild(logoDiv);
-        });
-    }
-    
-    renderLogos();
-
-    // Elemen DOM untuk OCR
+    // Elemen DOM
     const textareaKolom1 = document.getElementById('namaTerdaftar');
     const textareaKolom2 = document.getElementById('hasilValidasi');
     const pasteZone1 = document.getElementById('pasteZone1');
@@ -655,88 +505,193 @@
     const ocrStatus2 = document.getElementById('ocrStatus2');
     const comingSoonCard = document.getElementById('comingSoonCard');
 
+    // Fungsi notifikasi
     function showNotif(message, isError = false) {
         const notif = document.getElementById('notif');
         notif.textContent = isError ? '❌ ' + message : '✅ ' + message;
         notif.classList.add('show');
-        setTimeout(() => notif.classList.remove('show'), 2000);
+        setTimeout(() => {
+            notif.classList.remove('show');
+        }, 2000);
     }
 
-    function countLetters(str) { return str ? str.length : 0; }
+    // Fungsi hitung huruf
+    function countLetters(str) {
+        if (!str) return 0;
+        return str.length;
+    }
 
+    // Update dashboard dan perbandingan
     function updateDashboard() {
         const count1 = countLetters(textareaKolom1.value);
         const count2 = countLetters(textareaKolom2.value);
+
         document.getElementById('jmlTerdaftar').innerText = count1;
         document.getElementById('jmlValidasi').innerText = count2;
+
         const resultBox = document.getElementById('resultBox');
+
+        // Jika kolom 2 kosong
         if (textareaKolom2.value.trim() === "") {
             resultBox.innerHTML = "📌 SILAKAN TEMPEL HASIL VALIDASI";
             return;
         }
-        const kekurangan = count1 - count2;
-        if (kekurangan === 0) resultBox.innerHTML = "✅ JUMLAH NAMA SAMA";
-        else resultBox.innerHTML = `⚠️ JUMLAH NAMA BEDA KURANG ${Math.abs(kekurangan)} HURUF`;
-    }
 
-    async function processOCR(gambarDataURL, targetKolom) {
-        const statusElement = targetKolom === 1 ? ocrStatus1 : ocrStatus2;
-        const textareaTarget = targetKolom === 1 ? textareaKolom1 : textareaKolom2;
-        statusElement.innerHTML = "<span class='loading-spinner'></span> Memproses OCR (5-10 detik)...";
-        try {
-            const { data: { text } } = await Tesseract.recognize(gambarDataURL, 'ind+eng', { logger: m => console.log(m) });
-            let namaResult = text.trim().split('\n')[0].trim().replace(/[^a-zA-Z0-9\s\.\-\&\'\(\)]/g, '');
-            if (namaResult === "") throw new Error("Teks tidak terbaca");
-            textareaTarget.value = namaResult;
-            statusElement.innerHTML = `✅ OCR berhasil: "${namaResult.substring(0, 40)}${namaResult.length > 40 ? '...' : ''}"`;
-            showNotif(`OCR berhasil: ${namaResult.substring(0, 30)}...`);
-            updateDashboard();
-            setTimeout(() => { if (statusElement.innerHTML.includes("berhasil")) statusElement.innerHTML = "💡 Siap terima gambar lagi"; }, 3000);
-        } catch (err) {
-            statusElement.innerHTML = "❌ Gagal baca teks. Coba gambar lebih jelas.";
-            showNotif("OCR gagal", true);
+        const kekurangan = count1 - count2;
+        if (kekurangan === 0) {
+            resultBox.innerHTML = "✅ JUMLAH NAMA SAMA";
+        } else {
+            const selisihAbs = Math.abs(kekurangan);
+            resultBox.innerHTML = `⚠️ JUMLAH NAMA BEDA KURANG ${selisihAbs} HURUF`;
         }
     }
 
+    // ========== FUNGSI OCR OTOMATIS ==========
+    async function processOCR(gambarDataURL, targetKolom) {
+        const statusElement = targetKolom === 1 ? ocrStatus1 : ocrStatus2;
+        const textareaTarget = targetKolom === 1 ? textareaKolom1 : textareaKolom2;
+        
+        statusElement.innerHTML = "<span class='loading-spinner'></span> Memproses OCR (5-10 detik)...";
+        
+        try {
+            const { data: { text } } = await Tesseract.recognize(
+                gambarDataURL,
+                'ind+eng',
+                {
+                    logger: m => console.log(m)
+                }
+            );
+            
+            // Bersihkan teks
+            let cleanedText = text.trim();
+            const lines = cleanedText.split('\n');
+            let namaResult = lines[0].trim();
+            
+            // Filter karakter aneh
+            namaResult = namaResult.replace(/[^a-zA-Z0-9\s\.\-\&\'\(\)]/g, '');
+            
+            if (namaResult === "") {
+                statusElement.innerHTML = "❌ Gagal baca teks. Coba gambar lebih jelas.";
+                showNotif("OCR gagal membaca teks", true);
+                return false;
+            }
+            
+            // LANGSUNG MASUKKAN KE TEXTAREA
+            textareaTarget.value = namaResult;
+            statusElement.innerHTML = `✅ OCR berhasil: "${namaResult.substring(0, 40)}${namaResult.length > 40 ? '...' : ''}" → otomatis masuk`;
+            showNotif(`OCR berhasil: ${namaResult.substring(0, 30)}...`);
+            
+            // Trigger update dashboard
+            updateDashboard();
+            
+            // Reset status setelah 3 detik
+            setTimeout(() => {
+                if (statusElement.innerHTML.includes("berhasil")) {
+                    statusElement.innerHTML = "💡 Siap terima gambar lagi";
+                }
+            }, 3000);
+            
+            return true;
+        } catch (err) {
+            console.error(err);
+            statusElement.innerHTML = "❌ Error OCR: " + err.message;
+            showNotif("Error OCR: " + err.message, true);
+            return false;
+        }
+    }
+    
+    // Fungsi untuk menangani paste gambar di suatu zona
     function setupPasteZone(zoneElement, targetKolom) {
         zoneElement.addEventListener('paste', (e) => {
             e.stopPropagation();
             const items = e.clipboardData.items;
+            let foundImage = false;
+            
             for (let i = 0; i < items.length; i++) {
                 if (items[i].type.indexOf('image') !== -1) {
+                    foundImage = true;
                     const blob = items[i].getAsFile();
                     const reader = new FileReader();
-                    reader.onload = (event) => processOCR(event.target.result, targetKolom);
+                    
+                    reader.onload = (event) => {
+                        const gambarDataURL = event.target.result;
+                        // Langsung proses OCR otomatis
+                        processOCR(gambarDataURL, targetKolom);
+                    };
                     reader.readAsDataURL(blob);
-                    return;
+                    break;
                 }
             }
-            const statusElement = targetKolom === 1 ? ocrStatus1 : ocrStatus2;
-            statusElement.innerHTML = "⚠️ Bukan gambar! Tempel screenshot.";
-            showNotif("Bukan gambar!", true);
-            setTimeout(() => { if (statusElement.innerHTML.includes("Bukan gambar")) statusElement.innerHTML = "💡 Siap terima gambar"; }, 2000);
+            
+            if (!foundImage) {
+                const statusElement = targetKolom === 1 ? ocrStatus1 : ocrStatus2;
+                statusElement.innerHTML = "⚠️ Bukan gambar! Tempel file gambar (screenshot).";
+                showNotif("Bukan gambar! Tempel screenshot yang benar", true);
+                setTimeout(() => {
+                    if (statusElement.innerHTML.includes("Bukan gambar")) {
+                        statusElement.innerHTML = "💡 Siap terima gambar";
+                    }
+                }, 2000);
+            }
         });
+        
+        // Efek klik untuk fokus (agar paste berfungsi)
         zoneElement.addEventListener('click', () => {
             zoneElement.style.background = "#fffbe6";
-            setTimeout(() => zoneElement.style.background = "white", 200);
+            setTimeout(() => {
+                zoneElement.style.background = "white";
+            }, 200);
             const statusElement = targetKolom === 1 ? ocrStatus1 : ocrStatus2;
             statusElement.innerHTML = "📸 Tekan Ctrl+V untuk tempel gambar";
-            setTimeout(() => { if (statusElement.innerHTML.includes("Ctrl+V")) statusElement.innerHTML = "💡 Siap terima gambar"; }, 2000);
+            setTimeout(() => {
+                if (statusElement.innerHTML.includes("Ctrl+V")) {
+                    statusElement.innerHTML = "💡 Siap terima gambar";
+                }
+            }, 2000);
         });
     }
-
+    
+    // Setup kedua paste zone
     setupPasteZone(pasteZone1, 1);
     setupPasteZone(pasteZone2, 2);
+    
+    // Event listener untuk manual edit
     textareaKolom1.addEventListener('input', updateDashboard);
     textareaKolom2.addEventListener('input', updateDashboard);
+    
+    // Inisialisasi
     updateDashboard();
 
+    // Efek Coming Soon ketika di klik (Notifikasi keren)
     comingSoonCard.addEventListener('click', () => {
+        // Efek getar/glow sementara
         comingSoonCard.style.transform = 'scale(0.98)';
-        setTimeout(() => comingSoonCard.style.transform = '', 150);
-        showNotif("✨ Fitur Auto Validasi akan segera hadir! ✨");
-        document.querySelector('.cs-badge').style.transform = 'scale(1.05)';
-        setTimeout(() => document.querySelector('.cs-badge').style.transform = '', 300);
+        setTimeout(() => {
+            comingSoonCard.style.transform = '';
+        }, 150);
+        
+        // Notifikasi elegan
+        const notif = document.getElementById('notif');
+        notif.textContent = "✨ Fitur Auto Validasi akan segera hadir! ✨";
+        notif.classList.add('show');
+        setTimeout(() => {
+            notif.classList.remove('show');
+        }, 2500);
+        
+        // Juga efek pada badge
+        const badge = document.querySelector('.cs-badge');
+        badge.style.transform = 'scale(1.05)';
+        setTimeout(() => {
+            badge.style.transform = '';
+        }, 300);
+    });
+
+    // Efek hover tambahan untuk interaksi
+    comingSoonCard.addEventListener('mouseenter', () => {
+        const sparkles = document.querySelectorAll('.sparkle');
+        sparkles.forEach(s => {
+            s.style.animation = 'twinkle 0.6s ease-in-out';
+        });
     });
 </script>
 </body>
