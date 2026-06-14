@@ -81,6 +81,8 @@
                     <a href="#" onclick="loadPage('MINERAYSELISIH.html', this)" data-title="Selisih Mineray" data-menu="selisih_mineray" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"/></svg> SELISIH MINERAY</a>
                     <a href="#" onclick="loadPage('JOBDESK.HTML', this)" data-title="Tugas Line" data-menu="tugas_line" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2H6z"/></svg> TUGAS LINE</a>
                     <a href="#" onclick="loadPage('YOUTUBE.HTML', this)" data-title="YouTube" data-menu="youtube" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/></svg> YOUTUBE</a>
+                    <!-- MENU SAFETY LOCK BARU -->
+                    <a href="#" onclick="loadPage('SafetyLock.html', this)" data-title="Safety Lock" data-menu="safety_lock" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"/></svg> SAFETY LOCK</a>
                 </nav>
                 <div class="p-4 border-t border-slate-700"><p class="text-xs text-slate-500 text-center">© 2025 CS LINE PULITOTO</p></div>
             </aside>
@@ -111,6 +113,7 @@
                             <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-pink-500"><div><p class="text-sm text-gray-500 font-medium">Selisih Mineray</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-selisih_mineray">0</p></div><div class="bg-pink-100 p-3 rounded-full"><i class="fas fa-calculator text-pink-600"></i></div></div>
                             <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-cyan-500"><div><p class="text-sm text-gray-500 font-medium">Tugas Line</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-tugas_line">0</p></div><div class="bg-cyan-100 p-3 rounded-full"><i class="fas fa-clipboard-list text-cyan-600"></i></div></div>
                             <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-red-600"><div><p class="text-sm text-gray-500 font-medium">YouTube</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-youtube">0</p></div><div class="bg-red-100 p-3 rounded-full"><i class="fab fa-youtube text-red-600"></i></div></div>
+                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-blue-700"><div><p class="text-sm text-gray-500 font-medium">Safety Lock</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-safety_lock">0</p></div><div class="bg-blue-100 p-3 rounded-full"><i class="fas fa-shield-alt text-blue-600"></i></div></div>
                         </div>
 
                         <div class="card-modern bg-white rounded-xl p-6">
@@ -118,7 +121,8 @@
                             <div class="overflow-x-auto">
                                 <table class="min-w-full text-sm text-left text-gray-500">
                                     <thead class="text-xs text-gray-700 uppercase bg-gray-50"><tr><th class="px-6 py-3">Waktu</th><th class="px-6 py-3">User</th><th class="px-6 py-3">Email</th><th class="px-6 py-3">Aplikasi</th></tr></thead>
-                                    <tbody id="log-body"><tr><td colspan="4" class="text-center py-8 text-gray-400">Memuat data...</td></tr></tbody>
+                                    <tbody id="log-body"><tr><td colspan="4" class="text-center py-8 text-gray-400">Memuat data...</td></tr>
+                                </tbody>
                                 </table>
                             </div>
                         </div>
@@ -128,7 +132,8 @@
                             <div class="overflow-x-auto">
                                 <table class="min-w-full text-sm text-left text-gray-500">
                                     <thead class="text-xs text-gray-700 uppercase bg-gray-50"><tr><th class="px-6 py-3">No</th><th class="px-6 py-3">Nama User</th><th class="px-6 py-3">Email</th><th class="px-6 py-3">Total Akses</th><th class="px-6 py-3">Terakhir Akses</th></tr></thead>
-                                    <tbody id="user-stats-body"><tr><td colspan="5" class="text-center py-8 text-gray-400">Memuat data...</td></tr></tbody>
+                                    <tbody id="user-stats-body"><tr><td colspan="5" class="text-center py-8 text-gray-400">Memuat data...</td></tr>
+                                </tbody>
                                 </table>
                             </div>
                         </div>
@@ -168,7 +173,7 @@
         let statsData = {
             prediksi: 0, bukti_jp: 0, syair: 0, result: 0, saldo: 0,
             link_prediksi: 0, hasil_result: 0, reportan: 0, selisih_mineray: 0,
-            tugas_line: 0, youtube: 0, logs: []
+            tugas_line: 0, youtube: 0, safety_lock: 0, logs: []
         };
 
         function getWIBTime() {
@@ -186,7 +191,7 @@
                         result: data.result || 0, saldo: data.saldo || 0, link_prediksi: data.link_prediksi || 0,
                         hasil_result: data.hasil_result || 0, reportan: data.reportan || 0,
                         selisih_mineray: data.selisih_mineray || 0, tugas_line: data.tugas_line || 0,
-                        youtube: data.youtube || 0, logs: data.logs || []
+                        youtube: data.youtube || 0, safety_lock: data.safety_lock || 0, logs: data.logs || []
                     };
                 }
                 updateUI();
@@ -204,6 +209,7 @@
             document.getElementById('stat-selisih_mineray').innerText = statsData.selisih_mineray;
             document.getElementById('stat-tugas_line').innerText = statsData.tugas_line;
             document.getElementById('stat-youtube').innerText = statsData.youtube;
+            document.getElementById('stat-safety_lock').innerText = statsData.safety_lock;
 
             const uniqueEmails = [...new Set(statsData.logs.filter(l => l && l.email).map(l => l.email))];
             document.getElementById('stat-total-user').innerText = uniqueEmails.length;
@@ -260,7 +266,7 @@
                 result: statsData.result, saldo: statsData.saldo, link_prediksi: statsData.link_prediksi,
                 hasil_result: statsData.hasil_result, reportan: statsData.reportan,
                 selisih_mineray: statsData.selisih_mineray, tugas_line: statsData.tugas_line,
-                youtube: statsData.youtube, logs: statsData.logs
+                youtube: statsData.youtube, safety_lock: statsData.safety_lock, logs: statsData.logs
             });
         }
 
