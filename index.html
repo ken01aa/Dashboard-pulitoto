@@ -5,149 +5,665 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CS LINE PULITOTO - Management System</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
     <style>
-        * { transition: all 0.2s ease; }
-        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #eef2f7 100%); }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
-        .sidebar-modern { background: linear-gradient(180deg, #0f172a 0%, #1e2937 100%); }
-        .menu-item { transition: all 0.3s; }
-        .menu-item:hover { background: #334155; }
-        .card-modern { background: white; border-radius: 20px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); transition: all 0.3s; }
-        .card-modern:hover { transform: translateY(-3px); box-shadow: 0 20px 30px -12px rgba(0,0,0,0.15); }
-        .header-modern { background: white; border-bottom: 1px solid #e2e8f0; }
-        body.dark-mode { background: #0f172a; }
-        body.dark-mode .card-modern { background: #1e293b; }
-        body.dark-mode .header-modern { background: #1e293b; border-bottom-color: #334155; }
-        body.dark-mode .text-gray-800, body.dark-mode .text-gray-700 { color: #f1f5f9; }
-        body.dark-mode .bg-white { background-color: #1e293b !important; }
-        body.dark-mode .bg-gray-50 { background-color: #0f172a !important; }
-        #content-frame { transition: opacity 0.3s; }
-        #content-frame.loading { opacity: 0; }
-        .dark-mode-toggle { background: #f59e0b; }
-        .dark-mode-toggle:hover { transform: scale(1.05); }
-        .marquee-container { overflow: hidden; white-space: nowrap; }
-        .marquee-content { display: inline-block; animation: marquee 25s linear infinite; }
-        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-        #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #0f172a 0%, #1e2937 100%); z-index: 1000; display: flex; align-items: center; justify-content: center; }
-        .login-card { background: rgba(255,255,255,0.1); backdrop-filter: blur(20px); border-radius: 32px; padding: 48px; text-align: center; }
-        .google-btn { background: white; color: #1e293b; padding: 14px 32px; border-radius: 100px; font-weight: 600; display: inline-flex; align-items: center; gap: 12px; cursor: pointer; }
-        .google-btn:hover { transform: scale(1.05); }
-        .user-info { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 100px; }
-        .user-avatar { width: 36px; height: 36px; border-radius: 50%; }
-        .logout-btn { background: rgba(239,68,68,0.2); color: #ef4444; padding: 8px 16px; border-radius: 100px; cursor: pointer; }
-        .logout-btn:hover { background: #ef4444; color: white; }
-        #main-app { display: none; }
-        .refresh-btn { background: #3b82f6; color: white; padding: 8px 16px; border-radius: 100px; cursor: pointer; margin-left: 10px; }
-        .refresh-btn:hover { background: #2563eb; }
+        :root {
+            --sidebar-w: 260px;
+            --blue: #3b82f6;
+            --blue-dark: #1d4ed8;
+            --navy: #0f172a;
+            --navy2: #1e293b;
+            --navy3: #334155;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f0f4ff; color: #1e293b; overflow: hidden; }
+
+        /* ── SCROLLBAR ── */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 99px; }
+
+        /* ── LOGIN ── */
+        #login-overlay {
+            position: fixed; inset: 0; z-index: 9999;
+            background: radial-gradient(ellipse at 30% 40%, #1e3a8a 0%, #0f172a 60%, #000 100%);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .login-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.12);
+            backdrop-filter: blur(24px);
+            border-radius: 28px;
+            padding: 52px 48px;
+            text-align: center;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 0 0 80px rgba(59,130,246,0.25), 0 40px 80px rgba(0,0,0,0.5);
+        }
+        .login-logo-ring {
+            width: 90px; height: 90px;
+            border-radius: 50%;
+            background: rgba(59,130,246,0.15);
+            border: 2px solid rgba(59,130,246,0.4);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 24px;
+            position: relative;
+        }
+        .login-logo-ring::before {
+            content: '';
+            position: absolute; inset: -8px;
+            border-radius: 50%;
+            border: 1px solid rgba(59,130,246,0.2);
+            animation: spin 6s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .google-btn {
+            background: white; color: #1e293b;
+            padding: 14px 32px; border-radius: 100px;
+            font-weight: 700; font-size: 15px;
+            display: inline-flex; align-items: center; gap: 10px;
+            cursor: pointer; border: none; margin-top: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+        }
+        .google-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.35); }
+        .google-btn:active { transform: translateY(0); }
+
+        /* ── MAIN APP ── */
+        #main-app { display: none; height: 100vh; }
+        .layout { display: flex; height: 100vh; }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--navy);
+            display: flex; flex-direction: column;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .sidebar::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 200px;
+            background: radial-gradient(ellipse at 50% 0%, rgba(59,130,246,0.2) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .sidebar-logo {
+            padding: 24px 20px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            flex-shrink: 0;
+        }
+        .sidebar-logo img { height: 36px; width: auto; }
+        .sidebar-logo .app-name { color: #fff; font-size: 15px; font-weight: 800; letter-spacing: 0.5px; }
+        .sidebar-logo .app-ver { color: #64748b; font-size: 11px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; }
+
+        .sidebar-nav { flex: 1; padding: 12px 10px; overflow-y: auto; }
+        .nav-section-title {
+            color: #475569; font-size: 10px; font-weight: 700;
+            letter-spacing: 2px; text-transform: uppercase;
+            padding: 12px 10px 6px; margin-top: 4px;
+        }
+        .menu-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 12px; border-radius: 10px;
+            color: #94a3b8; font-size: 13px; font-weight: 500;
+            cursor: pointer; text-decoration: none;
+            transition: all 0.2s; margin-bottom: 2px;
+            position: relative;
+        }
+        .menu-item:hover { background: rgba(255,255,255,0.06); color: #e2e8f0; }
+        .menu-item.active {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(59,130,246,0.4);
+        }
+        .menu-item .icon {
+            width: 32px; height: 32px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; font-size: 14px;
+            background: rgba(255,255,255,0.06);
+        }
+        .menu-item.active .icon { background: rgba(255,255,255,0.2); }
+        .menu-item .label { flex: 1; }
+        .menu-item .badge {
+            background: rgba(59,130,246,0.3); color: #60a5fa;
+            font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 99px;
+        }
+        .menu-item.active .badge { background: rgba(255,255,255,0.25); color: #fff; }
+
+        .sidebar-footer {
+            padding: 12px 16px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            flex-shrink: 0;
+        }
+        .user-card {
+            display: flex; align-items: center; gap: 10px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px; padding: 10px 12px;
+        }
+        .user-card img { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #3b82f6; }
+        .user-card .user-name { color: #e2e8f0; font-size: 13px; font-weight: 600; }
+        .user-card .user-email { color: #64748b; font-size: 11px; }
+        .logout-mini {
+            background: rgba(239,68,68,0.15); color: #f87171;
+            border: 1px solid rgba(239,68,68,0.2);
+            border-radius: 8px; padding: 6px 8px;
+            cursor: pointer; font-size: 13px; transition: all 0.2s; flex-shrink: 0;
+        }
+        .logout-mini:hover { background: #ef4444; color: white; }
+
+        /* ── MAIN CONTENT ── */
+        .main-content { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+        /* ── TOPBAR ── */
+        .topbar {
+            background: white; height: 60px; flex-shrink: 0;
+            padding: 0 24px;
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .topbar-left { display: flex; align-items: center; gap: 12px; flex: 1; overflow: hidden; }
+        .page-title { font-size: 16px; font-weight: 700; color: #0f172a; white-space: nowrap; }
+        .topbar-marquee { overflow: hidden; flex: 1; }
+        .topbar-marquee-inner {
+            display: inline-flex; align-items: center; gap: 6px;
+            color: #64748b; font-size: 13px; font-weight: 500;
+            animation: marquee 28s linear infinite; white-space: nowrap;
+        }
+        @keyframes marquee { 0% { transform: translateX(100vw); } 100% { transform: translateX(-200%); } }
+
+        .topbar-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .tb-btn {
+            height: 36px; border-radius: 8px;
+            display: flex; align-items: center; gap: 6px;
+            padding: 0 12px; font-size: 13px; font-weight: 600;
+            cursor: pointer; border: none; transition: all 0.2s;
+        }
+        .tb-btn-refresh { background: #eff6ff; color: #3b82f6; }
+        .tb-btn-refresh:hover { background: #dbeafe; }
+        .tb-btn-logout { background: #fef2f2; color: #ef4444; }
+        .tb-btn-logout:hover { background: #fee2e2; }
+        .tb-btn-dark {
+            background: #f1f5f9; color: #475569;
+            width: 36px; padding: 0; justify-content: center; border-radius: 8px;
+        }
+        .tb-btn-dark:hover { background: #e2e8f0; }
+        .live-dot {
+            width: 8px; height: 8px; border-radius: 50%; background: #22c55e;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        /* ── CONTENT AREA ── */
+        .content-area { flex: 1; overflow: hidden; position: relative; }
+        #content-dashboard { height: 100%; overflow-y: auto; padding: 24px; background: #f0f4ff; }
+        #content-frame { width: 100%; height: 100%; border: none; display: none; background: white; }
+
+        /* ── DASHBOARD GRID ── */
+        .dash-header { margin-bottom: 20px; }
+        .dash-header h2 { font-size: 22px; font-weight: 800; color: #0f172a; }
+        .dash-header p { font-size: 14px; color: #64748b; margin-top: 2px; }
+
+        /* Hero stat */
+        .hero-stat {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #0ea5e9 100%);
+            border-radius: 20px; padding: 28px 32px;
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 20px; position: relative; overflow: hidden;
+            color: white;
+        }
+        .hero-stat::before {
+            content: '';
+            position: absolute; top: -40px; right: -40px;
+            width: 200px; height: 200px; border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+        }
+        .hero-stat::after {
+            content: '';
+            position: absolute; bottom: -60px; right: 60px;
+            width: 150px; height: 150px; border-radius: 50%;
+            background: rgba(255,255,255,0.04);
+        }
+        .hero-stat .hero-left { position: relative; z-index: 1; }
+        .hero-stat .hero-label { font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; opacity: 0.7; }
+        .hero-stat .hero-num { font-size: 52px; font-weight: 900; line-height: 1; margin: 8px 0 4px; }
+        .hero-stat .hero-sub { font-size: 13px; opacity: 0.7; }
+        .hero-stat .hero-icon {
+            position: relative; z-index: 1;
+            width: 70px; height: 70px; border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 30px;
+        }
+
+        /* Stat Cards Grid */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 20px; }
+        .stat-card {
+            background: white; border-radius: 16px; padding: 18px 20px;
+            border: 1px solid rgba(0,0,0,0.05);
+            display: flex; align-items: center; gap: 14px;
+            transition: all 0.25s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+        .stat-icon {
+            width: 48px; height: 48px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; flex-shrink: 0;
+        }
+        .stat-card .num { font-size: 26px; font-weight: 800; color: #0f172a; line-height: 1; }
+        .stat-card .lbl { font-size: 12px; color: #94a3b8; font-weight: 500; margin-top: 3px; }
+
+        /* Tables */
+        .table-card {
+            background: white; border-radius: 16px;
+            border: 1px solid rgba(0,0,0,0.05);
+            overflow: hidden; margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .table-head {
+            padding: 18px 20px; display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .table-head h3 { font-size: 15px; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px; }
+        .table-badge {
+            background: #eff6ff; color: #3b82f6;
+            font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 99px;
+        }
+        .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .data-table thead th {
+            background: #f8fafc; color: #64748b; font-weight: 600;
+            font-size: 11px; letter-spacing: 0.8px; text-transform: uppercase;
+            padding: 10px 16px; text-align: left; border-bottom: 1px solid #f1f5f9;
+        }
+        .data-table tbody td { padding: 12px 16px; border-bottom: 1px solid #f8fafc; color: #334155; }
+        .data-table tbody tr:hover td { background: #f8fafc; }
+        .data-table tbody tr:last-child td { border-bottom: none; }
+        .app-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            background: #eff6ff; color: #3b82f6;
+            font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 99px;
+        }
+        .user-chip {
+            display: inline-flex; align-items: center; gap: 6px;
+        }
+        .user-chip .mini-av {
+            width: 26px; height: 26px; border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white; font-size: 10px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .access-badge {
+            background: #f0fdf4; color: #16a34a;
+            font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 99px;
+        }
+
+        /* ── DARK MODE ── */
+        body.dark { background: #070c18; color: #e2e8f0; }
+        body.dark .topbar { background: #0f172a; border-bottom-color: #1e293b; }
+        body.dark .page-title { color: #f1f5f9; }
+        body.dark #content-dashboard { background: #070c18; }
+        body.dark .dash-header h2 { color: #f1f5f9; }
+        body.dark .stat-card { background: #0f172a; border-color: rgba(255,255,255,0.06); }
+        body.dark .stat-card .num { color: #f1f5f9; }
+        body.dark .stat-card .lbl { color: #475569; }
+        body.dark .table-card { background: #0f172a; border-color: rgba(255,255,255,0.06); }
+        body.dark .table-head { border-bottom-color: #1e293b; }
+        body.dark .table-head h3 { color: #f1f5f9; }
+        body.dark .data-table thead th { background: #1e293b; border-bottom-color: #1e293b; }
+        body.dark .data-table tbody td { border-bottom-color: #1e293b; color: #cbd5e1; }
+        body.dark .data-table tbody tr:hover td { background: #1e293b; }
+        body.dark .tb-btn-dark { background: #1e293b; color: #94a3b8; }
+        body.dark .tb-btn-refresh { background: #1e3a8a; color: #93c5fd; }
+        body.dark .tb-btn-logout { background: #450a0a; color: #fca5a5; }
+        body.dark .topbar-marquee-inner { color: #475569; }
+
+        /* ── ANIMATIONS ── */
+        .fade-in { animation: fadeIn 0.35s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        #content-frame.loading { opacity: 0; transition: opacity 0.3s; }
+        #content-frame:not(.loading) { transition: opacity 0.3s; opacity: 1; }
+
+        /* Notification toast */
+        #toast {
+            position: fixed; bottom: 24px; right: 24px; z-index: 9998;
+            background: #0f172a; color: white;
+            padding: 14px 20px; border-radius: 12px;
+            font-size: 13px; font-weight: 600;
+            display: flex; align-items: center; gap: 10px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            transform: translateY(80px); opacity: 0;
+            transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        #toast.show { transform: translateY(0); opacity: 1; }
+        #toast .toast-icon { font-size: 16px; }
     </style>
 </head>
 <body>
 
-    <div id="login-overlay">
-        <div class="login-card">
-            <div class="flex justify-center mb-6"><img src="https://puli32217.com/resources/images/logo.png" alt="Logo" class="h-20 w-auto"></div>
-            <h1 class="text-3xl font-bold text-white mb-2">CS LINE PULITOTO</h1>
-            <p class="text-slate-300 mb-8">Management System v2.0</p>
-            <button id="google-login-btn" class="google-btn"><i class="fab fa-google text-xl"></i> Login dengan Google</button>
-            <p class="text-slate-400 text-xs mt-6">Akses terbatas - Hanya email terdaftar</p>
+<!-- ════════════════════════ LOGIN ════════════════════════ -->
+<div id="login-overlay">
+    <div class="login-card">
+        <div class="login-logo-ring">
+            <img src="https://puli32217.com/resources/images/logo.png" alt="Logo" style="height:50px;width:auto;">
         </div>
+        <h1 style="color:white;font-size:24px;font-weight:900;letter-spacing:0.5px;margin-bottom:6px;">CS LINE PULITOTO</h1>
+        <p style="color:#64748b;font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:32px;">Management System v2.0</p>
+        <button id="google-login-btn" class="google-btn">
+            <i class="fab fa-google" style="color:#ea4335;font-size:18px;"></i>
+            Masuk dengan Google
+        </button>
+        <p style="color:#334155;font-size:11px;margin-top:20px;font-weight:500;">
+            <i class="fas fa-shield-alt" style="color:#3b82f6;margin-right:4px;"></i>
+            Akses terbatas — hanya email terdaftar
+        </p>
     </div>
+</div>
 
-    <div id="main-app">
-        <div class="flex h-screen overflow-hidden">
-            <aside class="w-64 sidebar-modern text-white flex-shrink-0 flex flex-col">
-                <div class="p-6 border-b border-slate-700">
-                    <div class="flex justify-center mb-4"><img src="https://puli32217.com/resources/images/logo.png" alt="Logo" class="h-12 w-auto"></div>
-                    <h1 class="text-xl font-bold text-white text-center">CS LINE PULITOTO</h1>
-                    <p class="text-xs text-slate-400 text-center mt-1">Management System v2.0</p>
-                </div>
-                <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-                    <a href="#" onclick="loadPage('dashboard', this)" data-title="Dashboard" data-menu="dashboard" class="menu-item flex items-center gap-3 px-4 py-3 bg-blue-600 rounded-lg text-white"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg> Dashboard</a>
-                    <a href="#" onclick="loadPage('prediksi_bola.html', this)" data-title="Prediksi Bola" data-menu="prediksi" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/></svg> PREDIKSI BOLA</a>
-                    <a href="#" onclick="loadPage('bukti_jp.html', this)" data-title="Bukti Jackpot" data-menu="bukti_jp" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"/></svg> BUKTI JP</a>
-                    <a href="#" onclick="loadPage('syair_togel.html', this)" data-title="Syair Togel" data-menu="syair" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/></svg> SYAIR TOGEL</a>
-                    <a href="#" onclick="loadPage('RESULT_TOGEL.html', this)" data-title="Result Togel" data-menu="result" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5z"/></svg> RESULT TOGEL</a>
-                    <a href="#" onclick="loadPage('CEK_SALDO.HTML', this)" data-title="Cek Saldo" data-menu="saldo" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16z"/></svg> CEK SALDO</a>
-                    <a href="#" onclick="loadPage('LinkPrediksiBola.html', this)" data-title="Link Prediksi Bola" data-menu="link_prediksi" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5z"/></svg> LINK PREDIKSI BOLA</a>
-                    <a href="#" onclick="loadPage('generator-result.html', this)" data-title="Hasil Result" data-menu="hasil_result" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2H6z"/></svg> HASIL RESULT</a>
-                    <a href="#" onclick="loadPage('notepad-online.html', this)" data-title="Reportan" data-menu="reportan" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/></svg> REPORTAN</a>
-                    <a href="#" onclick="loadPage('MINERAYSELISIH.html', this)" data-title="Selisih Mineray" data-menu="selisih_mineray" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"/></svg> SELISIH MINERAY</a>
-                    <a href="#" onclick="loadPage('JOBDESK.HTML', this)" data-title="Tugas Line" data-menu="tugas_line" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2H6z"/></svg> TUGAS LINE</a>
-                    <a href="#" onclick="loadPage('YOUTUBE.HTML', this)" data-title="YouTube" data-menu="youtube" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/></svg> YOUTUBE</a>
-                    <!-- MENU SAFETY LOCK BARU -->
-                    <a href="#" onclick="loadPage('SafetyLock.html', this)" data-title="Safety Lock" data-menu="safety_lock" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"/></svg> SAFETY LOCK</a>
-                    <!-- MENU KENDALA BANK -->
-                    <a href="#" onclick="loadPage('KendalaBank.html', this)" data-title="Kendala Bank" data-menu="kendala_bank" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 2h12v8H4V6zm2 1v2h2V7H6zm4 0v2h2V7h-2zm4 0v2h2V7h-2z"/></svg> KENDALA BANK</a>
-                    <!-- MENU AUTO REPORT PHISING -->
-                    <a href="#" onclick="loadPage('AutoReportPhising.html', this)" data-title="Report Phising" data-menu="auto_report_phising" class="menu-item flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"/></svg> AUTO REPORT PHISING</a>
-                </nav>
-                <div class="p-4 border-t border-slate-700"><p class="text-xs text-slate-500 text-center">© 2025 CS LINE PULITOTO</p></div>
-            </aside>
+<!-- ════════════════════════ MAIN APP ════════════════════════ -->
+<div id="main-app">
+    <div class="layout">
 
-            <div class="flex-1 flex flex-col overflow-hidden">
-                <header class="header-modern shadow-sm px-8 py-3 flex items-center justify-between">
-                    <div class="flex-1 marquee-container"><div class="marquee-content text-md font-semibold text-gray-700"><i class="fas fa-chart-line text-blue-500 mr-2"></i> Selamat Datang di Dashboard Tools PULITOTO — Aplikasi ini dirancang untuk membantu pekerjaan Anda lebih cepat, praktis, dan terorganisir. Gunakan menu di sebelah kiri untuk mengakses Prediksi Bola, Syair Togel, Result, Bukti JP, dan berbagai fitur lainnya dengan mudah.</div></div>
-                    <div class="flex items-center gap-3">
-                        <div id="user-info-container" class="user-info"><img id="user-avatar" class="user-avatar" src=""><span id="user-name" class="text-white text-sm"></span></div>
-                        <button id="refresh-data-btn" class="refresh-btn"><i class="fas fa-sync-alt mr-1"></i> Refresh</button>
-                        <button id="logout-btn" class="logout-btn"><i class="fas fa-sign-out-alt mr-1"></i> Logout</button>
-                        <button id="darkModeToggle" class="dark-mode-toggle p-2 rounded-full text-white w-10 h-10"><i class="fas fa-moon"></i></button>
-                    </div>
-                </header>
-
-                <main class="flex-1 overflow-hidden bg-gray-50 relative">
-                    <div id="content-dashboard" class="p-8 h-full overflow-y-auto">
-                        <h2 class="text-2xl font-bold text-gray-800 mb-6"><i class="fas fa-chart-pie text-blue-500 mr-2"></i> Rekap Total Penggunaan Aplikasi</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                            <div class="card-modern bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-6 text-white"><div><p class="text-sm uppercase font-semibold opacity-80">Total User Akses</p><p class="text-4xl font-bold mt-2" id="stat-total-user">0</p><p class="text-xs mt-1 opacity-70">User Unik (by Email)</p></div></div>
-                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-green-500"><div><p class="text-sm text-gray-500 font-medium">Prediksi Bola</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-prediksi">0</p></div><div class="bg-green-100 p-3 rounded-full"><i class="fas fa-futbol text-green-600"></i></div></div>
-                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-yellow-500"><div><p class="text-sm text-gray-500 font-medium">Bukti JP</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-bukti_jp">0</p></div><div class="bg-yellow-100 p-3 rounded-full"><i class="fas fa-trophy text-yellow-600"></i></div></div>
-                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-purple-500"><div><p class="text-sm text-gray-500 font-medium">Syair Togel</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-syair">0</p></div><div class="bg-purple-100 p-3 rounded-full"><i class="fas fa-feather-alt text-purple-600"></i></div></div>
-                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-red-500"><div><p class="text-sm text-gray-500 font-medium">Result Togel</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-result">0</p></div><div class="bg-red-100 p-3 rounded-full"><i class="fas fa-chart-line text-red-600"></i></div></div>
-                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-teal-500"><div><p class="text-sm text-gray-500 font-medium">Cek Saldo</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-saldo">0</p></div><div class="bg-teal-100 p-3 rounded-full"><i class="fas fa-wallet text-teal-600"></i></div></div>
-                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-indigo-500"><div><p class="text-sm text-gray-500 font-medium">Hasil Result</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-hasil_result">0</p></div><div class="bg-indigo-100 p-3 rounded-full"><i class="fas fa-database text-indigo-600"></i></div></div>
-                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-orange-500"><div><p class="text-sm text-gray-500 font-medium">Reportan</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-reportan">0</p></div><div class="bg-orange-100 p-3 rounded-full"><i class="fas fa-edit text-orange-600"></i></div></div>
-                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-pink-500"><div><p class="text-sm text-gray-500 font-medium">Selisih Mineray</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-selisih_mineray">0</p></div><div class="bg-pink-100 p-3 rounded-full"><i class="fas fa-calculator text-pink-600"></i></div></div>
-                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-cyan-500"><div><p class="text-sm text-gray-500 font-medium">Tugas Line</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-tugas_line">0</p></div><div class="bg-cyan-100 p-3 rounded-full"><i class="fas fa-clipboard-list text-cyan-600"></i></div></div>
-                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-red-600"><div><p class="text-sm text-gray-500 font-medium">YouTube</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-youtube">0</p></div><div class="bg-red-100 p-3 rounded-full"><i class="fab fa-youtube text-red-600"></i></div></div>
-                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-blue-700"><div><p class="text-sm text-gray-500 font-medium">Safety Lock</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-safety_lock">0</p></div><div class="bg-blue-100 p-3 rounded-full"><i class="fas fa-shield-alt text-blue-600"></i></div></div>
-                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-amber-600"><div><p class="text-sm text-gray-500 font-medium">Kendala Bank</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-kendala_bank">0</p></div><div class="bg-amber-100 p-3 rounded-full"><i class="fas fa-university text-amber-600"></i></div></div>
-                            <div class="card-modern bg-white rounded-xl p-6 border-l-4 border-rose-600"><div><p class="text-sm text-gray-500 font-medium">Auto Report Phising</p><p class="text-3xl font-bold text-gray-800 mt-1" id="stat-auto_report_phising">0</p></div><div class="bg-rose-100 p-3 rounded-full"><i class="fas fa-shield-virus text-rose-600"></i></div></div>
-                        </div>
-
-                        <div class="card-modern bg-white rounded-xl p-6">
-                            <h3 class="text-lg font-bold text-gray-800 mb-4"><i class="fas fa-history text-blue-500 mr-2"></i> Log Aktivitas Terbaru</h3>
-                            <div class="overflow-x-auto">
-                                <table class="min-w-full text-sm text-left text-gray-500">
-                                    <thead class="text-xs text-gray-700 uppercase bg-gray-50"><tr><th class="px-6 py-3">Waktu</th><th class="px-6 py-3">User</th><th class="px-6 py-3">Email</th><th class="px-6 py-3">Aplikasi</th></tr></thead>
-                                    <tbody id="log-body"><tr><td colspan="4" class="text-center py-8 text-gray-400">Memuat data...</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="card-modern bg-white rounded-xl p-6 mt-6">
-                        <h3 class="text-lg font-bold text-gray-800 mb-4"><i class="fas fa-users text-blue-500 mr-2"></i> Daftar User (Gmail) yang Pernah Akses</h3>
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full text-sm text-left text-gray-500">
-                                <thead class="text-xs text-gray-700 uppercase bg-gray-50"><tr><th class="px-6 py-3">No</th><th class="px-6 py-3">Nama User</th><th class="px-6 py-3">Email</th><th class="px-6 py-3">Total Akses</th><th class="px-6 py-3">Terakhir Akses</th></tr></thead>
-                                <tbody id="user-stats-body"><tr><td colspan="5" class="text-center py-8 text-gray-400">Memuat data...</td></tr>
-                            </tbody>
-                        </table>
+        <!-- ─── SIDEBAR ─── -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:2px;">
+                    <img src="https://puli32217.com/resources/images/logo.png" alt="Logo">
+                    <div>
+                        <div class="app-name">PULITOTO</div>
+                        <div class="app-ver">CS Line · v2.0</div>
                     </div>
                 </div>
             </div>
-            <iframe id="content-frame" class="w-full h-full absolute top-0 left-0 hidden bg-white" src=""></iframe>
-        </main>
-    </div>
-</div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">Main</div>
+
+                <a href="#" onclick="loadPage('dashboard',this)" data-title="Dashboard" data-menu="dashboard"
+                   class="menu-item active">
+                    <span class="icon"><i class="fas fa-chart-pie"></i></span>
+                    <span class="label">Dashboard</span>
+                </a>
+
+                <div class="nav-section-title">Tools</div>
+
+                <a href="#" onclick="loadPage('prediksi_bola.html',this)" data-title="Prediksi Bola" data-menu="prediksi"
+                   class="menu-item">
+                    <span class="icon"><i class="fas fa-futbol"></i></span>
+                    <span class="label">Prediksi Bola</span>
+                </a>
+
+                <a href="#" onclick="loadPage('bukti_jp.html',this)" data-title="Bukti Jackpot" data-menu="bukti_jp"
+                   class="menu-item">
+                    <span class="icon"><i class="fas fa-trophy"></i></span>
+                    <span class="label">Bukti JP</span>
+                </a>
+
+                <a href="#" onclick="loadPage('syair_togel.html',this)" data-title="Syair Togel" data-menu="syair"
+                   class="menu-item">
+                    <span class="icon"><i class="fas fa-feather-alt"></i></span>
+                    <span class="label">Syair Togel</span>
+                </a>
+
+                <a href="#" onclick="loadPage('RESULT_TOGEL.html',this)" data-title="Result Togel" data-menu="result"
+                   class="menu-item">
+                    <span class="icon"><i class="fas fa-list-ol"></i></span>
+                    <span class="label">Result Togel</span>
+                </a>
+
+                <a href="#" onclick="loadPage('CEK_SALDO.HTML',this)" data-title="Cek Saldo" data-menu="saldo"
+                   class="menu-item">
+                    <span class="icon"><i class="fas fa-wallet"></i></span>
+                    <span class="label">Cek Saldo</span>
+                </a>
+
+                <a href="#" onclick="loadPage('LinkPrediksiBola.html',this)" data-title="Link Prediksi Bola" data-menu="link_prediksi"
+                   class="menu-item">
+                    <span class="icon"><i class="fas fa-link"></i></span>
+                    <span class="label">Link Prediksi Bola</span>
+                </a>
+
+                <a href="#" onclick="loadPage('generator-result.html',this)" data-title="Hasil Result" data-menu="hasil_result"
+                   class="menu-item">
+                    <span class="icon"><i class="fas fa-database"></i></span>
+                    <span class="label">Hasil Result</span>
+                </a>
+
+                <div class="nav-section-title">Management</div>
+
+                <a href="#" onclick="loadPage('notepad-online.html',this)" data-title="Reportan" data-menu="reportan"
+                   class="menu-item">
+                    <span class="icon"><i class="fas fa-file-alt"></i></span>
+                    <span class="label">Reportan</span>
+                </a>
+
+                <a href="#" onclick="loadPage('MINERAYSELISIH.html',this)" data-title="Selisih Mineray" data-menu="selisih_mineray"
+                   class="menu-item">
+                    <span class="icon"><i class="fas fa-calculator"></i></span>
+                    <span class="label">Selisih Mineray</span>
+                </a>
+
+                <a href="#" onclick="loadPage('JOBDESK.HTML',this)" data-title="Tugas Line" data-menu="tugas_line"
+                   class="menu-item">
+                    <span class="icon"><i class="fas fa-clipboard-list"></i></span>
+                    <span class="label">Tugas Line</span>
+                </a>
+
+                <div class="nav-section-title">Media & Security</div>
+
+                <a href="#" onclick="loadPage('YOUTUBE.HTML',this)" data-title="YouTube" data-menu="youtube"
+                   class="menu-item">
+                    <span class="icon"><i class="fab fa-youtube"></i></span>
+                    <span class="label">YouTube</span>
+                </a>
+
+                <a href="#" onclick="loadPage('SafetyLock.html',this)" data-title="Safety Lock" data-menu="safety_lock"
+                   class="menu-item">
+                    <span class="icon"><i class="fas fa-shield-alt"></i></span>
+                    <span class="label">Safety Lock</span>
+                </a>
+
+                <a href="#" onclick="loadPage('KendalaBank.html',this)" data-title="Kendala Bank" data-menu="kendala_bank"
+                   class="menu-item">
+                    <span class="icon"><i class="fas fa-university"></i></span>
+                    <span class="label">Kendala Bank</span>
+                </a>
+
+                <a href="#" onclick="loadPage('AutoReportPhising.html',this)" data-title="Report Phising" data-menu="auto_report_phising"
+                   class="menu-item">
+                    <span class="icon"><i class="fas fa-bug"></i></span>
+                    <span class="label">Auto Report Phising</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-card">
+                    <img id="user-avatar" src="" alt="avatar">
+                    <div style="flex:1;min-width:0;">
+                        <div class="user-name" id="user-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">-</div>
+                        <div class="user-email" id="user-email" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">-</div>
+                    </div>
+                    <button id="logout-btn" class="logout-mini" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ─── MAIN CONTENT ─── -->
+        <div class="main-content">
+
+            <!-- TOPBAR -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <span id="current-page-title" class="page-title">Dashboard</span>
+                    <div class="topbar-marquee">
+                        <span class="topbar-marquee-inner">
+                            <i class="fas fa-circle" style="color:#22c55e;font-size:8px;"></i>
+                            Selamat Datang di Dashboard Tools PULITOTO — Aplikasi ini dirancang untuk membantu pekerjaan Anda lebih cepat, praktis, dan terorganisir.
+                            &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+                            <i class="fas fa-circle" style="color:#3b82f6;font-size:8px;"></i>
+                            Gunakan menu di sebelah kiri untuk mengakses semua fitur dengan mudah.
+                        </span>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <div class="live-dot" title="Sistem Online"></div>
+                    <button id="refresh-data-btn" class="tb-btn tb-btn-refresh">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <button id="darkModeToggle" class="tb-btn tb-btn-dark">
+                        <i class="fas fa-moon" id="dark-icon"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- CONTENT -->
+            <div class="content-area">
+
+                <!-- DASHBOARD -->
+                <div id="content-dashboard">
+                    <div class="fade-in">
+                        <div class="dash-header">
+                            <h2>Rekap Penggunaan Aplikasi</h2>
+                            <p>Statistik real-time semua menu yang diakses oleh tim CS Line</p>
+                        </div>
+
+                        <!-- Hero -->
+                        <div class="hero-stat">
+                            <div class="hero-left">
+                                <div class="hero-label">Total User Aktif</div>
+                                <div class="hero-num" id="stat-total-user">0</div>
+                                <div class="hero-sub">User unik berdasarkan email terdaftar</div>
+                            </div>
+                            <div class="hero-icon"><i class="fas fa-users"></i></div>
+                        </div>
+
+                        <!-- Stats Grid -->
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background:#f0fdf4;color:#16a34a;"><i class="fas fa-futbol"></i></div>
+                                <div><div class="num" id="stat-prediksi">0</div><div class="lbl">Prediksi Bola</div></div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background:#fefce8;color:#ca8a04;"><i class="fas fa-trophy"></i></div>
+                                <div><div class="num" id="stat-bukti_jp">0</div><div class="lbl">Bukti JP</div></div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background:#faf5ff;color:#9333ea;"><i class="fas fa-feather-alt"></i></div>
+                                <div><div class="num" id="stat-syair">0</div><div class="lbl">Syair Togel</div></div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background:#fef2f2;color:#dc2626;"><i class="fas fa-list-ol"></i></div>
+                                <div><div class="num" id="stat-result">0</div><div class="lbl">Result Togel</div></div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background:#f0fdfa;color:#0d9488;"><i class="fas fa-wallet"></i></div>
+                                <div><div class="num" id="stat-saldo">0</div><div class="lbl">Cek Saldo</div></div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background:#eff6ff;color:#3b82f6;"><i class="fas fa-database"></i></div>
+                                <div><div class="num" id="stat-hasil_result">0</div><div class="lbl">Hasil Result</div></div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background:#fff7ed;color:#ea580c;"><i class="fas fa-file-alt"></i></div>
+                                <div><div class="num" id="stat-reportan">0</div><div class="lbl">Reportan</div></div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background:#fdf2f8;color:#db2777;"><i class="fas fa-calculator"></i></div>
+                                <div><div class="num" id="stat-selisih_mineray">0</div><div class="lbl">Selisih Mineray</div></div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background:#ecfeff;color:#0891b2;"><i class="fas fa-clipboard-list"></i></div>
+                                <div><div class="num" id="stat-tugas_line">0</div><div class="lbl">Tugas Line</div></div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background:#fef2f2;color:#dc2626;"><i class="fab fa-youtube"></i></div>
+                                <div><div class="num" id="stat-youtube">0</div><div class="lbl">YouTube</div></div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background:#eff6ff;color:#1d4ed8;"><i class="fas fa-shield-alt"></i></div>
+                                <div><div class="num" id="stat-safety_lock">0</div><div class="lbl">Safety Lock</div></div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background:#fffbeb;color:#d97706;"><i class="fas fa-university"></i></div>
+                                <div><div class="num" id="stat-kendala_bank">0</div><div class="lbl">Kendala Bank</div></div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background:#fff1f2;color:#e11d48;"><i class="fas fa-bug"></i></div>
+                                <div><div class="num" id="stat-auto_report_phising">0</div><div class="lbl">Auto Report Phising</div></div>
+                            </div>
+                        </div>
+
+                        <!-- Log Table -->
+                        <div class="table-card">
+                            <div class="table-head">
+                                <h3><i class="fas fa-history" style="color:#3b82f6;"></i> Log Aktivitas Terbaru</h3>
+                                <span class="table-badge" id="log-count-badge">0 log</span>
+                            </div>
+                            <div style="overflow-x:auto;">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Waktu</th>
+                                            <th>User</th>
+                                            <th>Email</th>
+                                            <th>Menu Diakses</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="log-body">
+                                        <tr><td colspan="4" style="text-align:center;padding:32px;color:#94a3b8;">
+                                            <i class="fas fa-spinner fa-spin" style="margin-right:6px;"></i>Memuat data...
+                                        </td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- User Stats Table -->
+                        <div class="table-card">
+                            <div class="table-head">
+                                <h3><i class="fas fa-users" style="color:#3b82f6;"></i> Daftar User Terdaftar</h3>
+                                <span class="table-badge" id="user-count-badge">0 user</span>
+                            </div>
+                            <div style="overflow-x:auto;">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:48px;">#</th>
+                                            <th>Nama</th>
+                                            <th>Email</th>
+                                            <th>Total Akses</th>
+                                            <th>Terakhir Akses</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="user-stats-body">
+                                        <tr><td colspan="5" style="text-align:center;padding:32px;color:#94a3b8;">
+                                            <i class="fas fa-spinner fa-spin" style="margin-right:6px;"></i>Memuat data...
+                                        </td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div><!-- /fade-in -->
+                </div><!-- /content-dashboard -->
+
+                <iframe id="content-frame" src=""></iframe>
+
+            </div><!-- /content-area -->
+        </div><!-- /main-content -->
+    </div><!-- /layout -->
+</div><!-- /main-app -->
+
+<!-- Toast -->
+<div id="toast">
+    <span class="toast-icon" id="toast-icon"></span>
+    <span id="toast-msg"></span>
 </div>
 
 <script>
@@ -160,16 +676,14 @@
         messagingSenderId: "281551833618",
         appId: "1:281551833618:web:e52fd5cf616b3348b226cb"
     };
-
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
     const auth = firebase.auth();
     const provider = new firebase.auth.GoogleAuthProvider();
 
-    // DAFTAR EMAIL YANG DIIZINKAN - GANTI DENGAN EMAIL ANDA
     const allowedEmails = [
         "robbyviera.smb88@gmail.com",
-        "jerrykenny.1122@gmail.com", 
+        "jerrykenny.1122@gmail.com",
         "muhammaderfinsyah21@gmail.com",
         "dandypulungan38@gmail.com",
         "arifin00cc@gmail.com"
@@ -177,14 +691,22 @@
 
     let currentUser = null;
     let statsData = {
-        prediksi: 0, bukti_jp: 0, syair: 0, result: 0, saldo: 0,
-        link_prediksi: 0, hasil_result: 0, reportan: 0, selisih_mineray: 0,
-        tugas_line: 0, youtube: 0, safety_lock: 0, kendala_bank: 0, auto_report_phising: 0, logs: []
+        prediksi:0, bukti_jp:0, syair:0, result:0, saldo:0,
+        link_prediksi:0, hasil_result:0, reportan:0, selisih_mineray:0,
+        tugas_line:0, youtube:0, safety_lock:0, kendala_bank:0, auto_report_phising:0, logs:[]
     };
+
+    function showToast(msg, icon='✅', dur=3000) {
+        const t = document.getElementById('toast');
+        document.getElementById('toast-msg').textContent = msg;
+        document.getElementById('toast-icon').textContent = icon;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), dur);
+    }
 
     function getWIBTime() {
         const now = new Date();
-        return now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' ' + now.toLocaleDateString('id-ID');
+        return now.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}) + ' ' + now.toLocaleDateString('id-ID');
     }
 
     async function loadData() {
@@ -193,76 +715,92 @@
             const data = snapshot.val();
             if (data) {
                 statsData = {
-                    prediksi: data.prediksi || 0, bukti_jp: data.bukti_jp || 0, syair: data.syair || 0,
-                    result: data.result || 0, saldo: data.saldo || 0, link_prediksi: data.link_prediksi || 0,
-                    hasil_result: data.hasil_result || 0, reportan: data.reportan || 0,
-                    selisih_mineray: data.selisih_mineray || 0, tugas_line: data.tugas_line || 0,
-                    youtube: data.youtube || 0, safety_lock: data.safety_lock || 0, kendala_bank: data.kendala_bank || 0, auto_report_phising: data.auto_report_phising || 0, logs: data.logs || []
+                    prediksi: data.prediksi||0, bukti_jp: data.bukti_jp||0, syair: data.syair||0,
+                    result: data.result||0, saldo: data.saldo||0, link_prediksi: data.link_prediksi||0,
+                    hasil_result: data.hasil_result||0, reportan: data.reportan||0,
+                    selisih_mineray: data.selisih_mineray||0, tugas_line: data.tugas_line||0,
+                    youtube: data.youtube||0, safety_lock: data.safety_lock||0,
+                    kendala_bank: data.kendala_bank||0, auto_report_phising: data.auto_report_phising||0,
+                    logs: data.logs||[]
                 };
             }
             updateUI();
-        } catch(e) { console.error("Gagal load:", e); updateUI(); }
+        } catch(e) { console.error("Gagal load:",e); updateUI(); }
+    }
+
+    function animateNum(el, target) {
+        const start = parseInt(el.textContent)||0;
+        if (start === target) return;
+        const step = Math.ceil(Math.abs(target-start)/20);
+        let cur = start;
+        const iv = setInterval(()=>{
+            cur = cur < target ? Math.min(cur+step,target) : Math.max(cur-step,target);
+            el.textContent = cur;
+            if (cur === target) clearInterval(iv);
+        }, 30);
     }
 
     function updateUI() {
-        document.getElementById('stat-prediksi').innerText = statsData.prediksi;
-        document.getElementById('stat-bukti_jp').innerText = statsData.bukti_jp;
-        document.getElementById('stat-syair').innerText = statsData.syair;
-        document.getElementById('stat-result').innerText = statsData.result;
-        document.getElementById('stat-saldo').innerText = statsData.saldo;
-        document.getElementById('stat-hasil_result').innerText = statsData.hasil_result;
-        document.getElementById('stat-reportan').innerText = statsData.reportan;
-        document.getElementById('stat-selisih_mineray').innerText = statsData.selisih_mineray;
-        document.getElementById('stat-tugas_line').innerText = statsData.tugas_line;
-        document.getElementById('stat-youtube').innerText = statsData.youtube;
-        document.getElementById('stat-safety_lock').innerText = statsData.safety_lock;
-        document.getElementById('stat-kendala_bank').innerText = statsData.kendala_bank;
-        document.getElementById('stat-auto_report_phising').innerText = statsData.auto_report_phising;
+        const fields = ['prediksi','bukti_jp','syair','result','saldo','hasil_result','reportan','selisih_mineray','tugas_line','youtube','safety_lock','kendala_bank','auto_report_phising'];
+        fields.forEach(f => {
+            const el = document.getElementById('stat-'+f);
+            if (el) animateNum(el, statsData[f]||0);
+        });
 
-        const uniqueEmails = [...new Set(statsData.logs.filter(l => l && l.email).map(l => l.email))];
-        document.getElementById('stat-total-user').innerText = uniqueEmails.length;
+        const uniqueEmails = [...new Set((statsData.logs||[]).filter(l=>l&&l.email).map(l=>l.email))];
+        animateNum(document.getElementById('stat-total-user'), uniqueEmails.length);
+
+        const logs = statsData.logs||[];
+        document.getElementById('log-count-badge').textContent = Math.min(logs.length,50)+' log';
 
         const logBody = document.getElementById('log-body');
-        if (!statsData.logs || statsData.logs.length === 0) {
-            logBody.innerHTML = '<tr><td colspan="4" class="text-center py-8 text-gray-400">Belum ada aktivitas</td></tr>';
+        if (!logs.length) {
+            logBody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:32px;color:#94a3b8;"><i class="fas fa-inbox" style="font-size:24px;margin-bottom:8px;display:block;"></i>Belum ada aktivitas</td></tr>';
         } else {
             logBody.innerHTML = '';
-            [...statsData.logs].reverse().slice(0, 50).forEach(log => {
+            [...logs].reverse().slice(0,50).forEach(log => {
                 if (log && log.app) {
-                    logBody.innerHTML += `<tr class="bg-white border-b hover:bg-gray-50">
-                        <td class="px-6 py-4">${log.time || '-'}</td>
-                        <td class="px-6 py-4 font-medium">${log.userName || log.email || 'Tidak dikenal'}</td>
-                        <td class="px-6 py-4 text-blue-600">${log.email || '-'}</td>
-                        <td class="px-6 py-4"><span class="px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">${log.app}</span></td>
+                    const initials = (log.userName||log.email||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+                    logBody.innerHTML += `<tr>
+                        <td style="color:#64748b;font-size:12px;white-space:nowrap;">${log.time||'-'}</td>
+                        <td><div class="user-chip">
+                            <div class="mini-av">${initials}</div>
+                            <span style="font-weight:600;">${log.userName||log.email||'?'}</span>
+                        </div></td>
+                        <td style="color:#3b82f6;font-size:12px;">${log.email||'-'}</td>
+                        <td><span class="app-badge"><i class="fas fa-layer-group" style="font-size:10px;"></i>${log.app}</span></td>
                     </tr>`;
                 }
             });
         }
 
         const userMap = new Map();
-        statsData.logs.forEach(log => {
-            if (log && log.email && log.email !== 'undefined') {
-                if (!userMap.has(log.email)) {
-                    userMap.set(log.email, { name: log.userName || log.email, email: log.email, total: 0, lastAccess: log.time });
-                }
+        logs.forEach(log => {
+            if (log && log.email && log.email!=='undefined') {
+                if (!userMap.has(log.email)) userMap.set(log.email, {name:log.userName||log.email, email:log.email, total:0, lastAccess:log.time});
                 const u = userMap.get(log.email);
                 u.total++;
                 if (log.time > u.lastAccess) u.lastAccess = log.time;
             }
         });
+        document.getElementById('user-count-badge').textContent = userMap.size+' user';
         const userBody = document.getElementById('user-stats-body');
-        if (userMap.size === 0) {
-            userBody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-400">Belum ada user</td></tr>';
+        if (!userMap.size) {
+            userBody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:32px;color:#94a3b8;">Belum ada user</td></tr>';
         } else {
             userBody.innerHTML = '';
             let no = 1;
             for (let u of userMap.values()) {
-                userBody.innerHTML += `<tr class="bg-white border-b hover:bg-gray-50">
-                    <td class="px-6 py-4">${no++}</td>
-                    <td class="px-6 py-4 font-medium">${u.name}</td>
-                    <td class="px-6 py-4 text-blue-600">${u.email}</td>
-                    <td class="px-6 py-4"><span class="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">${u.total} kali</span></td>
-                    <td class="px-6 py-4">${u.lastAccess}</td>
+                const initials = u.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+                userBody.innerHTML += `<tr>
+                    <td style="color:#94a3b8;font-weight:700;">${no++}</td>
+                    <td><div class="user-chip">
+                        <div class="mini-av">${initials}</div>
+                        <span style="font-weight:600;">${u.name}</span>
+                    </div></td>
+                    <td style="color:#3b82f6;">${u.email}</td>
+                    <td><span class="access-badge"><i class="fas fa-check-circle" style="font-size:10px;margin-right:3px;"></i>${u.total} kali</span></td>
+                    <td style="color:#64748b;font-size:12px;">${u.lastAccess}</td>
                 </tr>`;
             }
         }
@@ -270,17 +808,19 @@
 
     async function saveStats() {
         await database.ref('stats').set({
-            prediksi: statsData.prediksi, bukti_jp: statsData.bukti_jp, syair: statsData.syair,
-            result: statsData.result, saldo: statsData.saldo, link_prediksi: statsData.link_prediksi,
-            hasil_result: statsData.hasil_result, reportan: statsData.reportan,
-            selisih_mineray: statsData.selisih_mineray, tugas_line: statsData.tugas_line,
-            youtube: statsData.youtube, safety_lock: statsData.safety_lock, kendala_bank: statsData.kendala_bank, auto_report_phising: statsData.auto_report_phising, logs: statsData.logs
+            prediksi:statsData.prediksi, bukti_jp:statsData.bukti_jp, syair:statsData.syair,
+            result:statsData.result, saldo:statsData.saldo, link_prediksi:statsData.link_prediksi,
+            hasil_result:statsData.hasil_result, reportan:statsData.reportan,
+            selisih_mineray:statsData.selisih_mineray, tugas_line:statsData.tugas_line,
+            youtube:statsData.youtube, safety_lock:statsData.safety_lock,
+            kendala_bank:statsData.kendala_bank, auto_report_phising:statsData.auto_report_phising,
+            logs:statsData.logs
         });
     }
 
     async function addStat(menuKey, appName) {
         if (menuKey !== 'dashboard' && currentUser) {
-            statsData[menuKey] = (statsData[menuKey] || 0) + 1;
+            statsData[menuKey] = (statsData[menuKey]||0) + 1;
             statsData.logs.unshift({
                 app: appName,
                 time: getWIBTime(),
@@ -288,54 +828,48 @@
                 email: currentUser.email,
                 uid: currentUser.uid
             });
-            if (statsData.logs.length > 200) statsData.logs = statsData.logs.slice(0, 200);
+            if (statsData.logs.length > 200) statsData.logs = statsData.logs.slice(0,200);
             await saveStats();
             updateUI();
         }
     }
 
     async function loadPage(page, element) {
-        const contentDashboard = document.getElementById('content-dashboard');
-        const contentFrame = document.getElementById('content-frame');
-        const allMenus = document.querySelectorAll('.menu-item');
-        allMenus.forEach(menu => {
-            menu.classList.remove('bg-blue-600', 'text-white');
-            menu.classList.add('text-slate-300', 'hover:bg-slate-800');
-        });
-        element.classList.remove('text-slate-300', 'hover:bg-slate-800');
-        element.classList.add('bg-blue-600', 'text-white');
+        const dash = document.getElementById('content-dashboard');
+        const frame = document.getElementById('content-frame');
+        document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+        element.classList.add('active');
         const title = element.getAttribute('data-title');
         const menuKey = element.getAttribute('data-menu');
+        document.getElementById('current-page-title').textContent = title;
+
         if (page === 'dashboard') {
-            contentDashboard.classList.remove('hidden');
-            contentFrame.classList.add('hidden');
-            contentFrame.src = "";
+            dash.classList.remove('hidden');
+            frame.style.display = 'none';
+            frame.src = '';
             await loadData();
         } else {
             await addStat(menuKey, title);
-            contentFrame.classList.add('loading');
-            contentDashboard.classList.add('hidden');
-            contentFrame.classList.remove('hidden');
-            contentFrame.src = page;
-            setTimeout(() => contentFrame.classList.remove('loading'), 500);
+            frame.classList.add('loading');
+            dash.classList.add('hidden');
+            dash.style.display = 'none';
+            frame.style.display = 'block';
+            frame.src = page;
+            setTimeout(() => frame.classList.remove('loading'), 400);
         }
     }
 
     function updateUserUI(user) {
-        if (user) {
-            document.getElementById('user-name').innerText = user.displayName || user.email;
-            document.getElementById('user-avatar').src = user.photoURL || 'https://ui-avatars.com/api/?name=' + (user.displayName || 'User');
-            document.getElementById('user-info-container').style.display = 'flex';
-        } else {
-            document.getElementById('user-info-container').style.display = 'none';
-        }
+        document.getElementById('user-name').textContent = user.displayName || user.email;
+        document.getElementById('user-email').textContent = user.email;
+        document.getElementById('user-avatar').src = user.photoURL || 'https://ui-avatars.com/api/?name='+(user.displayName||'U')+'&background=3b82f6&color=fff';
     }
 
     auth.onAuthStateChanged(async (user) => {
         if (user) {
-            if (!allowedEmails.map(e => e.toLowerCase()).includes(user.email.toLowerCase())) {
+            if (!allowedEmails.map(e=>e.toLowerCase()).includes(user.email.toLowerCase())) {
                 await auth.signOut();
-                alert("⚠️ AKSES DITOLAK!\n\nEmail " + user.email + " tidak terdaftar.\nHubungi admin untuk mendapatkan akses.");
+                alert("⚠️ AKSES DITOLAK!\n\nEmail "+user.email+" tidak terdaftar.\nHubungi admin untuk mendapatkan akses.");
                 return;
             }
             currentUser = user;
@@ -343,6 +877,7 @@
             document.getElementById('main-app').style.display = 'block';
             updateUserUI(user);
             await loadData();
+            showToast('Selamat datang, '+( user.displayName||user.email)+'!', '👋');
         } else {
             currentUser = null;
             document.getElementById('login-overlay').style.display = 'flex';
@@ -350,12 +885,22 @@
         }
     });
 
-    document.getElementById('google-login-btn').onclick = () => auth.signInWithPopup(provider).catch(e => alert("Login gagal: " + e.message));
+    document.getElementById('google-login-btn').onclick = () =>
+        auth.signInWithPopup(provider).catch(e => alert("Login gagal: "+e.message));
+
     document.getElementById('logout-btn').onclick = () => auth.signOut();
-    document.getElementById('refresh-data-btn').onclick = () => loadData();
+
+    document.getElementById('refresh-data-btn').onclick = async () => {
+        const btn = document.getElementById('refresh-data-btn');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+        await loadData();
+        btn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
+        showToast('Data berhasil diperbarui!', '🔄');
+    };
+
     document.getElementById('darkModeToggle').onclick = () => {
-        document.body.classList.toggle('dark-mode');
-        const icon = document.getElementById('darkModeToggle').querySelector('i');
+        document.body.classList.toggle('dark');
+        const icon = document.getElementById('dark-icon');
         icon.classList.toggle('fa-moon');
         icon.classList.toggle('fa-sun');
     };
