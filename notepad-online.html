@@ -105,33 +105,6 @@
             padding-top: 12px;
         }
 
-        /* ===== BADGE URUTAN ===== */
-        .badge-order {
-            display: inline-block;
-            font-size: 10px;
-            font-weight: 700;
-            background: #0f172a;
-            color: white;
-            padding: 2px 10px;
-            border-radius: 50px;
-            margin-left: 8px;
-            letter-spacing: 0.02em;
-            min-width: 28px;
-            text-align: center;
-        }
-        .badge-order.gold {
-            background: #f59e0b;
-            color: #0f172a;
-        }
-        .badge-order.silver {
-            background: #94a3b8;
-            color: white;
-        }
-        .badge-order.bronze {
-            background: #d97706;
-            color: white;
-        }
-
         .note-title {
             font-weight: 700;
             font-size: 17px;
@@ -645,13 +618,12 @@
         }
 
         // ================================================================
-        // LOAD NOTES - URUTAN BERDASARKAN orderNumber (bukan timestamp!)
+        // LOAD NOTES - URUTAN BERDASARKAN orderNumber
         // ================================================================
         async function loadNotes() {
             notesContainer.innerHTML =
                 `<div class="col-span-full text-center text-slate-400 py-12 font-medium">⏳ Memuat...</div>`;
             try {
-                // 🔥 Urutkan berdasarkan orderNumber (ascending = 1,2,3,...)
                 const snap = await notesCollection
                     .orderBy('orderNumber', 'asc')
                     .get();
@@ -669,7 +641,6 @@
                     });
                 });
 
-                // Sort manual jaga-jaga
                 notes.sort((a, b) => (a.orderNumber || 0) - (b.orderNumber || 0));
 
                 renderNotes();
@@ -681,7 +652,7 @@
         }
 
         // ================================================================
-        // RENDER NOTES
+        // RENDER NOTES - TANPA PERINGKAT
         // ================================================================
         function renderNotes() {
             let filtered = notes;
@@ -695,29 +666,11 @@
                 return;
             }
 
-            notesContainer.innerHTML = filtered.map((note, index) => {
-                // Posisi sebenarnya di semua notes (bukan filtered)
-                const realIndex = notes.indexOf(note) + 1;
-
-                // Badge warna untuk 3 besar
-                let badgeClass = '';
-                let badgeText = `#${realIndex}`;
-                if (realIndex === 1) {
-                    badgeClass = 'gold';
-                    badgeText = '🥇 #1';
-                } else if (realIndex === 2) {
-                    badgeClass = 'silver';
-                    badgeText = '🥈 #2';
-                } else if (realIndex === 3) {
-                    badgeClass = 'bronze';
-                    badgeText = '🥉 #3';
-                }
-
+            notesContainer.innerHTML = filtered.map((note) => {
                 return `
                     <div class="note-card">
                         <div class="note-title">
                             ${escapeHtml(note.title)}
-                            <span class="badge-order ${badgeClass}">${badgeText}</span>
                         </div>
                         <span class="note-category-badge"><i class="fas fa-tag mr-1"></i>${escapeHtml(note.category)}</span>
                         <div class="note-body">${escapeHtml(note.content)}</div>
@@ -817,7 +770,7 @@
         }
 
         // ================================================================
-        // SAVE NOTE - Pakai orderNumber untuk urutan tetap
+        // SAVE NOTE
         // ================================================================
         async function saveNote() {
             const title = noteTitleInput.value.trim();
@@ -838,7 +791,6 @@
                 const now = Date.now();
 
                 if (id) {
-                    // EDIT: tetap di posisi yang sama (tidak ubah orderNumber)
                     const note = notes.find(n => n.id === id);
                     await notesCollection.doc(id).update({
                         title: title,
@@ -848,7 +800,6 @@
                     });
                     showToast('✅ Update!');
                 } else {
-                    // TAMBAH BARU: cari orderNumber terbesar + 1
                     let maxOrder = 0;
                     notes.forEach(n => {
                         if ((n.orderNumber || 0) > maxOrder) maxOrder = n.orderNumber || 0;
@@ -884,7 +835,6 @@
             try {
                 await notesCollection.doc(id).delete();
                 showToast('🗑️ Terhapus');
-                // Setelah hapus, kita re-order ulang agar nomor tetap rapi
                 await reorderNotes();
                 await loadNotes();
                 await loadCategories();
@@ -894,11 +844,10 @@
         }
 
         // ================================================================
-        // RE-ORDER NOTES (setelah hapus, nomor dirapikan)
+        // RE-ORDER NOTES
         // ================================================================
         async function reorderNotes() {
             try {
-                // Ambil semua note urut berdasarkan orderNumber
                 const snap = await notesCollection.orderBy('orderNumber', 'asc').get();
                 let index = 1;
                 for (const doc of snap.docs) {
@@ -1101,7 +1050,7 @@
         // INIT
         // ================================================================
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Note Pad Online - Urutan FIX sesuai tambah!');
+            console.log('🚀 Note Pad Online - Tanpa peringkat, urutan rapi!');
             loadCategories();
             loadNotes();
         });
