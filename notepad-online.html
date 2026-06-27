@@ -3,9 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Note Pad Report Online</title>
+    <title>Note Pad Report Online - Firebase</title>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Firebase SDK (v10) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --bg-primary: #ffffff;
@@ -51,8 +60,6 @@
             flex-direction: column;
             position: relative;
         }
-
-        .card-note.loading { opacity: 0.6; pointer-events: none; }
 
         .card-note:hover {
             transform: translateY(-2px);
@@ -104,7 +111,6 @@
         .btn-danger:hover { background: var(--accent-danger); color: white; }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* Modal */
         .modal-backdrop {
             position: fixed; inset: 0;
             background: rgba(15, 23, 42, 0.6);
@@ -130,7 +136,6 @@
         .content-scroll::-webkit-scrollbar { width: 4px; }
         .content-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         
-        /* Loading Spinner */
         .spinner {
             border: 2px solid #f3f3f3; border-top: 2px solid var(--cover-color);
             border-radius: 50%; width: 16px; height: 16px;
@@ -138,7 +143,6 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Line clamp */
         .line-clamp-6 {
             display: -webkit-box;
             -webkit-line-clamp: 6;
@@ -146,7 +150,6 @@
             overflow: hidden;
         }
         
-        /* Toast Notification */
         .toast {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
             background: #10b981; color: white; padding: 10px 20px;
@@ -155,6 +158,7 @@
             opacity: 0; transition: opacity 0.3s;
         }
         .toast.show { opacity: 1; }
+        .toast.error { background: #ef4444; }
     </style>
 </head>
 <body>
@@ -164,12 +168,11 @@
 
     <div class="relative z-10 max-w-[1600px] mx-auto p-6">
         
-        <!-- Header -->
         <header class="mb-8 pt-4">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
                     <h1 class="font-display text-3xl font-bold text-white mb-1">NOTE PAD REPORT ONLINE</h1>
-                    <p class="text-gray-300 text-sm">Data tersimpan otomatis di Google Sheet</p>
+                    <p class="text-gray-300 text-sm">⚡ Data tersimpan di Firebase (cepat & real-time)</p>
                 </div>
                 <button onclick="openModal()" class="btn btn-primary">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14m-7-7h14"/></svg>
@@ -177,7 +180,6 @@
                 </button>
             </div>
 
-            <!-- Search -->
             <div class="mt-6 bg-white rounded-xl p-4 shadow-sm border border-gray-200">
                 <div class="flex gap-3">
                     <div class="relative flex-1">
@@ -193,13 +195,11 @@
             </div>
         </header>
 
-        <!-- Grid -->
         <div id="notesContainer" class="notes-grid">
-            <p class="col-span-5 text-center text-gray-400 py-10">Memuat data...</p>
+            <p class="col-span-5 text-center text-gray-400 py-10">⏳ Memuat data dari Firebase...</p>
         </div>
     </div>
 
-    <!-- Modal -->
     <div id="formModal" class="modal-backdrop">
         <div class="modal-content">
             <div class="p-5 border-b border-gray-200 bg-gray-50">
@@ -218,7 +218,6 @@
             </div>
             <div class="p-4 bg-gray-50 border-t border-gray-200 flex justify-end gap-2">
                 <button onclick="closeModal()" class="btn bg-gray-200 text-gray-700">Batal</button>
-                <!-- Tombol Copy di Modal -->
                 <button onclick="copyFromModal()" class="btn bg-sky-500 text-white hover:bg-sky-600">Copy Isi</button>
                 <button id="saveBtn" onclick="saveNote()" class="btn btn-primary">Simpan</button>
             </div>
@@ -226,14 +225,33 @@
     </div>
 
     <script>
-        // ==========================================
-        // KONFIGURASI
-        // ==========================================
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyWkcD74bV_774BkcDKvz7vexplS2x7teEa1nnPHxjPUgSewYsGu6xeYFyAxyDozTyQ/exec'; 
-        
-        let notes = [];
+        // ============================================================
+        // 🔥 KONFIGURASI FIREBASE (GANTI DENGAN PUNYA ANDA)
+        // ============================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyBALMK7hqQligOie4N0ZoauOFMQVJ4Dlk8",
+            authDomain: "note-pad-online-a3d5a.firebaseapp.com",
+            projectId: "note-pad-online-a3d5a",
+            storageBucket: "note-pad-online-a3d5a.firebasestorage.app",
+            messagingSenderId: "310855516554",
+            appId: "1:310855516554:web:afe7be8c884d3ef72ac873",
+            measurementId: "G-HW7SV07Q52"
+        };
 
-        // === DOM ELEMENTS ===
+        // Inisialisasi Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const notesCollection = db.collection('notes');
+
+        // ============================================================
+        // VARIABEL GLOBAL
+        // ============================================================
+        let notes = [];
+        let loading = false;
+
+        // ============================================================
+        // DOM ELEMENTS
+        // ============================================================
         const notesContainer = document.getElementById('notesContainer');
         const totalNotesEl = document.getElementById('totalNotes');
         const searchInput = document.getElementById('searchInput');
@@ -245,25 +263,27 @@
         const saveBtn = document.getElementById('saveBtn');
         const toastEl = document.getElementById('toast');
 
-        // === FUNGSI TOAST NOTIF ===
-        function showToast(msg) {
+        // ============================================================
+        // TOAST NOTIFIKASI
+        // ============================================================
+        function showToast(msg, isError = false) {
             toastEl.textContent = msg;
+            toastEl.className = 'toast' + (isError ? ' error' : '');
             toastEl.classList.add('show');
-            setTimeout(() => toastEl.classList.remove('show'), 2000);
+            setTimeout(() => toastEl.classList.remove('show'), 2500);
         }
 
-        // === FUNGSI COPY PALING AMPUH ===
+        // ============================================================
+        // COPY KE CLIPBOARD
+        // ============================================================
         function copyToClipboard(text) {
             if (!text || text.trim() === '' || text === '-' || text === 'undefined') {
-                showToast('Isi kosong, tidak ada yang dicopy');
+                showToast('⚠️ Isi kosong, tidak ada yang dicopy', true);
                 return;
             }
 
-            // Metode TextArea (Paling Kompatibel)
             const textArea = document.createElement("textarea");
             textArea.value = text;
-            
-            // Styling agar tidak kelihatan
             textArea.style.position = "fixed";
             textArea.style.left = "-9999px";
             textArea.style.top = "0";
@@ -276,102 +296,185 @@
             try {
                 const successful = document.execCommand('copy');
                 if (successful) {
-                    showToast('Berhasil disalin ke clipboard!');
+                    showToast('✅ Berhasil disalin ke clipboard!');
                 } else {
-                    showToast('Gagal menyalin (execCommand fail)');
+                    showToast('❌ Gagal menyalin', true);
                 }
             } catch (err) {
                 console.error('Error copy:', err);
-                showToast('Browser tidak mendukung copy');
+                showToast('❌ Browser tidak mendukung copy', true);
             }
 
             document.body.removeChild(textArea);
         }
 
-        // === LOAD DATA DARI GOOGLE SHEET ===
+        // ============================================================
+        // LOAD DATA DARI FIRESTORE
+        // ============================================================
         async function loadNotes() {
+            if (loading) return;
+            loading = true;
+            
+            notesContainer.innerHTML = `
+                <div class="col-span-5 text-center py-10">
+                    <span class="spinner" style="width:32px;height:32px;border-width:3px;"></span>
+                    <p class="text-gray-400 mt-2">Memuat data dari Firebase...</p>
+                </div>
+            `;
+
             try {
-                const response = await fetch(SCRIPT_URL);
-                const result = await response.json();
+                const snapshot = await notesCollection
+                    .orderBy('timestamp', 'desc')
+                    .get();
                 
-                if(result.status === 'success') {
-                    notes = result.data.map(n => ({
-                        id: n.id,
-                        title: n.judul,
-                        content: n.isi,
-                        date: n.tanggal
-                    }));
-                } else {
-                    console.error("Gagal memuat data:", result);
-                    notes = [];
+                notes = [];
+                
+                if (snapshot.empty) {
+                    notesContainer.innerHTML = '<p class="col-span-5 text-center text-gray-400 py-10">📝 Belum ada data. Tambahkan note pertama!</p>';
+                    totalNotesEl.textContent = '0';
+                    loading = false;
+                    return;
                 }
+
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    notes.push({
+                        id: doc.id,
+                        title: data.title || 'Tanpa Judul',
+                        content: data.content || '-',
+                        date: data.date || new Date().toLocaleDateString('id-ID'),
+                        timestamp: data.timestamp || 0
+                    });
+                });
+
+                renderNotes();
+                
             } catch (error) {
-                console.error("Error koneksi:", error);
-                notesContainer.innerHTML = '<p class="col-span-5 text-center text-red-500 py-10">Gagal terhubung ke Server. Pastikan URL Script benar dan sudah di-deploy dengan benar.</p>';
-                return;
+                console.error("❌ Error load data:", error);
+                notesContainer.innerHTML = `
+                    <p class="col-span-5 text-center text-red-500 py-10">
+                        ❌ Gagal terhubung ke Firebase. <br>
+                        <span class="text-sm text-gray-400">Pastikan konfigurasi Firebase benar dan koneksi internet aktif.</span>
+                    </p>
+                `;
             }
-            renderNotes();
+            
+            loading = false;
         }
 
-        // === SIMPAN / UPDATE DATA ===
+        // ============================================================
+        // RENDER NOTES
+        // ============================================================
+        function renderNotes(filteredNotes = null) {
+            const data = filteredNotes || notes;
+            totalNotesEl.textContent = notes.length;
+
+            if (data.length === 0) {
+                if (searchInput.value.trim() !== '') {
+                    notesContainer.innerHTML = '<p class="col-span-5 text-center text-gray-400 py-10">🔍 Tidak ada hasil pencarian.</p>';
+                } else {
+                    notesContainer.innerHTML = '<p class="col-span-5 text-center text-gray-400 py-10">📝 Belum ada data.</p>';
+                }
+                return;
+            }
+
+            notesContainer.innerHTML = data.map(note => `
+                <div class="card-note">
+                    <div class="p-4 border-b border-gray-100 bg-gray-50/50">
+                        <h3 class="font-bold text-sm text-gray-800 truncate">${escapeHtml(note.title)}</h3>
+                        <p class="text-[10px] text-gray-400 mt-1">📅 ${note.date || '-'}</p>
+                    </div>
+                    <div class="p-4 flex-1 content-scroll">
+                        <p class="text-sm text-gray-600 note-content line-clamp-6">${escapeHtml(note.content || '-')}</p>
+                    </div>
+                    <div class="p-3 border-t border-gray-100 flex justify-end gap-2 bg-white">
+                        <button onclick="copyNote('${note.id}')" class="btn bg-sky-50 text-sky-600 hover:bg-sky-100 btn-sm">📋 Copy</button>
+                        <button onclick="openModal('${note.id}')" class="btn bg-gray-100 text-gray-600 hover:bg-gray-200 btn-sm">✏️ Edit</button>
+                        <button onclick="deleteNote('${note.id}')" class="btn btn-danger btn-sm">🗑️ Hapus</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ============================================================
+        // ESCAPE HTML
+        // ============================================================
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // ============================================================
+        // SIMPAN DATA
+        // ============================================================
         async function saveNote() {
             const title = noteTitleInput.value.trim();
             const content = noteContentInput.value.trim();
             const id = noteIdInput.value;
 
-            if (!title) { alert('Judul tidak boleh kosong!'); return; }
+            if (!title) {
+                showToast('⚠️ Judul tidak boleh kosong!', true);
+                noteTitleInput.focus();
+                return;
+            }
 
             saveBtn.innerHTML = '<span class="spinner"></span> Menyimpan...';
             saveBtn.disabled = true;
 
-            const payload = {
-                action: id ? 'update' : 'create',
-                id: id || Date.now().toString(),
-                title: title,
-                content: content
-            };
-
             try {
-                await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
+                const now = new Date();
+                const dateStr = now.toLocaleDateString('id-ID');
+                const timestamp = now.getTime();
+
+                const data = {
+                    title: title,
+                    content: content || '-',
+                    date: dateStr,
+                    timestamp: timestamp,
+                    updatedAt: timestamp
+                };
+
+                if (id) {
+                    await notesCollection.doc(id).update(data);
+                    showToast('✅ Note berhasil diupdate!');
+                } else {
+                    await notesCollection.add(data);
+                    showToast('✅ Note berhasil ditambahkan!');
+                }
                 
-                await loadNotes(); 
+                await loadNotes();
                 closeModal();
+                
             } catch (error) {
-                console.error("Error simpan:", error);
-                alert('Gagal menyimpan data. Coba lagi.');
+                console.error("❌ Error simpan:", error);
+                showToast('❌ Gagal menyimpan data. Coba lagi.', true);
             }
             
             saveBtn.innerHTML = 'Simpan';
             saveBtn.disabled = false;
         }
 
-        // === HAPUS DATA ===
+        // ============================================================
+        // HAPUS DATA
+        // ============================================================
         async function deleteNote(id) {
-            if (!confirm('Yakin mau hapus report ini?')) return;
+            if (!confirm('🗑️ Yakin mau hapus report ini?')) return;
 
             try {
-                const payload = { action: 'delete', id: id };
-                
-                await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
+                await notesCollection.doc(id).delete();
+                showToast('✅ Note berhasil dihapus!');
                 await loadNotes();
             } catch (error) {
-                console.error("Error hapus:", error);
-                alert('Gagal menghapus data.');
+                console.error("❌ Error hapus:", error);
+                showToast('❌ Gagal menghapus data.', true);
             }
         }
 
-        // === UI FUNCTIONS ===
+        // ============================================================
+        // FUNGSI UI
+        // ============================================================
         function openModal(id = null) {
             noteIdInput.value = '';
             noteTitleInput.value = '';
@@ -380,82 +483,86 @@
             if (id) {
                 const note = notes.find(n => n.id === id);
                 if (note) {
-                    modalTitle.textContent = 'Edit Report';
+                    modalTitle.textContent = '✏️ Edit Report';
                     noteIdInput.value = note.id;
                     noteTitleInput.value = note.title;
                     noteContentInput.value = note.content;
+                } else {
+                    showToast('❌ Data tidak ditemukan', true);
+                    return;
                 }
             } else {
-                modalTitle.textContent = 'Tambah Report Baru';
+                modalTitle.textContent = '📝 Tambah Report Baru';
             }
             
             formModal.classList.add('show');
-            noteTitleInput.focus();
+            setTimeout(() => noteTitleInput.focus(), 300);
         }
 
         function closeModal() {
             formModal.classList.remove('show');
         }
 
-        // Copy dari tombol kartu
         function copyNote(id) {
             const note = notes.find(n => n.id === id);
             if (note) {
                 copyToClipboard(note.content);
+            } else {
+                showToast('❌ Data tidak ditemukan', true);
             }
         }
 
-        // Copy dari dalam Modal (tombol Copy Isi)
         function copyFromModal() {
             const text = noteContentInput.value;
             copyToClipboard(text);
         }
 
-        function renderNotes(filteredNotes = null) {
-            const data = filteredNotes || notes;
-            totalNotesEl.textContent = notes.length;
-
-            if (data.length === 0) {
-                notesContainer.innerHTML = '<p class="col-span-5 text-center text-gray-400 py-10">Belum ada data.</p>';
-                return;
-            }
-
-            notesContainer.innerHTML = data.map(note => `
-                <div class="card-note">
-                    <div class="p-4 border-b border-gray-100 bg-gray-50/50">
-                        <h3 class="font-bold text-sm text-gray-800 truncate">${note.title}</h3>
-                        <p class="text-[10px] text-gray-400 mt-1">${note.date || '-'}</p>
-                    </div>
-                    <div class="p-4 flex-1 content-scroll">
-                        <p class="text-sm text-gray-600 note-content line-clamp-6">${note.content || '-'}</p>
-                    </div>
-                    <div class="p-3 border-t border-gray-100 flex justify-end gap-2 bg-white">
-                        <button onclick="copyNote('${note.id}')" class="btn bg-sky-50 text-sky-600 hover:bg-sky-100 btn-sm">Copy</button>
-                        <button onclick="openModal('${note.id}')" class="btn bg-gray-100 text-gray-600 hover:bg-gray-200 btn-sm">Edit</button>
-                        <button onclick="deleteNote('${note.id}')" class="btn btn-danger btn-sm">Hapus</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
+        // ============================================================
+        // PENCARIAN
+        // ============================================================
         function searchNotes() {
             const query = searchInput.value.toLowerCase().trim();
-            if (!query) { renderNotes(); return; }
+            if (!query) {
+                renderNotes();
+                return;
+            }
             const filtered = notes.filter(n => 
-                n.title.toLowerCase().includes(query) || 
+                (n.title && n.title.toLowerCase().includes(query)) || 
                 (n.content && n.content.toLowerCase().includes(query))
             );
             renderNotes(filtered);
         }
 
-        // Close modal if click outside
+        // ============================================================
+        // EVENT LISTENER
+        // ============================================================
         formModal.addEventListener('click', function(e) {
             if (e.target === formModal) closeModal();
         });
 
-        // INIT
-        loadNotes();
+        noteTitleInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                noteContentInput.focus();
+            }
+        });
 
+        noteContentInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                saveNote();
+            }
+        });
+
+        // ============================================================
+        // START APLIKASI
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Aplikasi Note Pad Online dengan Firebase siap!');
+            loadNotes();
+        });
+
+        console.log('✅ Script selesai dimuat!');
     </script>
 </body>
 </html>
