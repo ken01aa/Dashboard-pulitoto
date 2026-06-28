@@ -237,8 +237,13 @@
             background: var(--accent); color: #fff; border: none;
             border-radius: 10px; padding: 10px 20px; font-size: 13px; font-weight: 700;
             cursor: pointer; white-space: nowrap;
+            transition: opacity 0.2s;
         }
         .add-email-form button:hover { opacity: 0.85; }
+        .add-email-form button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
 
         .empty-state { text-align: center; padding: 28px; color: var(--text-muted); font-size: 13px; }
 
@@ -694,7 +699,7 @@
         <p style="font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;">Tambah Email Baru</p>
         <div class="add-email-form">
             <input type="email" id="new-email-input" placeholder="contoh@gmail.com">
-            <button onclick="addEmail()"><i class="fas fa-plus" style="margin-right:6px;"></i>Tambah</button>
+            <button id="btn-add-email"><i class="fas fa-plus" style="margin-right:6px;"></i>Tambah</button>
         </div>
         <p style="font-size:11px;color:var(--text-muted);margin-top:10px;">⚠️ Perubahan langsung berlaku. User yang emailnya dihapus tidak bisa login.</p>
     </div>
@@ -1102,7 +1107,7 @@
         }
     }
     getPublicIP();
-    setInterval(getPublicIP, 60000); // refresh IP setiap 1 menit
+    setInterval(getPublicIP, 60000);
 
     // ─── AUTH ───
     auth.onAuthStateChanged(async (user) => {
@@ -1189,33 +1194,55 @@
         }).join('');
     }
 
-    async function addEmail() {
+    // ─── ADD EMAIL (FIXED) ───
+    document.getElementById('btn-add-email').addEventListener('click', async function() {
         const input = document.getElementById('new-email-input');
         const email = input.value.trim().toLowerCase();
         if (!email) return showToast('Masukkan email dulu!', 'error');
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showToast('Format email tidak valid!', 'error');
         if (allowedEmails.map(e=>e.toLowerCase()).includes(email)) return showToast('Email sudah ada!', 'error');
-        const updated = [...allowedEmails, email];
-        await saveAllowedEmails(updated);
-        input.value = '';
-        renderEmailList();
-        showToast('✅ Email berhasil ditambahkan!');
-    }
 
+        this.disabled = true;
+        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menambah...';
+
+        try {
+            const updated = [...allowedEmails, email];
+            await saveAllowedEmails(updated);
+            input.value = '';
+            renderEmailList();
+            showToast('✅ Email berhasil ditambahkan!');
+        } catch(e) {
+            showToast('❌ Gagal menambah email!', 'error');
+            console.error(e);
+        } finally {
+            this.disabled = false;
+            this.innerHTML = '<i class="fas fa-plus" style="margin-right:6px;"></i>Tambah';
+        }
+    });
+
+    // ─── REMOVE EMAIL (FIXED) ───
     async function removeEmail(index) {
         const email = allowedEmails[index];
         if (currentUser && email.toLowerCase() === currentUser.email.toLowerCase()) {
             return showToast('Tidak bisa hapus akun Anda sendiri!', 'error');
         }
         if (!confirm(`Hapus akses untuk:\n${email}?`)) return;
-        const updated = allowedEmails.filter((_, i) => i !== index);
-        await saveAllowedEmails(updated);
-        renderEmailList();
-        showToast('🗑️ Email berhasil dihapus!');
+
+        try {
+            const updated = allowedEmails.filter((_, i) => i !== index);
+            await saveAllowedEmails(updated);
+            renderEmailList();
+            showToast('🗑️ Email berhasil dihapus!');
+        } catch(e) {
+            showToast('❌ Gagal menghapus email!', 'error');
+            console.error(e);
+        }
     }
 
     document.getElementById('new-email-input').addEventListener('keypress', e => {
-        if (e.key === 'Enter') addEmail();
+        if (e.key === 'Enter') {
+            document.getElementById('btn-add-email').click();
+        }
     });
 
     // ─── STATS ───
@@ -1559,11 +1586,9 @@
         if (b) b.style.opacity = b.style.opacity === '0' ? '1' : '0';
     }, 500);
 
-    // Jalankan speed test dengan interval 3 detik (LANCAR)
     runSpeedCheck();
     setInterval(runSpeedCheck, 3000);
 
-    // Resize wave
     let resizeTimeout;
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimeout);
