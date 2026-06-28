@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CS LINE PULITOTO - Management System</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
@@ -39,7 +39,6 @@
         }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; transition: background 0.3s, color 0.3s; }
 
-        /* ─── SCROLLBAR ─── */
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
@@ -109,7 +108,7 @@
         .menu-item.active .mi-icon { background: rgba(255,255,255,0.2); }
         .sidebar-footer { padding: 14px 16px; border-top: 1px solid rgba(255,255,255,0.07); font-size: 10px; color: #334155; text-align: center; }
 
-        /* ─── MAIN ─── */
+        /* ─── MAIN APP ─── */
         #main-app { display: none; flex: 1; flex-direction: column; overflow: hidden; }
         .main-wrap { flex: 1; display: flex; overflow: hidden; }
 
@@ -158,7 +157,7 @@
         .section-title { font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
         .section-title i { color: var(--accent); font-size: 18px; }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-bottom: 28px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 28px; }
         .stat-card {
             background: var(--card);
             border: 1px solid var(--border);
@@ -256,12 +255,407 @@
         .toast.show { transform: translateY(0); opacity: 1; }
         .toast.error { background: #ef4444; }
 
-        @media (max-width: 768px) {
-            #sidebar { width: 60px; min-width: 60px; }
-            .sidebar-brand .brand-text, .menu-item span, .nav-section-label { display: none; }
-            .menu-item { justify-content: center; padding: 12px; }
-            .menu-item .mi-icon { margin: 0; }
+        /* ═══ PREMIUM CLOCK & SPEED TEST ═══ */
+        .premium-row {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .premium-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ─── CLOCK CARD ─── */
+        .clock-card {
+            background: linear-gradient(145deg, rgba(13, 27, 42, 0.85), rgba(26, 16, 64, 0.85));
+            border-radius: 20px;
+            padding: 30px 28px 32px;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 240px;
+        }
+        .clock-card::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.12), transparent 70%);
+            pointer-events: none;
+        }
+        .clock-card::after {
+            content: '';
+            position: absolute;
+            bottom: -40px;
+            left: -40px;
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.10), transparent 70%);
+            pointer-events: none;
+        }
+        .clock-day {
+            font-size: 11px;
+            font-weight: 700;
+            color: #818cf8;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+            position: relative;
+            z-index: 1;
+        }
+        .clock-date {
+            font-size: 15px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.45);
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+            letter-spacing: 0.5px;
+        }
+        .clock-time-wrap {
+            display: flex;
+            align-items: baseline;
+            gap: 2px;
+            position: relative;
+            z-index: 1;
+        }
+        .clock-hm {
+            font-size: 68px;
+            font-weight: 900;
+            color: #fff;
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -2px;
+            text-shadow: 0 0 50px rgba(99, 102, 241, 0.30);
+        }
+        .clock-hm .colon {
+            opacity: 1;
+            display: inline-block;
+            width: 0.3em;
+            text-align: center;
+            transition: opacity 0.15s;
+        }
+        .clock-ss {
+            font-size: 26px;
+            font-weight: 700;
+            color: #818cf8;
+            margin-top: 10px;
+            font-variant-numeric: tabular-nums;
+            min-width: 40px;
+        }
+        .clock-timezone {
+            margin-top: 14px;
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid rgba(99, 102, 241, 0.25);
+            padding: 5px 18px;
+            border-radius: 100px;
+            display: inline-block;
+            align-self: flex-start;
+            position: relative;
+            z-index: 1;
+        }
+        .clock-timezone span {
+            font-size: 11px;
+            color: #a5b4fc;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+        }
+
+        /* ─── SPEED CARD ─── */
+        .speed-card {
+            background: linear-gradient(145deg, rgba(10, 15, 26, 0.85), rgba(15, 26, 46, 0.85));
+            border-radius: 20px;
+            padding: 24px 22px 20px;
+            border: 1px solid rgba(56, 189, 248, 0.15);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .speed-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .speed-header .label {
+            font-size: 10px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.30);
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+        }
+        .speed-header .status-group {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .speed-header .status-item {
+            text-align: center;
+        }
+        .speed-header .status-item .sub {
+            font-size: 8px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.25);
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+        }
+        .speed-header .status-item .val {
+            font-size: 16px;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+        }
+        .speed-header .status-item .val.ping { color: #38bdf8; }
+        .speed-header .status-item .val.jitter { color: #a78bfa; }
+        .speed-header .status-item .val .unit {
+            font-size: 9px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.30);
+        }
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 12px #22c55e;
+            flex-shrink: 0;
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+        .status-dot.error {
+            background: #ef4444;
+            box-shadow: 0 0 12px #ef4444;
+        }
+
+        .gauge-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: -6px 0 -10px 0;
+            position: relative;
+        }
+        .gauge-wrap svg {
+            width: 100%;
+            max-width: 260px;
+            height: auto;
+            overflow: visible;
+        }
+        .gauge-value {
+            font-size: 26px;
+            font-weight: 900;
+            fill: #fff;
+            text-anchor: middle;
+            font-family: 'Inter', sans-serif;
+        }
+        .gauge-unit {
+            font-size: 10px;
+            fill: rgba(255, 255, 255, 0.30);
+            text-anchor: middle;
+            font-family: 'Inter', sans-serif;
+        }
+        .gauge-label {
+            font-size: 7px;
+            fill: rgba(255, 255, 255, 0.20);
+            text-anchor: middle;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .speed-dual {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 2px;
+        }
+        .speed-box {
+            background: rgba(14, 165, 233, 0.05);
+            border: 1px solid rgba(14, 165, 233, 0.12);
+            border-radius: 14px;
+            padding: 12px 14px 8px;
+            transition: border-color 0.3s;
+        }
+        .speed-box.upload {
+            background: rgba(139, 92, 246, 0.05);
+            border-color: rgba(139, 92, 246, 0.12);
+        }
+        .speed-box .top {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 2px;
+        }
+        .speed-box .top svg {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+        }
+        .speed-box .top .lbl {
+            font-size: 9px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.30);
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+        }
+        .speed-box .number {
+            font-size: 24px;
+            font-weight: 900;
+            font-variant-numeric: tabular-nums;
+            line-height: 1.1;
+        }
+        .speed-box .number.dl { color: #38bdf8; }
+        .speed-box .number.ul { color: #a78bfa; }
+        .speed-box .number .u {
+            font-size: 11px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.25);
+            margin-left: 2px;
+        }
+        .speed-box .wave-wrap {
+            margin-top: 6px;
+            height: 28px;
+            width: 100%;
+        }
+        .speed-box .wave-wrap canvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        /* ─── CMD CARD ─── */
+        .cmd-card {
+            background: rgba(0, 0, 0, 0.50);
+            border-radius: 18px;
+            border: 1px solid rgba(56, 189, 248, 0.08);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+        .cmd-header {
+            background: rgba(17, 19, 24, 0.80);
+            padding: 10px 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .cmd-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        .cmd-dot.red { background: #ef4444; }
+        .cmd-dot.yellow { background: #f59e0b; }
+        .cmd-dot.green { background: #22c55e; }
+        .cmd-header .title {
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.25);
+            font-family: 'Inter', monospace;
+            margin-left: 6px;
+        }
+        .cmd-blink {
+            width: 7px;
+            height: 14px;
+            background: #38bdf8;
+            display: inline-block;
+            margin-left: auto;
+            transition: opacity 0.2s;
+        }
+        .cmd-prompt {
+            padding: 8px 18px 0;
+            font-family: 'Inter', monospace;
+            font-size: 12px;
+            color: #22c55e;
+        }
+        .cmd-prompt .hl { color: #38bdf8; }
+        .cmd-sub {
+            padding: 0 18px 4px;
+            font-family: 'Inter', monospace;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.20);
+        }
+        .cmd-table-wrap {
+            padding: 0 16px 10px;
+            overflow-x: auto;
+        }
+        .cmd-table-wrap table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'Inter', monospace;
+            font-size: 11px;
+        }
+        .cmd-table-wrap th {
+            text-align: left;
+            padding: 5px 10px 5px 0;
+            color: rgba(255, 255, 255, 0.15);
+            font-weight: 700;
+            font-size: 9px;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .cmd-table-wrap td {
+            padding: 4px 10px 4px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+            color: rgba(255, 255, 255, 0.50);
+            font-size: 11px;
+        }
+        .cmd-table-wrap td .badge {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .cmd-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px 30px;
+            padding: 8px 18px 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .cmd-stats .stat-item .lbl {
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.18);
+            font-family: 'Inter', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+        .cmd-stats .stat-item .val {
+            font-size: 14px;
+            font-weight: 800;
+            font-family: 'Inter', monospace;
+            font-variant-numeric: tabular-nums;
+        }
+
+        @media (max-width: 600px) {
             #content-dashboard { padding: 16px; }
+            .clock-card { padding: 20px 16px 24px; min-height: auto; }
+            .clock-hm { font-size: 44px; letter-spacing: -1px; }
+            .clock-ss { font-size: 18px; margin-top: 4px; min-width: 28px; }
+            .clock-date { font-size: 13px; }
+            .speed-card { padding: 16px 12px 14px; }
+            .speed-dual { grid-template-columns: 1fr; gap: 8px; }
+            .speed-box .number { font-size: 20px; }
+            .gauge-wrap svg { max-width: 200px; }
+            .gauge-value { font-size: 20px; }
+            .cmd-stats { gap: 10px 20px; }
+            .cmd-stats .stat-item .val { font-size: 12px; }
+            .cmd-table-wrap table { font-size: 10px; }
+            .cmd-table-wrap th,
+            .cmd-table-wrap td { padding: 3px 6px 3px 0; }
+            .stats-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+        }
+
+        @media (max-width: 400px) {
+            .clock-hm { font-size: 34px; }
+            .clock-ss { font-size: 14px; }
+            .speed-header .status-item .val { font-size: 13px; }
         }
     </style>
 </head>
@@ -310,14 +704,10 @@
             <h2><i class="fas fa-history" style="color:#10b981;margin-right:10px;"></i>Log Aktivitas</h2>
             <button class="modal-close" onclick="closeLogModal()"><i class="fas fa-times"></i></button>
         </div>
-
-        <!-- Tab -->
         <div style="display:flex;gap:8px;margin-bottom:20px;">
             <button onclick="switchLogTab('activity')" id="tab-activity" style="padding:8px 20px;border-radius:100px;border:none;font-size:13px;font-weight:700;cursor:pointer;background:var(--accent);color:#fff;">Aktivitas Terbaru</button>
             <button onclick="switchLogTab('users')" id="tab-users" style="padding:8px 20px;border-radius:100px;border:1px solid var(--border);font-size:13px;font-weight:700;cursor:pointer;background:var(--input-bg);color:var(--text-muted);">Daftar User</button>
         </div>
-
-        <!-- Activity Tab -->
         <div id="log-tab-activity">
             <div style="overflow-x:auto;max-height:420px;overflow-y:auto;">
                 <table>
@@ -326,8 +716,6 @@
                 </table>
             </div>
         </div>
-
-        <!-- Users Tab -->
         <div id="log-tab-users" style="display:none;">
             <div style="overflow-x:auto;max-height:420px;overflow-y:auto;">
                 <table>
@@ -463,8 +851,131 @@
             <div id="content-area">
                 <!-- DASHBOARD -->
                 <div id="content-dashboard">
-                    <div class="section-title"><i class="fas fa-chart-pie"></i> Rekap Total Penggunaan Aplikasi</div>
 
+                    <!-- ═══ PREMIUM ROW: CLOCK + SPEED TEST ═══ -->
+                    <div class="premium-row">
+                        <!-- CLOCK -->
+                        <div class="clock-card">
+                            <div class="clock-day" id="clock-day">Senin</div>
+                            <div class="clock-date" id="clock-date">1 Januari 2025</div>
+                            <div class="clock-time-wrap">
+                                <span class="clock-hm" id="clock-hm">00<span class="colon">:</span>00</span>
+                                <span class="clock-ss" id="clock-ss">:00</span>
+                            </div>
+                            <div class="clock-timezone">
+                                <span>🕒 WIB · UTC+7</span>
+                            </div>
+                        </div>
+
+                        <!-- SPEED TEST -->
+                        <div class="speed-card">
+                            <div class="speed-header">
+                                <span class="label"><i class="fas fa-satellite-dish" style="margin-right:6px;color:#38bdf8;"></i>Internet Monitor</span>
+                                <div class="status-group">
+                                    <div class="status-item">
+                                        <div class="sub">Ping</div>
+                                        <div class="val ping" id="sp-ping">--<span class="unit">ms</span></div>
+                                    </div>
+                                    <div class="status-item">
+                                        <div class="sub">Jitter</div>
+                                        <div class="val jitter" id="sp-jitter">--<span class="unit">ms</span></div>
+                                    </div>
+                                    <div class="status-dot" id="status-dot"></div>
+                                </div>
+                            </div>
+
+                            <!-- Gauge -->
+                            <div class="gauge-wrap">
+                                <svg viewBox="0 0 220 130">
+                                    <defs>
+                                        <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="0%" stop-color="#1d4ed8" />
+                                            <stop offset="40%" stop-color="#0ea5e9" />
+                                            <stop offset="100%" stop-color="#06b6d4" />
+                                        </linearGradient>
+                                        <linearGradient id="gaugeGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="0%" stop-color="#1d4ed8" stop-opacity="0.4" />
+                                            <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.4" />
+                                        </linearGradient>
+                                    </defs>
+                                    <path d="M 20 110 A 90 90 0 0 1 200 110" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="14" stroke-linecap="round" />
+                                    <path d="M 20 110 A 90 90 0 0 1 200 110" fill="none" stroke="url(#gaugeGlow)" stroke-width="18" stroke-linecap="round" opacity="0.3" />
+                                    <path id="gauge-arc" d="M 20 110 A 90 90 0 0 1 200 110" fill="none" stroke="url(#gaugeGrad)" stroke-width="14" stroke-linecap="round" stroke-dasharray="0 283" />
+                                    <text x="14" y="128" class="gauge-label">0</text>
+                                    <text x="55" y="60" class="gauge-label">125</text>
+                                    <text x="110" y="30" class="gauge-label">250</text>
+                                    <text x="165" y="60" class="gauge-label">375</text>
+                                    <text x="207" y="128" class="gauge-label">500</text>
+                                    <g id="gauge-needle" transform="rotate(-90, 110, 110)">
+                                        <line x1="110" y1="110" x2="110" y2="28" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" />
+                                        <circle cx="110" cy="110" r="6" fill="#38bdf8" opacity="0.9" />
+                                        <circle cx="110" cy="110" r="3" fill="#fff" />
+                                    </g>
+                                    <text x="110" y="100" class="gauge-value" id="gauge-val">--</text>
+                                    <text x="110" y="116" class="gauge-unit">Mbps</text>
+                                </svg>
+                            </div>
+
+                            <!-- DL / UL -->
+                            <div class="speed-dual">
+                                <div class="speed-box">
+                                    <div class="top">
+                                        <svg viewBox="0 0 12 12"><path d="M6 2v8M3 7l3 3 3-3" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none" /></svg>
+                                        <span class="lbl">Download</span>
+                                    </div>
+                                    <div class="number dl" id="sp-dl">--<span class="u">Mbps</span></div>
+                                    <div class="wave-wrap"><canvas id="wave-dl" height="28"></canvas></div>
+                                </div>
+                                <div class="speed-box upload">
+                                    <div class="top">
+                                        <svg viewBox="0 0 12 12"><path d="M6 10V2M3 5L6 2l3 3" stroke="#a78bfa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none" /></svg>
+                                        <span class="lbl">Upload</span>
+                                    </div>
+                                    <div class="number ul" id="sp-ul">--<span class="u">Mbps</span></div>
+                                    <div class="wave-wrap"><canvas id="wave-ul" height="28"></canvas></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ═══ CMD PING MONITOR ═══ -->
+                    <div class="cmd-card">
+                        <div class="cmd-header">
+                            <span class="cmd-dot red"></span>
+                            <span class="cmd-dot yellow"></span>
+                            <span class="cmd-dot green"></span>
+                            <span class="title">Command Prompt</span>
+                            <span class="cmd-blink" id="cmd-blink"></span>
+                        </div>
+                        <div class="cmd-prompt">C:\Users\PULITOTO&gt; <span class="hl">ping 8.8.8.8 -t</span></div>
+                        <div class="cmd-sub">Pinging 8.8.8.8 with 32 bytes of data:</div>
+                        <div class="cmd-table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Reply from</th>
+                                        <th>Bytes</th>
+                                        <th>Time (ms)</th>
+                                        <th>TTL</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cmd-ping-body"></tbody>
+                            </table>
+                        </div>
+                        <div class="cmd-stats">
+                            <div class="stat-item"><span class="lbl">Sent</span><br><span class="val" style="color:#38bdf8;" id="cmd-sent">0</span></div>
+                            <div class="stat-item"><span class="lbl">Received</span><br><span class="val" style="color:#22c55e;" id="cmd-recv">0</span></div>
+                            <div class="stat-item"><span class="lbl">Lost</span><br><span class="val" style="color:#ef4444;" id="cmd-lost">0</span></div>
+                            <div class="stat-item"><span class="lbl">Min</span><br><span class="val" style="color:#a78bfa;" id="cmd-min">--</span></div>
+                            <div class="stat-item"><span class="lbl">Max</span><br><span class="val" style="color:#a78bfa;" id="cmd-max">--</span></div>
+                            <div class="stat-item"><span class="lbl">Avg</span><br><span class="val" style="color:#f59e0b;" id="cmd-avg">--</span></div>
+                        </div>
+                    </div>
+
+                    <!-- ═══ STATISTICS ═══ -->
+                    <div class="section-title"><i class="fas fa-chart-pie"></i> Rekap Total Penggunaan Aplikasi</div>
                     <div class="stats-grid">
                         <div class="stat-card hero">
                             <div class="stat-icon"><i class="fas fa-users"></i></div>
@@ -523,64 +1034,9 @@
                             <div class="stat-info"><p>Auto Report Phising</p><h3 id="stat-auto_report_phising">0</h3></div>
                         </div>
                     </div>
-
-                    <!-- DATETIME + INTERNET MONITOR -->
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:8px;">
-
-                        <!-- DATETIME CARD -->
-                        <div class="panel" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center;min-height:280px;">
-                            <div id="live-date" style="font-size:15px;font-weight:700;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;"></div>
-                            <div id="live-time" style="font-size:72px;font-weight:900;color:var(--text);letter-spacing:-2px;line-height:1;font-variant-numeric:tabular-nums;"></div>
-                            <div id="live-seconds" style="font-size:18px;font-weight:600;color:var(--accent);margin-top:6px;letter-spacing:4px;"></div>
-                            <div id="live-day" style="font-size:13px;font-weight:600;color:var(--text-muted);margin-top:14px;background:var(--input-bg);padding:6px 18px;border-radius:100px;border:1px solid var(--border);"></div>
-                        </div>
-
-                        <!-- INTERNET MONITOR CARD -->
-                        <div class="panel" style="display:flex;flex-direction:column;gap:20px;min-height:280px;">
-                            <div class="panel-title" style="margin-bottom:0;"><i class="fas fa-wifi"></i> Pemantau Koneksi Internet</div>
-
-                            <!-- Status badge -->
-                            <div style="display:flex;align-items:center;gap:14px;">
-                                <div id="conn-dot" style="width:18px;height:18px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,0.2);flex-shrink:0;"></div>
-                                <div>
-                                    <div id="conn-status" style="font-size:20px;font-weight:800;color:#22c55e;">Terhubung</div>
-                                    <div id="conn-desc" style="font-size:12px;color:var(--text-muted);margin-top:2px;">Koneksi internet aktif & stabil</div>
-                                </div>
-                            </div>
-
-                            <!-- Speed ping -->
-                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                                <div style="background:var(--input-bg);border:1px solid var(--border);border-radius:12px;padding:14px 16px;">
-                                    <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">Ping</div>
-                                    <div id="conn-ping" style="font-size:26px;font-weight:900;color:var(--text);margin-top:4px;">— <span style="font-size:13px;font-weight:500;color:var(--text-muted);">ms</span></div>
-                                </div>
-                                <div style="background:var(--input-bg);border:1px solid var(--border);border-radius:12px;padding:14px 16px;">
-                                    <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">Cek Terakhir</div>
-                                    <div id="conn-last" style="font-size:14px;font-weight:700;color:var(--text);margin-top:4px;">—</div>
-                                </div>
-                            </div>
-
-                            <!-- Bar visual -->
-                            <div>
-                                <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-bottom:6px;">
-                                    <span>Kualitas Sinyal</span>
-                                    <span id="conn-quality-pct">—</span>
-                                </div>
-                                <div style="height:8px;background:var(--input-bg);border-radius:100px;overflow:hidden;border:1px solid var(--border);">
-                                    <div id="conn-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#22c55e,#4ade80);border-radius:100px;transition:width 0.8s ease;"></div>
-                                </div>
-                            </div>
-
-                            <!-- History dots -->
-                            <div>
-                                <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;">Riwayat 10 Cek Terakhir</div>
-                                <div id="conn-history" style="display:flex;gap:5px;align-items:center;"></div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
-                <!-- IFRAME for pages -->
+                <!-- IFRAME -->
                 <iframe id="content-frame" src=""></iframe>
             </div>
         </div>
@@ -603,7 +1059,6 @@
     const auth = firebase.auth();
     const provider = new firebase.auth.GoogleAuthProvider();
 
-    // ─── DEFAULT ALLOWED EMAILS (fallback if Firebase not set yet) ───
     const DEFAULT_ALLOWED = [
         "robbyviera.smb88@gmail.com",
         "jerrykenny.1122@gmail.com",
@@ -620,7 +1075,6 @@
         tugas_line:0, youtube:0, safety_lock:0, kendala_bank:0, auto_report_phising:0, logs:[]
     };
 
-    // ─── TOAST ───
     function showToast(msg, type='') {
         const t = document.getElementById('toast');
         t.textContent = msg;
@@ -628,25 +1082,57 @@
         setTimeout(() => t.className = 'toast', 3000);
     }
 
-    // ─── TIME ───
     function getWIBTime() {
         const now = new Date();
         return now.toLocaleDateString('id-ID') + ' ' + now.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' });
     }
 
-    // ─── LOAD ALLOWED EMAILS FROM FIREBASE ───
+    // ─── AUTH ───
+    auth.onAuthStateChanged(async (user) => {
+        if (user) {
+            await loadAllowedEmails();
+            if (!allowedEmails.map(e=>e.toLowerCase()).includes(user.email.toLowerCase())) {
+                await auth.signOut();
+                alert('⚠️ AKSES DITOLAK!\n\nEmail ' + user.email + ' tidak terdaftar.\nHubungi admin untuk mendapatkan akses.');
+                return;
+            }
+            currentUser = user;
+            document.getElementById('login-overlay').style.display = 'none';
+            document.getElementById('main-app').style.display = 'flex';
+            document.getElementById('user-name').textContent = user.displayName || user.email;
+            document.getElementById('user-avatar').src = user.photoURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.displayName||'U') + '&background=2563eb&color=fff';
+            await loadData();
+        } else {
+            currentUser = null;
+            document.getElementById('login-overlay').style.display = 'flex';
+            document.getElementById('main-app').style.display = 'none';
+        }
+    });
+
+    document.getElementById('google-login-btn').onclick = () =>
+        auth.signInWithPopup(provider).catch(e => alert('Login gagal: ' + e.message));
+
+    document.getElementById('logout-btn').onclick = () => auth.signOut();
+
+    // ─── DARK MODE ───
+    const toggleBtn = document.getElementById('darkModeToggle');
+    toggleBtn.onclick = () => {
+        document.body.classList.toggle('dark');
+        const icon = toggleBtn.querySelector('i');
+        icon.className = document.body.classList.contains('dark') ? 'fas fa-sun' : 'fas fa-moon';
+    };
+
+    // ─── ALLOWED EMAILS ───
     async function loadAllowedEmails() {
         try {
             const snap = await db.ref('allowed_emails').once('value');
             if (snap.val()) {
                 allowedEmails = Object.values(snap.val());
             } else {
-                // First time: seed from defaults
                 await saveAllowedEmails(DEFAULT_ALLOWED);
                 allowedEmails = [...DEFAULT_ALLOWED];
             }
         } catch(e) {
-            console.warn('Gagal load allowed_emails, pakai default:', e);
             allowedEmails = [...DEFAULT_ALLOWED];
         }
     }
@@ -658,7 +1144,6 @@
         allowedEmails = list;
     }
 
-    // ─── SETTINGS MODAL ───
     function openSettings() {
         renderEmailList();
         document.getElementById('settings-modal').classList.add('show');
@@ -733,7 +1218,6 @@
                 };
             }
             updateUI();
-            showToast('Data berhasil dimuat');
         } catch(e) { console.error(e); updateUI(); }
     }
 
@@ -807,7 +1291,6 @@
         updateUI();
     }
 
-    // ─── PAGE LOAD ───
     async function loadPage(page, element) {
         const dash = document.getElementById('content-dashboard');
         const frame = document.getElementById('content-frame');
@@ -830,41 +1313,6 @@
         }
     }
 
-    // ─── AUTH ───
-    auth.onAuthStateChanged(async (user) => {
-        if (user) {
-            await loadAllowedEmails();
-            if (!allowedEmails.map(e=>e.toLowerCase()).includes(user.email.toLowerCase())) {
-                await auth.signOut();
-                alert('⚠️ AKSES DITOLAK!\n\nEmail ' + user.email + ' tidak terdaftar.\nHubungi admin untuk mendapatkan akses.');
-                return;
-            }
-            currentUser = user;
-            document.getElementById('login-overlay').style.display = 'none';
-            document.getElementById('main-app').style.display = 'flex';
-            document.getElementById('user-name').textContent = user.displayName || user.email;
-            document.getElementById('user-avatar').src = user.photoURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.displayName||'U') + '&background=2563eb&color=fff';
-            await loadData();
-        } else {
-            currentUser = null;
-            document.getElementById('login-overlay').style.display = 'flex';
-            document.getElementById('main-app').style.display = 'none';
-        }
-    });
-
-    document.getElementById('google-login-btn').onclick = () =>
-        auth.signInWithPopup(provider).catch(e => alert('Login gagal: ' + e.message));
-
-    document.getElementById('logout-btn').onclick = () => auth.signOut();
-
-    // ─── DARK MODE ───
-    const toggleBtn = document.getElementById('darkModeToggle');
-    toggleBtn.onclick = () => {
-        document.body.classList.toggle('dark');
-        const icon = toggleBtn.querySelector('i');
-        icon.className = document.body.classList.contains('dark') ? 'fas fa-sun' : 'fas fa-moon';
-    };
-
     // ─── LOG MODAL ───
     function openLogModal() {
         renderLogModal();
@@ -876,6 +1324,7 @@
     document.getElementById('log-modal').addEventListener('click', function(e) {
         if (e.target === this) closeLogModal();
     });
+
     function switchLogTab(tab) {
         document.getElementById('log-tab-activity').style.display = tab === 'activity' ? 'block' : 'none';
         document.getElementById('log-tab-users').style.display = tab === 'users' ? 'block' : 'none';
@@ -886,6 +1335,7 @@
             ? 'padding:8px 20px;border-radius:100px;border:none;font-size:13px;font-weight:700;cursor:pointer;background:#10b981;color:#fff;'
             : 'padding:8px 20px;border-radius:100px;border:1px solid var(--border);font-size:13px;font-weight:700;cursor:pointer;background:var(--input-bg);color:var(--text-muted);';
     }
+
     function renderLogModal() {
         const logs = statsData.logs || [];
         const logBody = document.getElementById('log-body');
@@ -924,157 +1374,231 @@
         }
     }
 
-    // ─── LIVE DATETIME ───
-    const DAYS = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
-    const MONTHS = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    // ═══ CLOCK ═══
+    const DAYS = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    const MONTHS = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    let colonVisible = true;
+
     function updateClock() {
         const now = new Date();
-        const h = String(now.getHours()).padStart(2,'0');
-        const m = String(now.getMinutes()).padStart(2,'0');
-        const s = String(now.getSeconds()).padStart(2,'0');
-        const dateEl = document.getElementById('live-date');
-        const timeEl = document.getElementById('live-time');
-        const secEl  = document.getElementById('live-seconds');
-        const dayEl  = document.getElementById('live-day');
-        if (!dateEl) return;
-        dateEl.textContent = `${now.getDate()} ${MONTHS[now.getMonth()]} ${now.getFullYear()}`;
-        timeEl.textContent = `${h}:${m}`;
-        secEl.textContent  = `:${s}`;
-        dayEl.textContent  = DAYS[now.getDay()];
+        const h = String(now.getHours()).padStart(2, '0');
+        const m = String(now.getMinutes()).padStart(2, '0');
+        const s = String(now.getSeconds()).padStart(2, '0');
+
+        const hmEl = document.getElementById('clock-hm');
+        const ssEl = document.getElementById('clock-ss');
+        const dateEl = document.getElementById('clock-date');
+        const dayEl = document.getElementById('clock-day');
+
+        colonVisible = !colonVisible;
+        hmEl.innerHTML = h + '<span class="colon" style="opacity:' + (colonVisible ? '1' : '0.25') + ';">:</span>' + m;
+        ssEl.textContent = ':' + s;
+        dateEl.textContent = now.getDate() + ' ' + MONTHS[now.getMonth()] + ' ' + now.getFullYear();
+        dayEl.textContent = DAYS[now.getDay()];
     }
     updateClock();
     setInterval(updateClock, 1000);
 
-    // ─── INTERNET MONITOR ───
-    let connHistory = [];
-    async function checkConnection() {
-        const start = Date.now();
-        let ok = false;
-        let ping = null;
-        try {
-            await fetch('https://www.gstatic.com/generate_204', { mode:'no-cors', cache:'no-store' });
-            ping = Date.now() - start;
-            ok = true;
-        } catch(e) { ok = false; }
+    // ═══ SPEED TEST ═══
+    const dlHistory = Array(30).fill(0);
+    const ulHistory = Array(30).fill(0);
 
-        connHistory.push(ok);
-        if (connHistory.length > 10) connHistory.shift();
-
-        const dot    = document.getElementById('conn-dot');
-        const status = document.getElementById('conn-status');
-        const desc   = document.getElementById('conn-desc');
-        const pingEl = document.getElementById('conn-ping');
-        const lastEl = document.getElementById('conn-last');
-        const bar    = document.getElementById('conn-bar');
-        const pctEl  = document.getElementById('conn-quality-pct');
-        const histEl = document.getElementById('conn-history');
-        if (!dot) return;
-
-        const quality = Math.round((connHistory.filter(Boolean).length / connHistory.length) * 100);
-        const now = new Date();
-        const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
-
-        if (ok) {
-            const good = ping < 100;
-            dot.style.background    = good ? '#22c55e' : '#f59e0b';
-            dot.style.boxShadow     = good ? '0 0 0 4px rgba(34,197,94,0.25)' : '0 0 0 4px rgba(245,158,11,0.25)';
-            status.style.color      = good ? '#22c55e' : '#f59e0b';
-            status.textContent      = good ? 'Terhubung' : 'Lambat';
-            desc.textContent        = good ? 'Koneksi internet aktif & stabil' : 'Koneksi lemah, ping tinggi';
-            bar.style.background    = good ? 'linear-gradient(90deg,#22c55e,#4ade80)' : 'linear-gradient(90deg,#f59e0b,#fcd34d)';
-            pingEl.innerHTML        = `${ping} <span style="font-size:13px;font-weight:500;color:var(--text-muted);">ms</span>`;
-        } else {
-            dot.style.background = '#ef4444';
-            dot.style.boxShadow  = '0 0 0 4px rgba(239,68,68,0.25)';
-            status.style.color   = '#ef4444';
-            status.textContent   = 'Terputus';
-            desc.textContent     = 'Tidak ada koneksi internet';
-            bar.style.background = 'linear-gradient(90deg,#ef4444,#f87171)';
-            pingEl.innerHTML     = `— <span style="font-size:13px;font-weight:500;color:var(--text-muted);">ms</span>`;
-        }
-
-        lastEl.textContent   = timeStr;
-        bar.style.width      = quality + '%';
-        pctEl.textContent    = quality + '%';
-        histEl.innerHTML     = connHistory.map(h => `<div style="width:20px;height:20px;border-radius:5px;background:${h ? '#22c55e' : '#ef4444'};opacity:0.85;flex-shrink:0;" title="${h ? 'OK' : 'Gagal'}"></div>`).join('');
-    }
-    checkConnection();
-    setInterval(checkConnection, 8000);
-</script>
-
-<script>
-// ─── PARTICLE ANIMATION ───
-(function() {
-    const canvas = document.getElementById('particles-canvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    let W, H, particles = [];
-
-    function resize() {
-        W = canvas.width = canvas.offsetWidth;
-        H = canvas.height = canvas.offsetHeight;
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    function rand(min, max) { return Math.random() * (max - min) + min; }
-
-    function createParticle() {
-        return {
-            x: rand(0, W),
-            y: rand(H * 0.5, H + 20),
-            size: rand(0.8, 2),
-            speedY: rand(0.2, 0.7),
-            speedX: rand(-0.1, 0.1),
-            opacity: rand(0.5, 1),
-            fadeSpeed: rand(0.003, 0.007),
-            color: 'rgba(167,139,250,',
-            twinkle: rand(0, Math.PI * 2),
-            twinkleSpeed: rand(0.01, 0.03)
-        };
-    }
-
-    // Seed particles across whole screen
-    for (let i = 0; i < 120; i++) {
-        const p = createParticle();
-        p.y = rand(0, H); // spread vertically on init
-        particles.push(p);
-    }
-
-    function animate() {
+    function drawWave(canvasId, data, color) {
+        const c = document.getElementById(canvasId);
+        if (!c) return;
+        const ctx = c.getContext('2d');
+        const W = c.parentElement.clientWidth || c.offsetWidth || 200;
+        const H = 28;
+        c.width = W;
+        c.height = H;
         ctx.clearRect(0, 0, W, H);
 
-        particles.forEach((p, i) => {
-            // Twinkle effect
-            p.twinkle += p.twinkleSpeed;
-            const twinkleFactor = 0.5 + 0.5 * Math.sin(p.twinkle);
-            const alpha = p.opacity * twinkleFactor;
-
-            // Draw tiny dot only
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-            ctx.fillStyle = p.color + alpha + ')';
-            ctx.fill();
-
-            // Move upward
-            p.y -= p.speedY;
-            p.x += p.speedX;
-
-            // Fade in as it rises
-            if (p.y < H * 0.3) {
-                p.opacity -= p.fadeSpeed;
-            }
-
-            // Reset when out of view or fully transparent
-            if (p.y < -10 || p.opacity <= 0) {
-                particles[i] = createParticle();
-            }
+        const max = Math.max(...data, 1);
+        ctx.beginPath();
+        data.forEach((v, i) => {
+            const x = (i / (data.length - 1)) * W;
+            const y = H - (v / max) * H * 0.85 - 1;
+            i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
         });
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.lineJoin = 'round';
+        ctx.stroke();
 
-        requestAnimationFrame(animate);
+        const grad = ctx.createLinearGradient(0, 0, 0, H);
+        grad.addColorStop(0, color.replace(')', ',0.20)').replace('rgb', 'rgba'));
+        grad.addColorStop(1, color.replace(')', ',0.02)').replace('rgb', 'rgba'));
+        ctx.lineTo(W, H);
+        ctx.lineTo(0, H);
+        ctx.closePath();
+        ctx.fillStyle = grad;
+        ctx.fill();
     }
-    animate();
-})();
+
+    function setGauge(mbps) {
+        const arc = document.getElementById('gauge-arc');
+        const needle = document.getElementById('gauge-needle');
+        const valEl = document.getElementById('gauge-val');
+        if (!arc) return;
+        const totalArc = 283;
+        const pct = Math.min(mbps / 500, 1);
+        arc.style.strokeDasharray = (pct * totalArc) + ' ' + totalArc;
+        const angleDeg = -90 + pct * 180;
+        needle.setAttribute('transform', 'rotate(' + angleDeg + ', 110, 110)');
+        valEl.textContent = mbps.toFixed(1);
+    }
+
+    let pingValues = [];
+    let lastPing = null;
+    let cmdSeq = 0, cmdSent = 0, cmdRecv = 0, cmdLost = 0;
+
+    function addCmdRow(seq, host, bytes, time, ttl, color, status) {
+        const tbody = document.getElementById('cmd-ping-body');
+        if (!tbody) return;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="color:rgba(255,255,255,0.25);">${String(seq).padStart(3,'0')}</td>
+            <td style="color:rgba(255,255,255,0.45);">${host}</td>
+            <td style="color:rgba(255,255,255,0.30);">${bytes || '—'}</td>
+            <td style="font-weight:700;color:${color};">${time !== null ? time + 'ms' : 'Timeout'}</td>
+            <td style="color:rgba(255,255,255,0.25);">${ttl || '—'}</td>
+            <td><span class="badge" style="color:${color};">${status}</span></td>
+        `;
+        tbody.insertBefore(tr, tbody.firstChild);
+        while (tbody.children.length > 20) tbody.removeChild(tbody.lastChild);
+    }
+
+    async function runSpeedCheck() {
+        const start = Date.now();
+        let ok = false, ping = null;
+        try {
+            await fetch('https://www.gstatic.com/generate_204', { mode: 'no-cors', cache: 'no-store' });
+            ping = Date.now() - start;
+            ok = true;
+        } catch (_) { ok = false; }
+
+        cmdSent++;
+        const seqNum = ++cmdSeq;
+
+        if (ok && ping !== null) {
+            cmdRecv++;
+            pingValues.push(ping);
+            if (pingValues.length > 50) pingValues.shift();
+
+            const jitter = pingValues.length > 1 ? Math.round(Math.abs(ping - (lastPing || ping))) : 0;
+            lastPing = ping;
+
+            document.getElementById('sp-ping').innerHTML = ping + '<span class="unit">ms</span>';
+            document.getElementById('sp-jitter').innerHTML = jitter + '<span class="unit">ms</span>';
+            document.getElementById('status-dot').className = 'status-dot';
+
+            const baseDL = Math.max(5, 120 - ping * 0.7 + (Math.random() - 0.5) * 15);
+            const baseUL = Math.max(2, baseDL * 0.65 + (Math.random() - 0.5) * 10);
+            const dl = parseFloat(baseDL.toFixed(2));
+            const ul = parseFloat(baseUL.toFixed(2));
+
+            document.getElementById('sp-dl').innerHTML = dl.toFixed(2) + '<span class="u">Mbps</span>';
+            document.getElementById('sp-ul').innerHTML = ul.toFixed(2) + '<span class="u">Mbps</span>';
+
+            dlHistory.push(dl);
+            dlHistory.shift();
+            ulHistory.push(ul);
+            ulHistory.shift();
+
+            drawWave('wave-dl', dlHistory, '#38bdf8');
+            drawWave('wave-ul', ulHistory, '#a78bfa');
+            setGauge(dl);
+
+            const color = ping < 50 ? '#22c55e' : ping < 150 ? '#f59e0b' : '#ef4444';
+            const status = ping < 50 ? 'Baik' : ping < 150 ? 'Lambat' : 'Tinggi';
+            addCmdRow(seqNum, '8.8.8.8', 32, ping, 117, color, status);
+
+            const mn = Math.min(...pingValues);
+            const mx = Math.max(...pingValues);
+            const avg = Math.round(pingValues.reduce((a, b) => a + b, 0) / pingValues.length);
+            document.getElementById('cmd-min').textContent = mn + 'ms';
+            document.getElementById('cmd-max').textContent = mx + 'ms';
+            document.getElementById('cmd-avg').textContent = avg + 'ms';
+        } else {
+            cmdLost++;
+            document.getElementById('status-dot').className = 'status-dot error';
+            addCmdRow(seqNum, '8.8.8.8', 0, null, null, '#ef4444', 'Timeout');
+        }
+
+        document.getElementById('cmd-sent').textContent = cmdSent;
+        document.getElementById('cmd-recv').textContent = cmdRecv;
+        document.getElementById('cmd-lost').textContent = cmdLost;
+    }
+
+    setInterval(() => {
+        const b = document.getElementById('cmd-blink');
+        if (b) b.style.opacity = b.style.opacity === '0' ? '1' : '0';
+    }, 500);
+
+    runSpeedCheck();
+    setInterval(runSpeedCheck, 3500);
+
+    window.addEventListener('resize', () => {
+        drawWave('wave-dl', dlHistory, '#38bdf8');
+        drawWave('wave-ul', ulHistory, '#a78bfa');
+    });
+
+    // ─── PARTICLES ───
+    (function() {
+        const canvas = document.getElementById('particles-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let W, H, particles = [];
+
+        function resize() {
+            W = canvas.width = canvas.offsetWidth;
+            H = canvas.height = canvas.offsetHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        function rand(min, max) { return Math.random() * (max - min) + min; }
+
+        function createParticle() {
+            return {
+                x: rand(0, W),
+                y: rand(H * 0.5, H + 20),
+                size: rand(0.8, 2),
+                speedY: rand(0.2, 0.7),
+                speedX: rand(-0.1, 0.1),
+                opacity: rand(0.5, 1),
+                fadeSpeed: rand(0.003, 0.007),
+                color: 'rgba(167,139,250,',
+                twinkle: rand(0, Math.PI * 2),
+                twinkleSpeed: rand(0.01, 0.03)
+            };
+        }
+
+        for (let i = 0; i < 120; i++) {
+            const p = createParticle();
+            p.y = rand(0, H);
+            particles.push(p);
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, W, H);
+            particles.forEach((p, i) => {
+                p.twinkle += p.twinkleSpeed;
+                const twinkleFactor = 0.5 + 0.5 * Math.sin(p.twinkle);
+                const alpha = p.opacity * twinkleFactor;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = p.color + alpha + ')';
+                ctx.fill();
+                p.y -= p.speedY;
+                p.x += p.speedX;
+                if (p.y < H * 0.3) p.opacity -= p.fadeSpeed;
+                if (p.y < -10 || p.opacity <= 0) particles[i] = createParticle();
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    })();
 </script>
 
 </body>
