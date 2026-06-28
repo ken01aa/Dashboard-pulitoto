@@ -923,7 +923,7 @@
 
                     <!-- ═══ PREMIUM ROW: CLOCK + SPEED TEST ═══ -->
                     <div class="premium-row">
-                        <!-- CLOCK (tanpa 🕒 WIB · UTC+7, detik BESAR) -->
+                        <!-- CLOCK -->
                         <div class="clock-card">
                             <div class="clock-day" id="clock-day">Senin</div>
                             <div class="clock-date" id="clock-date">1 Januari 2025</div>
@@ -933,7 +933,7 @@
                             </div>
                         </div>
 
-                        <!-- SPEED TEST (dengan IP) -->
+                        <!-- SPEED TEST -->
                         <div class="speed-card">
                             <div class="speed-header">
                                 <span class="label"><i class="fas fa-satellite-dish" style="margin-right:6px;color:#38bdf8;"></i>Internet Monitor</span>
@@ -951,7 +951,6 @@
                                 </div>
                             </div>
 
-                            <!-- Gauge -->
                             <div class="gauge-wrap">
                                 <svg viewBox="0 0 220 130">
                                     <defs>
@@ -983,7 +982,6 @@
                                 </svg>
                             </div>
 
-                            <!-- DL / UL -->
                             <div class="speed-dual">
                                 <div class="speed-box">
                                     <div class="top">
@@ -1124,6 +1122,8 @@
             document.getElementById('user-name').textContent = user.displayName || user.email;
             document.getElementById('user-avatar').src = user.photoURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.displayName||'U') + '&background=2563eb&color=fff';
             await loadData();
+            await loadAllowedEmails(); // Refresh allowed emails
+            renderEmailList();
         } else {
             currentUser = null;
             document.getElementById('login-overlay').style.display = 'flex';
@@ -1148,22 +1148,33 @@
     async function loadAllowedEmails() {
         try {
             const snap = await db.ref('allowed_emails').once('value');
-            if (snap.val()) {
-                allowedEmails = Object.values(snap.val());
+            const val = snap.val();
+            if (val) {
+                allowedEmails = Object.values(val);
             } else {
                 await saveAllowedEmails(DEFAULT_ALLOWED);
                 allowedEmails = [...DEFAULT_ALLOWED];
             }
         } catch(e) {
+            console.error('Load allowed emails error:', e);
             allowedEmails = [...DEFAULT_ALLOWED];
         }
+        renderEmailList();
     }
 
     async function saveAllowedEmails(list) {
-        const obj = {};
-        list.forEach((e, i) => obj[i] = e.toLowerCase().trim());
-        await db.ref('allowed_emails').set(obj);
-        allowedEmails = list;
+        try {
+            const obj = {};
+            list.forEach((e, i) => obj[i] = e.toLowerCase().trim());
+            await db.ref('allowed_emails').set(obj);
+            allowedEmails = list;
+            renderEmailList();
+            return true;
+        } catch(e) {
+            console.error('Save allowed emails error:', e);
+            showToast('❌ Gagal menyimpan data!', 'error');
+            return false;
+        }
     }
 
     function openSettings() {
@@ -1179,6 +1190,7 @@
 
     function renderEmailList() {
         const container = document.getElementById('email-list');
+        if (!container) return;
         if (!allowedEmails.length) {
             container.innerHTML = '<div class="empty-state">Belum ada email terdaftar.</div>';
             return;
@@ -1207,13 +1219,15 @@
 
         try {
             const updated = [...allowedEmails, email];
-            await saveAllowedEmails(updated);
-            input.value = '';
-            renderEmailList();
-            showToast('✅ Email berhasil ditambahkan!');
+            const success = await saveAllowedEmails(updated);
+            if (success) {
+                input.value = '';
+                renderEmailList();
+                showToast('✅ Email berhasil ditambahkan!');
+            }
         } catch(e) {
-            showToast('❌ Gagal menambah email!', 'error');
-            console.error(e);
+            console.error('Add email error:', e);
+            showToast('❌ Gagal menambah email! Coba lagi.', 'error');
         } finally {
             this.disabled = false;
             this.innerHTML = '<i class="fas fa-plus" style="margin-right:6px;"></i>Tambah';
@@ -1230,12 +1244,14 @@
 
         try {
             const updated = allowedEmails.filter((_, i) => i !== index);
-            await saveAllowedEmails(updated);
-            renderEmailList();
-            showToast('🗑️ Email berhasil dihapus!');
+            const success = await saveAllowedEmails(updated);
+            if (success) {
+                renderEmailList();
+                showToast('🗑️ Email berhasil dihapus!');
+            }
         } catch(e) {
+            console.error('Remove email error:', e);
             showToast('❌ Gagal menghapus email!', 'error');
-            console.error(e);
         }
     }
 
@@ -1262,21 +1278,22 @@
                 };
             }
             updateUI();
-        } catch(e) { console.error(e); updateUI(); }
+        } catch(e) { console.error('Load data error:', e); updateUI(); }
     }
 
     function updateUI() {
         const keys = ['prediksi','bukti_jp','syair','result','saldo','hasil_result','reportan','selisih_mineray','tugas_line','youtube','safety_lock','kendala_bank','auto_report_phising'];
         keys.forEach(k => {
             const el = document.getElementById('stat-'+k);
-            if (el) el.textContent = statsData[k];
+            if (el) el.textContent = statsData[k] || 0;
         });
 
-        const uniqueEmails = [...new Set(statsData.logs.filter(l=>l&&l.email).map(l=>l.email))];
+        const logs = statsData.logs || [];
+        const uniqueEmails = [...new Set(logs.filter(l=>l&&l.email).map(l=>l.email))];
         document.getElementById('stat-total-user').textContent = uniqueEmails.length;
 
+        // Update log body
         const logBody = document.getElementById('log-body');
-        const logs = statsData.logs || [];
         if (!logs.length) {
             logBody.innerHTML = '<tr><td colspan="4" class="empty-state">Belum ada aktivitas.</td></tr>';
         } else {
@@ -1289,6 +1306,7 @@
                 </tr>` : '').join('');
         }
 
+        // Update user stats
         const userMap = new Map();
         logs.forEach(log => {
             if (!log || !log.email || log.email === 'undefined') return;
@@ -1314,10 +1332,14 @@
     }
 
     async function saveStats() {
-        await db.ref('stats').set({
-            ...statsData,
-            logs: statsData.logs
-        });
+        try {
+            await db.ref('stats').set({
+                ...statsData,
+                logs: statsData.logs
+            });
+        } catch(e) {
+            console.error('Save stats error:', e);
+        }
     }
 
     async function addStat(menuKey, appName) {
@@ -1347,6 +1369,7 @@
             frame.style.display = 'none';
             frame.src = '';
             await loadData();
+            await loadAllowedEmails();
         } else {
             const menuKey = element ? element.getAttribute('data-menu') : '';
             const title = element ? element.getAttribute('data-title') : page;
@@ -1443,7 +1466,7 @@
     updateClock();
     setInterval(updateClock, 1000);
 
-    // ═══ SPEED TEST ═══ (OPTIMASI LANCAR)
+    // ═══ SPEED TEST ═══
     const dlHistory = Array(30).fill(0);
     const ulHistory = Array(30).fill(0);
     let speedRunning = false;
