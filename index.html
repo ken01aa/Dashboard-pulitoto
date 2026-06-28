@@ -233,10 +233,7 @@
             transition: opacity 0.2s;
         }
         .add-email-form button:hover { opacity: 0.85; }
-        .add-email-form button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
+        .add-email-form button:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .empty-state { text-align: center; padding: 28px; color: var(--text-muted); font-size: 13px; }
 
@@ -294,56 +291,12 @@
             background: radial-gradient(circle, rgba(139, 92, 246, 0.10), transparent 70%);
             pointer-events: none;
         }
-        .clock-day {
-            font-size: 12px;
-            font-weight: 700;
-            color: #818cf8;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin-bottom: 2px;
-            position: relative;
-            z-index: 1;
-        }
-        .clock-date {
-            font-size: 15px;
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.45);
-            margin-bottom: 12px;
-            position: relative;
-            z-index: 1;
-            letter-spacing: 0.5px;
-        }
-        .clock-time-wrap {
-            display: flex;
-            align-items: baseline;
-            gap: 6px;
-            position: relative;
-            z-index: 1;
-        }
-        .clock-hm {
-            font-size: 64px;
-            font-weight: 900;
-            color: #fff;
-            line-height: 1;
-            font-variant-numeric: tabular-nums;
-            letter-spacing: -2px;
-            text-shadow: 0 0 50px rgba(99, 102, 241, 0.30);
-        }
-        .clock-hm .colon {
-            opacity: 1;
-            display: inline-block;
-            width: 0.3em;
-            text-align: center;
-            transition: opacity 0.15s;
-        }
-        .clock-ss {
-            font-size: 36px;
-            font-weight: 800;
-            color: #818cf8;
-            font-variant-numeric: tabular-nums;
-            min-width: 50px;
-            text-shadow: 0 0 30px rgba(99, 102, 241, 0.20);
-        }
+        .clock-day { font-size: 12px; font-weight: 700; color: #818cf8; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 2px; position: relative; z-index: 1; }
+        .clock-date { font-size: 15px; font-weight: 500; color: rgba(255, 255, 255, 0.45); margin-bottom: 12px; position: relative; z-index: 1; letter-spacing: 0.5px; }
+        .clock-time-wrap { display: flex; align-items: baseline; gap: 6px; position: relative; z-index: 1; }
+        .clock-hm { font-size: 64px; font-weight: 900; color: #fff; line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -2px; text-shadow: 0 0 50px rgba(99, 102, 241, 0.30); }
+        .clock-hm .colon { opacity: 1; display: inline-block; width: 0.3em; text-align: center; transition: opacity 0.15s; }
+        .clock-ss { font-size: 36px; font-weight: 800; color: #818cf8; font-variant-numeric: tabular-nums; min-width: 50px; text-shadow: 0 0 30px rgba(99, 102, 241, 0.20); }
 
         .speed-card {
             background: linear-gradient(145deg, rgba(10, 15, 26, 0.85), rgba(15, 26, 46, 0.85));
@@ -354,158 +307,38 @@
             flex-direction: column;
             gap: 8px;
         }
-        .speed-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .speed-header .label {
-            font-size: 10px;
-            font-weight: 700;
-            color: rgba(255, 255, 255, 0.30);
-            letter-spacing: 2.5px;
-            text-transform: uppercase;
-        }
-        .speed-header .ip-display {
-            font-size: 12px;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.50);
-            font-family: 'Inter', monospace;
-            background: rgba(255,255,255,0.05);
-            padding: 2px 12px;
-            border-radius: 100px;
-            border: 1px solid rgba(255,255,255,0.06);
-        }
+        .speed-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+        .speed-header .label { font-size: 10px; font-weight: 700; color: rgba(255, 255, 255, 0.30); letter-spacing: 2.5px; text-transform: uppercase; }
+        .speed-header .ip-display { font-size: 12px; font-weight: 600; color: rgba(255, 255, 255, 0.50); font-family: 'Inter', monospace; background: rgba(255,255,255,0.05); padding: 2px 12px; border-radius: 100px; border: 1px solid rgba(255,255,255,0.06); }
         .speed-header .ip-display i { color: #38bdf8; margin-right: 4px; }
-        .speed-header .status-group {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
+        .speed-header .status-group { display: flex; align-items: center; gap: 14px; }
         .speed-header .status-item { text-align: center; }
-        .speed-header .status-item .sub {
-            font-size: 8px;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.25);
-            letter-spacing: 1.2px;
-            text-transform: uppercase;
-        }
-        .speed-header .status-item .val {
-            font-size: 16px;
-            font-weight: 800;
-            font-variant-numeric: tabular-nums;
-        }
+        .speed-header .status-item .sub { font-size: 8px; font-weight: 600; color: rgba(255, 255, 255, 0.25); letter-spacing: 1.2px; text-transform: uppercase; }
+        .speed-header .status-item .val { font-size: 16px; font-weight: 800; font-variant-numeric: tabular-nums; }
         .speed-header .status-item .val.ping { color: #38bdf8; }
         .speed-header .status-item .val.jitter { color: #a78bfa; }
-        .speed-header .status-item .val .unit {
-            font-size: 9px;
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.30);
-        }
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #22c55e;
-            box-shadow: 0 0 12px #22c55e;
-            flex-shrink: 0;
-            transition: background 0.3s, box-shadow 0.3s;
-        }
-        .status-dot.error {
-            background: #ef4444;
-            box-shadow: 0 0 12px #ef4444;
-        }
+        .speed-header .status-item .val .unit { font-size: 9px; font-weight: 500; color: rgba(255, 255, 255, 0.30); }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 12px #22c55e; flex-shrink: 0; transition: background 0.3s, box-shadow 0.3s; }
+        .status-dot.error { background: #ef4444; box-shadow: 0 0 12px #ef4444; }
 
-        .gauge-wrap {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: -8px 0 -12px 0;
-            position: relative;
-        }
-        .gauge-wrap svg {
-            width: 100%;
-            max-width: 240px;
-            height: auto;
-            overflow: visible;
-        }
-        .gauge-value {
-            font-size: 24px;
-            font-weight: 900;
-            fill: #fff;
-            text-anchor: middle;
-            font-family: 'Inter', sans-serif;
-        }
-        .gauge-unit {
-            font-size: 9px;
-            fill: rgba(255, 255, 255, 0.30);
-            text-anchor: middle;
-            font-family: 'Inter', sans-serif;
-        }
-        .gauge-label {
-            font-size: 7px;
-            fill: rgba(255, 255, 255, 0.20);
-            text-anchor: middle;
-            font-family: 'Inter', sans-serif;
-        }
+        .gauge-wrap { display: flex; flex-direction: column; align-items: center; margin: -8px 0 -12px 0; position: relative; }
+        .gauge-wrap svg { width: 100%; max-width: 240px; height: auto; overflow: visible; }
+        .gauge-value { font-size: 24px; font-weight: 900; fill: #fff; text-anchor: middle; font-family: 'Inter', sans-serif; }
+        .gauge-unit { font-size: 9px; fill: rgba(255, 255, 255, 0.30); text-anchor: middle; font-family: 'Inter', sans-serif; }
+        .gauge-label { font-size: 7px; fill: rgba(255, 255, 255, 0.20); text-anchor: middle; font-family: 'Inter', sans-serif; }
 
-        .speed-dual {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 0px;
-        }
-        .speed-box {
-            background: rgba(14, 165, 233, 0.05);
-            border: 1px solid rgba(14, 165, 233, 0.12);
-            border-radius: 12px;
-            padding: 10px 12px 6px;
-            transition: border-color 0.3s;
-        }
-        .speed-box.upload {
-            background: rgba(139, 92, 246, 0.05);
-            border-color: rgba(139, 92, 246, 0.12);
-        }
-        .speed-box .top {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 1px;
-        }
+        .speed-dual { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 0px; }
+        .speed-box { background: rgba(14, 165, 233, 0.05); border: 1px solid rgba(14, 165, 233, 0.12); border-radius: 12px; padding: 10px 12px 6px; transition: border-color 0.3s; }
+        .speed-box.upload { background: rgba(139, 92, 246, 0.05); border-color: rgba(139, 92, 246, 0.12); }
+        .speed-box .top { display: flex; align-items: center; gap: 6px; margin-bottom: 1px; }
         .speed-box .top svg { width: 13px; height: 13px; flex-shrink: 0; }
-        .speed-box .top .lbl {
-            font-size: 8px;
-            font-weight: 700;
-            color: rgba(255, 255, 255, 0.30);
-            letter-spacing: 1.8px;
-            text-transform: uppercase;
-        }
-        .speed-box .number {
-            font-size: 22px;
-            font-weight: 900;
-            font-variant-numeric: tabular-nums;
-            line-height: 1.1;
-        }
+        .speed-box .top .lbl { font-size: 8px; font-weight: 700; color: rgba(255, 255, 255, 0.30); letter-spacing: 1.8px; text-transform: uppercase; }
+        .speed-box .number { font-size: 22px; font-weight: 900; font-variant-numeric: tabular-nums; line-height: 1.1; }
         .speed-box .number.dl { color: #38bdf8; }
         .speed-box .number.ul { color: #a78bfa; }
-        .speed-box .number .u {
-            font-size: 10px;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.25);
-            margin-left: 2px;
-        }
-        .speed-box .wave-wrap {
-            margin-top: 4px;
-            height: 24px;
-            width: 100%;
-        }
-        .speed-box .wave-wrap canvas {
-            width: 100%;
-            height: 100%;
-            border-radius: 4px;
-        }
+        .speed-box .number .u { font-size: 10px; font-weight: 600; color: rgba(255, 255, 255, 0.25); margin-left: 2px; }
+        .speed-box .wave-wrap { margin-top: 4px; height: 24px; width: 100%; }
+        .speed-box .wave-wrap canvas { width: 100%; height: 100%; border-radius: 4px; }
 
         .cmd-card {
             background: rgba(0, 0, 0, 0.50);
@@ -526,86 +359,19 @@
         .cmd-dot.red { background: #ef4444; }
         .cmd-dot.yellow { background: #f59e0b; }
         .cmd-dot.green { background: #22c55e; }
-        .cmd-header .title {
-            font-size: 12px;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.25);
-            font-family: 'Inter', monospace;
-            margin-left: 6px;
-        }
-        .cmd-blink {
-            width: 7px;
-            height: 14px;
-            background: #38bdf8;
-            display: inline-block;
-            margin-left: auto;
-            transition: opacity 0.2s;
-        }
-        .cmd-prompt {
-            padding: 8px 18px 0;
-            font-family: 'Inter', monospace;
-            font-size: 12px;
-            color: #22c55e;
-        }
+        .cmd-header .title { font-size: 12px; font-weight: 600; color: rgba(255, 255, 255, 0.25); font-family: 'Inter', monospace; margin-left: 6px; }
+        .cmd-blink { width: 7px; height: 14px; background: #38bdf8; display: inline-block; margin-left: auto; transition: opacity 0.2s; }
+        .cmd-prompt { padding: 8px 18px 0; font-family: 'Inter', monospace; font-size: 12px; color: #22c55e; }
         .cmd-prompt .hl { color: #38bdf8; }
-        .cmd-sub {
-            padding: 0 18px 4px;
-            font-family: 'Inter', monospace;
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.20);
-        }
-        .cmd-table-wrap {
-            padding: 0 16px 10px;
-            overflow-x: auto;
-        }
-        .cmd-table-wrap table {
-            width: 100%;
-            border-collapse: collapse;
-            font-family: 'Inter', monospace;
-            font-size: 11px;
-        }
-        .cmd-table-wrap th {
-            text-align: left;
-            padding: 5px 10px 5px 0;
-            color: rgba(255, 255, 255, 0.15);
-            font-weight: 700;
-            font-size: 9px;
-            letter-spacing: 1.2px;
-            text-transform: uppercase;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-        }
-        .cmd-table-wrap td {
-            padding: 4px 10px 4px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
-            color: rgba(255, 255, 255, 0.50);
-            font-size: 11px;
-        }
-        .cmd-table-wrap td .badge {
-            font-size: 9px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .cmd-stats {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 18px 30px;
-            padding: 8px 18px 14px;
-            border-top: 1px solid rgba(255, 255, 255, 0.04);
-        }
-        .cmd-stats .stat-item .lbl {
-            font-size: 9px;
-            color: rgba(255, 255, 255, 0.18);
-            font-family: 'Inter', monospace;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-        }
-        .cmd-stats .stat-item .val {
-            font-size: 14px;
-            font-weight: 800;
-            font-family: 'Inter', monospace;
-            font-variant-numeric: tabular-nums;
-        }
+        .cmd-sub { padding: 0 18px 4px; font-family: 'Inter', monospace; font-size: 11px; color: rgba(255, 255, 255, 0.20); }
+        .cmd-table-wrap { padding: 0 16px 10px; overflow-x: auto; }
+        .cmd-table-wrap table { width: 100%; border-collapse: collapse; font-family: 'Inter', monospace; font-size: 11px; }
+        .cmd-table-wrap th { text-align: left; padding: 5px 10px 5px 0; color: rgba(255, 255, 255, 0.15); font-weight: 700; font-size: 9px; letter-spacing: 1.2px; text-transform: uppercase; border-bottom: 1px solid rgba(255, 255, 255, 0.04); }
+        .cmd-table-wrap td { padding: 4px 10px 4px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.02); color: rgba(255, 255, 255, 0.50); font-size: 11px; }
+        .cmd-table-wrap td .badge { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .cmd-stats { display: flex; flex-wrap: wrap; gap: 18px 30px; padding: 8px 18px 14px; border-top: 1px solid rgba(255, 255, 255, 0.04); }
+        .cmd-stats .stat-item .lbl { font-size: 9px; color: rgba(255, 255, 255, 0.18); font-family: 'Inter', monospace; text-transform: uppercase; letter-spacing: 0.8px; }
+        .cmd-stats .stat-item .val { font-size: 14px; font-weight: 800; font-family: 'Inter', monospace; font-variant-numeric: tabular-nums; }
 
         @media (max-width: 600px) {
             #content-dashboard { padding: 16px; }
@@ -1060,9 +826,15 @@
             document.getElementById('main-app').style.display = 'flex';
             document.getElementById('user-name').textContent = user.displayName || user.email;
             document.getElementById('user-avatar').src = user.photoURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.displayName||'U') + '&background=2563eb&color=fff';
+            
+            // LOAD DATA DAN LOG
             await loadData();
             await loadAllowedEmails();
             renderEmailList();
+            
+            console.log('✅ User logged in:', user.email);
+            console.log('📊 Stats data:', statsData);
+            console.log('📝 Logs count:', statsData.logs.length);
         } else {
             currentUser = null;
             document.getElementById('login-overlay').style.display = 'flex';
@@ -1111,7 +883,7 @@
             return true;
         } catch(e) {
             console.error('Save allowed emails error:', e);
-            showToast('❌ Gagal menyimpan data! ' + (e.message || ''), 'error');
+            showToast('❌ Gagal menyimpan data!', 'error');
             return false;
         }
     }
@@ -1211,12 +983,22 @@
                     kendala_bank: data.kendala_bank||0, auto_report_phising: data.auto_report_phising||0,
                     logs: data.logs||[]
                 };
+                console.log('📥 Data loaded from Firebase:', statsData);
+                console.log('📝 Logs from Firebase:', statsData.logs.length);
+            } else {
+                console.log('⚠️ No data in Firebase, using defaults');
             }
             updateUI();
-        } catch(e) { console.error('Load data error:', e); updateUI(); }
+        } catch(e) { 
+            console.error('Load data error:', e); 
+            updateUI();
+        }
     }
 
     function updateUI() {
+        console.log('🔄 Updating UI...');
+        
+        // Update stat cards
         const keys = ['prediksi','bukti_jp','syair','result','saldo','hasil_result','reportan','selisih_mineray','tugas_line','youtube','safety_lock','kendala_bank','auto_report_phising'];
         keys.forEach(k => {
             const el = document.getElementById('stat-'+k);
@@ -1226,8 +1008,9 @@
         const logs = statsData.logs || [];
         const uniqueEmails = [...new Set(logs.filter(l=>l&&l.email).map(l=>l.email))];
         document.getElementById('stat-total-user').textContent = uniqueEmails.length;
+        console.log('👥 Total unique users:', uniqueEmails.length);
 
-        // Update log body
+        // Update log body di dashboard
         const logBody = document.getElementById('log-body');
         if (!logs.length) {
             logBody.innerHTML = '<tr><td colspan="4" class="empty-state">Belum ada aktivitas.</td></tr>';
@@ -1239,6 +1022,7 @@
                     <td style="color:#2563eb;">${log.email||'-'}</td>
                     <td><span class="badge" style="background:#dbeafe;color:#1d4ed8;">${log.app}</span></td>
                 </tr>` : '').join('');
+            console.log('📝 Displayed logs:', logs.length);
         }
 
         // Update user stats
@@ -1263,6 +1047,7 @@
                     <td><span class="badge" style="background:#dcfce7;color:#16a34a;">${u.total}x</span></td>
                     <td style="color:var(--text-muted);font-size:12px;">${u.last}</td>
                 </tr>`).join('');
+            console.log('👥 User stats updated:', userMap.size);
         }
     }
 
@@ -1272,12 +1057,15 @@
                 ...statsData,
                 logs: statsData.logs
             });
+            console.log('💾 Stats saved to Firebase');
+            return true;
         } catch(e) {
             console.error('Save stats error:', e);
+            return false;
         }
     }
 
-    // ─── MAIN: LOAD PAGE ───
+    // ─── MAIN: LOAD PAGE (FIXED LOG) ───
     async function loadPage(page, element) {
         const dash = document.getElementById('content-dashboard');
         const frame = document.getElementById('content-frame');
@@ -1297,18 +1085,32 @@
 
             // UPDATE STATS + LOG
             if (menuKey && currentUser) {
+                // Increment counter
                 statsData[menuKey] = (statsData[menuKey]||0) + 1;
-                statsData.logs.unshift({
+                
+                // Add log
+                const newLog = {
                     app: title,
                     time: getWIBTime(),
                     userName: currentUser.displayName || currentUser.email,
                     email: currentUser.email,
                     uid: currentUser.uid
-                });
+                };
+                statsData.logs.unshift(newLog);
+                
+                // Limit logs
                 if (statsData.logs.length > 200) statsData.logs = statsData.logs.slice(0,200);
+                
+                // Save ke Firebase
                 await saveStats();
+                
+                // Update UI
                 updateUI();
+                
                 console.log('✅ Log tersimpan:', title, 'oleh', currentUser.email);
+                console.log('📝 Total logs:', statsData.logs.length);
+                
+                showToast(`📝 ${title} - Log tersimpan!`);
             }
 
             dash.style.display = 'none';
@@ -1613,6 +1415,8 @@
     console.log('🚀 CS LINE PULITOTO - Management System v2.0');
     console.log('📧 Login dengan Google - Hanya email terdaftar');
     console.log('💾 Log aktivitas tersimpan ke Firebase');
+    console.log('🔍 Buka Console (F12) untuk melihat debug');
 </script>
+
 </body>
 </html>
