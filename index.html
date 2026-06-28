@@ -175,7 +175,15 @@
             padding: 22px 24px;
             margin-bottom: 24px;
         }
-        .panel-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .panel-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
         .panel-title i { color: var(--accent); }
 
         table { width: 100%; border-collapse: collapse; }
@@ -198,8 +206,8 @@
             border: 1px solid var(--border);
             border-radius: 22px;
             padding: 32px;
-            width: 540px;
-            max-width: 95vw;
+            width: 780px;
+            max-width: 96vw;
             max-height: 90vh;
             overflow-y: auto;
         }
@@ -345,7 +353,7 @@
             border-radius: 18px;
             border: 1px solid rgba(56, 189, 248, 0.08);
             overflow: hidden;
-            margin-bottom: 0px;
+            margin-bottom: 24px;
         }
         .cmd-header {
             background: rgba(17, 19, 24, 0.80);
@@ -373,6 +381,11 @@
         .cmd-stats .stat-item .lbl { font-size: 9px; color: rgba(255, 255, 255, 0.18); font-family: 'Inter', monospace; text-transform: uppercase; letter-spacing: 0.8px; }
         .cmd-stats .stat-item .val { font-size: 14px; font-weight: 800; font-family: 'Inter', monospace; font-variant-numeric: tabular-nums; }
 
+        .modal-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+        .modal-tabs button { padding: 8px 20px; border-radius: 100px; border: none; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+        .modal-tabs .tab-active { background: var(--accent); color: #fff; }
+        .modal-tabs .tab-inactive { background: var(--input-bg); color: var(--text-muted); border: 1px solid var(--border); }
+
         @media (max-width: 600px) {
             #content-dashboard { padding: 16px; }
             .clock-card { padding: 18px 14px 20px; min-height: auto; }
@@ -394,6 +407,8 @@
             .stat-info h3 { font-size: 20px; }
             .stat-icon { width: 36px; height: 36px; font-size: 14px; }
             .speed-header .ip-display { font-size: 10px; padding: 0 10px; }
+            .panel { padding: 16px; }
+            .modal { padding: 20px; }
         }
         @media (max-width: 400px) {
             .clock-hm { font-size: 32px; }
@@ -442,19 +457,19 @@
 
 <!-- LOG MODAL -->
 <div class="modal-overlay" id="log-modal">
-    <div class="modal" style="width:780px;max-width:96vw;">
+    <div class="modal">
         <div class="modal-header">
-            <h2><i class="fas fa-history" style="color:#10b981;margin-right:10px;"></i>Log Aktivitas</h2>
+            <h2><i class="fas fa-history" style="color:#10b981;margin-right:10px;"></i>Log Aktivitas Lengkap</h2>
             <button class="modal-close" onclick="closeLogModal()"><i class="fas fa-times"></i></button>
         </div>
-        <div style="display:flex;gap:8px;margin-bottom:20px;">
-            <button onclick="switchLogTab('activity')" id="tab-activity" style="padding:8px 20px;border-radius:100px;border:none;font-size:13px;font-weight:700;cursor:pointer;background:var(--accent);color:#fff;">Aktivitas Terbaru</button>
-            <button onclick="switchLogTab('users')" id="tab-users" style="padding:8px 20px;border-radius:100px;border:1px solid var(--border);font-size:13px;font-weight:700;cursor:pointer;background:var(--input-bg);color:var(--text-muted);">Daftar User</button>
+        <div class="modal-tabs">
+            <button onclick="switchLogTab('activity')" id="tab-activity" class="tab-active">Aktivitas Terbaru</button>
+            <button onclick="switchLogTab('users')" id="tab-users" class="tab-inactive">Daftar User</button>
         </div>
         <div id="log-tab-activity">
             <div style="overflow-x:auto;max-height:420px;overflow-y:auto;">
                 <table>
-                    <thead><tr><th>Waktu</th><th>Nama User</th><th>Email</th><th>Aplikasi</th></tr></thead>
+                    <thead><tr><th>Waktu</th><th>Nama User</th><th>Email</th><th>Aktivitas</th></tr></thead>
                     <tbody id="log-body"><tr><td colspan="4" class="empty-state">Memuat data...</td></tr></tbody>
                 </table>
             </div>
@@ -651,7 +666,7 @@
                         </div>
                     </div>
 
-                    <!-- PREMIUM ROW -->
+                    <!-- PREMIUM ROW: CLOCK + SPEED TEST -->
                     <div class="premium-row">
                         <div class="clock-card">
                             <div class="clock-day" id="clock-day">Senin</div>
@@ -722,7 +737,7 @@
                         </div>
                     </div>
 
-                    <!-- CMD -->
+                    <!-- CMD PING MONITOR -->
                     <div class="cmd-card">
                         <div class="cmd-header">
                             <span class="cmd-dot red"></span>
@@ -748,6 +763,60 @@
                             <div class="stat-item"><span class="lbl">Avg</span><br><span class="val" style="color:#f59e0b;" id="cmd-avg">--</span></div>
                         </div>
                     </div>
+
+                    <!-- ═══ LOG AKTIVITAS DI DASHBOARD ═══ -->
+                    <div class="panel">
+                        <div class="panel-title">
+                            <i class="fas fa-history" style="color:#10b981;"></i> 
+                            Log Aktivitas Terbaru
+                            <span style="font-size:11px;font-weight:400;color:var(--text-muted);margin-left:auto;">
+                                <i class="fas fa-sync-alt" style="cursor:pointer;" onclick="loadData()" title="Refresh"></i>
+                            </span>
+                        </div>
+                        <div style="overflow-x:auto;max-height:300px;overflow-y:auto;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Waktu</th>
+                                        <th>Nama User</th>
+                                        <th>Email</th>
+                                        <th>Aktivitas</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dashboard-log-body">
+                                    <tr><td colspan="4" class="empty-state">Belum ada aktivitas.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- ═══ DAFTAR USER DI DASHBOARD ═══ -->
+                    <div class="panel">
+                        <div class="panel-title">
+                            <i class="fas fa-users" style="color:#8b5cf6;"></i> 
+                            Daftar User Aktif
+                            <span style="font-size:11px;font-weight:400;color:var(--text-muted);margin-left:auto;">
+                                Total: <span id="dashboard-total-users">0</span> user
+                            </span>
+                        </div>
+                        <div style="overflow-x:auto;max-height:250px;overflow-y:auto;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Nama User</th>
+                                        <th>Email</th>
+                                        <th>Total Akses</th>
+                                        <th>Terakhir Akses</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dashboard-user-body">
+                                    <tr><td colspan="5" class="empty-state">Belum ada user.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                 </div>
                 <iframe id="content-frame" src=""></iframe>
             </div>
@@ -827,14 +896,11 @@
             document.getElementById('user-name').textContent = user.displayName || user.email;
             document.getElementById('user-avatar').src = user.photoURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.displayName||'U') + '&background=2563eb&color=fff';
             
-            // LOAD DATA DAN LOG
             await loadData();
             await loadAllowedEmails();
             renderEmailList();
             
             console.log('✅ User logged in:', user.email);
-            console.log('📊 Stats data:', statsData);
-            console.log('📝 Logs count:', statsData.logs.length);
         } else {
             currentUser = null;
             document.getElementById('login-overlay').style.display = 'flex';
@@ -983,10 +1049,7 @@
                     kendala_bank: data.kendala_bank||0, auto_report_phising: data.auto_report_phising||0,
                     logs: data.logs||[]
                 };
-                console.log('📥 Data loaded from Firebase:', statsData);
-                console.log('📝 Logs from Firebase:', statsData.logs.length);
-            } else {
-                console.log('⚠️ No data in Firebase, using defaults');
+                console.log('📥 Data loaded from Firebase, logs:', statsData.logs.length);
             }
             updateUI();
         } catch(e) { 
@@ -996,8 +1059,6 @@
     }
 
     function updateUI() {
-        console.log('🔄 Updating UI...');
-        
         // Update stat cards
         const keys = ['prediksi','bukti_jp','syair','result','saldo','hasil_result','reportan','selisih_mineray','tugas_line','youtube','safety_lock','kendala_bank','auto_report_phising'];
         keys.forEach(k => {
@@ -1008,24 +1069,24 @@
         const logs = statsData.logs || [];
         const uniqueEmails = [...new Set(logs.filter(l=>l&&l.email).map(l=>l.email))];
         document.getElementById('stat-total-user').textContent = uniqueEmails.length;
-        console.log('👥 Total unique users:', uniqueEmails.length);
 
-        // Update log body di dashboard
-        const logBody = document.getElementById('log-body');
-        if (!logs.length) {
-            logBody.innerHTML = '<tr><td colspan="4" class="empty-state">Belum ada aktivitas.</td></tr>';
-        } else {
-            logBody.innerHTML = [...logs].reverse().slice(0,50).map(log => log && log.app ? `
-                <tr>
-                    <td style="color:var(--text-muted);font-size:12px;">${log.time||'-'}</td>
-                    <td><strong>${log.userName||log.email||'Unknown'}</strong></td>
-                    <td style="color:#2563eb;">${log.email||'-'}</td>
-                    <td><span class="badge" style="background:#dbeafe;color:#1d4ed8;">${log.app}</span></td>
-                </tr>` : '').join('');
-            console.log('📝 Displayed logs:', logs.length);
+        // ─── UPDATE DASHBOARD LOG ───
+        const dashLogBody = document.getElementById('dashboard-log-body');
+        if (dashLogBody) {
+            if (!logs.length) {
+                dashLogBody.innerHTML = '<tr><td colspan="4" class="empty-state">Belum ada aktivitas.</td></tr>';
+            } else {
+                dashLogBody.innerHTML = logs.slice(0,20).map(log => log && log.app ? `
+                    <tr>
+                        <td style="color:var(--text-muted);font-size:12px;">${log.time||'-'}</td>
+                        <td><strong>${log.userName||log.email||'Unknown'}</strong></td>
+                        <td style="color:#2563eb;font-size:12px;">${log.email||'-'}</td>
+                        <td><span class="badge" style="background:#dbeafe;color:#1d4ed8;">${log.app}</span></td>
+                    </tr>` : '').join('');
+            }
         }
 
-        // Update user stats
+        // ─── UPDATE DASHBOARD USER ───
         const userMap = new Map();
         logs.forEach(log => {
             if (!log || !log.email || log.email === 'undefined') return;
@@ -1034,21 +1095,61 @@
             u.total++;
             if (log.time > u.last) u.last = log.time;
         });
-        const userBody = document.getElementById('user-stats-body');
-        if (!userMap.size) {
-            userBody.innerHTML = '<tr><td colspan="5" class="empty-state">Belum ada user.</td></tr>';
-        } else {
-            let no = 1;
-            userBody.innerHTML = [...userMap.values()].map(u => `
-                <tr>
-                    <td style="color:var(--text-muted);">${no++}</td>
-                    <td><strong>${u.name}</strong></td>
-                    <td style="color:#2563eb;">${u.email}</td>
-                    <td><span class="badge" style="background:#dcfce7;color:#16a34a;">${u.total}x</span></td>
-                    <td style="color:var(--text-muted);font-size:12px;">${u.last}</td>
-                </tr>`).join('');
-            console.log('👥 User stats updated:', userMap.size);
+
+        const dashUserBody = document.getElementById('dashboard-user-body');
+        const totalUsersEl = document.getElementById('dashboard-total-users');
+        if (totalUsersEl) totalUsersEl.textContent = userMap.size;
+
+        if (dashUserBody) {
+            if (!userMap.size) {
+                dashUserBody.innerHTML = '<tr><td colspan="5" class="empty-state">Belum ada user.</td></tr>';
+            } else {
+                let no = 1;
+                dashUserBody.innerHTML = [...userMap.values()].map(u => `
+                    <tr>
+                        <td style="color:var(--text-muted);">${no++}</td>
+                        <td><strong>${u.name}</strong></td>
+                        <td style="color:#2563eb;font-size:12px;">${u.email}</td>
+                        <td><span class="badge" style="background:#dcfce7;color:#16a34a;">${u.total}x</span></td>
+                        <td style="color:var(--text-muted);font-size:12px;">${u.last}</td>
+                    </tr>`).join('');
+            }
         }
+
+        // ─── UPDATE MODAL LOG (tetap ada) ───
+        const logBody = document.getElementById('log-body');
+        if (logBody) {
+            if (!logs.length) {
+                logBody.innerHTML = '<tr><td colspan="4" class="empty-state">Belum ada aktivitas.</td></tr>';
+            } else {
+                logBody.innerHTML = [...logs].reverse().slice(0,50).map(log => log && log.app ? `
+                    <tr>
+                        <td style="color:var(--text-muted);font-size:12px;">${log.time||'-'}</td>
+                        <td><strong>${log.userName||log.email||'Unknown'}</strong></td>
+                        <td style="color:#2563eb;">${log.email||'-'}</td>
+                        <td><span class="badge" style="background:#dbeafe;color:#1d4ed8;">${log.app}</span></td>
+                    </tr>` : '').join('');
+            }
+        }
+
+        const userBody = document.getElementById('user-stats-body');
+        if (userBody) {
+            if (!userMap.size) {
+                userBody.innerHTML = '<tr><td colspan="5" class="empty-state">Belum ada user.</td></tr>';
+            } else {
+                let no = 1;
+                userBody.innerHTML = [...userMap.values()].map(u => `
+                    <tr>
+                        <td style="color:var(--text-muted);">${no++}</td>
+                        <td><strong>${u.name}</strong></td>
+                        <td style="color:#2563eb;">${u.email}</td>
+                        <td><span class="badge" style="background:#dcfce7;color:#16a34a;">${u.total}x</span></td>
+                        <td style="color:var(--text-muted);font-size:12px;">${u.last}</td>
+                    </tr>`).join('');
+            }
+        }
+        
+        console.log('✅ UI Updated - Logs:', logs.length, 'Users:', userMap.size);
     }
 
     async function saveStats() {
@@ -1065,7 +1166,7 @@
         }
     }
 
-    // ─── MAIN: LOAD PAGE (FIXED LOG) ───
+    // ─── MAIN: LOAD PAGE ───
     async function loadPage(page, element) {
         const dash = document.getElementById('content-dashboard');
         const frame = document.getElementById('content-frame');
@@ -1083,33 +1184,23 @@
             const menuKey = element ? element.getAttribute('data-menu') : '';
             const title = element ? element.getAttribute('data-title') : page;
 
-            // UPDATE STATS + LOG
             if (menuKey && currentUser) {
-                // Increment counter
                 statsData[menuKey] = (statsData[menuKey]||0) + 1;
                 
-                // Add log
-                const newLog = {
+                statsData.logs.unshift({
                     app: title,
                     time: getWIBTime(),
                     userName: currentUser.displayName || currentUser.email,
                     email: currentUser.email,
                     uid: currentUser.uid
-                };
-                statsData.logs.unshift(newLog);
+                });
                 
-                // Limit logs
                 if (statsData.logs.length > 200) statsData.logs = statsData.logs.slice(0,200);
                 
-                // Save ke Firebase
                 await saveStats();
-                
-                // Update UI
                 updateUI();
                 
-                console.log('✅ Log tersimpan:', title, 'oleh', currentUser.email);
-                console.log('📝 Total logs:', statsData.logs.length);
-                
+                console.log('✅ Log saved:', title, 'by', currentUser.email);
                 showToast(`📝 ${title} - Log tersimpan!`);
             }
 
@@ -1134,12 +1225,8 @@
     function switchLogTab(tab) {
         document.getElementById('log-tab-activity').style.display = tab === 'activity' ? 'block' : 'none';
         document.getElementById('log-tab-users').style.display = tab === 'users' ? 'block' : 'none';
-        document.getElementById('tab-activity').style.cssText = tab === 'activity'
-            ? 'padding:8px 20px;border-radius:100px;border:none;font-size:13px;font-weight:700;cursor:pointer;background:var(--accent);color:#fff;'
-            : 'padding:8px 20px;border-radius:100px;border:1px solid var(--border);font-size:13px;font-weight:700;cursor:pointer;background:var(--input-bg);color:var(--text-muted);';
-        document.getElementById('tab-users').style.cssText = tab === 'users'
-            ? 'padding:8px 20px;border-radius:100px;border:none;font-size:13px;font-weight:700;cursor:pointer;background:#10b981;color:#fff;'
-            : 'padding:8px 20px;border-radius:100px;border:1px solid var(--border);font-size:13px;font-weight:700;cursor:pointer;background:var(--input-bg);color:var(--text-muted);';
+        document.getElementById('tab-activity').className = tab === 'activity' ? 'tab-active' : 'tab-inactive';
+        document.getElementById('tab-users').className = tab === 'users' ? 'tab-active' : 'tab-inactive';
     }
 
     function renderLogModal() {
@@ -1414,8 +1501,7 @@
 
     console.log('🚀 CS LINE PULITOTO - Management System v2.0');
     console.log('📧 Login dengan Google - Hanya email terdaftar');
-    console.log('💾 Log aktivitas tersimpan ke Firebase');
-    console.log('🔍 Buka Console (F12) untuk melihat debug');
+    console.log('📊 Log aktivitas muncul di Dashboard!');
 </script>
 
 </body>
