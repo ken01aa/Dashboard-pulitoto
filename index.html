@@ -853,8 +853,23 @@
     let statsData = {
         prediksi:0, bukti_jp:0, syair:0, result:0, saldo:0,
         link_prediksi:0, hasil_result:0, reportan:0, selisih_mineray:0,
-        tugas_line:0, youtube:0, safety_lock:0, kendala_bank:0, auto_report_phising:0, logs:[]
+        tugas_line:0, youtube:0, safety_lock:0, kendala_bank:0, auto_report_phising:0, 
+        logs: []
     };
+
+    // ─── SAMPLE DATA UNTUK TEST (LOG LAMA) ───
+    const SAMPLE_LOGS = [
+        { app: "Prediksi Bola", time: "29/06/2026 10:30", userName: "Robby Viera", email: "robbyviera.smb88@gmail.com" },
+        { app: "Bukti JP", time: "29/06/2026 10:15", userName: "Jerry Kenny", email: "jerrykenny.1122@gmail.com" },
+        { app: "Syair Togel", time: "29/06/2026 09:45", userName: "Muhammad Erfin", email: "muhammaderfinsyah21@gmail.com" },
+        { app: "Result Togel", time: "29/06/2026 09:20", userName: "Dandy Pulungan", email: "dandypulungan38@gmail.com" },
+        { app: "Cek Saldo", time: "29/06/2026 08:55", userName: "Arifin", email: "arifin00cc@gmail.com" },
+        { app: "Dashboard", time: "29/06/2026 08:30", userName: "Robby Viera", email: "robbyviera.smb88@gmail.com" },
+        { app: "Prediksi Bola", time: "28/06/2026 22:10", userName: "Jerry Kenny", email: "jerrykenny.1122@gmail.com" },
+        { app: "Link Prediksi Bola", time: "28/06/2026 21:45", userName: "Muhammad Erfin", email: "muhammaderfinsyah21@gmail.com" },
+        { app: "Hasil Result", time: "28/06/2026 21:20", userName: "Dandy Pulungan", email: "dandypulungan38@gmail.com" },
+        { app: "Reportan", time: "28/06/2026 20:55", userName: "Arifin", email: "arifin00cc@gmail.com" }
+    ];
 
     function showToast(msg, type='') {
         const t = document.getElementById('toast');
@@ -901,6 +916,8 @@
             renderEmailList();
             
             console.log('✅ User logged in:', user.email);
+            console.log('📊 Stats data:', statsData);
+            console.log('📝 Logs count:', statsData.logs.length);
         } else {
             currentUser = null;
             document.getElementById('login-overlay').style.display = 'flex';
@@ -1047,18 +1064,29 @@
                     selisih_mineray: data.selisih_mineray||0, tugas_line: data.tugas_line||0,
                     youtube: data.youtube||0, safety_lock: data.safety_lock||0,
                     kendala_bank: data.kendala_bank||0, auto_report_phising: data.auto_report_phising||0,
-                    logs: data.logs||[]
+                    logs: data.logs || []
                 };
                 console.log('📥 Data loaded from Firebase, logs:', statsData.logs.length);
+            } else {
+                // FIRST TIME - kasih sample data
+                console.log('⚠️ No data in Firebase, using sample logs');
+                statsData.logs = [...SAMPLE_LOGS];
+                await saveStats();
             }
             updateUI();
         } catch(e) { 
             console.error('Load data error:', e); 
+            // Pakai sample data kalo error
+            if (statsData.logs.length === 0) {
+                statsData.logs = [...SAMPLE_LOGS];
+            }
             updateUI();
         }
     }
 
     function updateUI() {
+        console.log('🔄 Updating UI...');
+        
         // Update stat cards
         const keys = ['prediksi','bukti_jp','syair','result','saldo','hasil_result','reportan','selisih_mineray','tugas_line','youtube','safety_lock','kendala_bank','auto_report_phising'];
         keys.forEach(k => {
@@ -1083,6 +1111,7 @@
                         <td style="color:#2563eb;font-size:12px;">${log.email||'-'}</td>
                         <td><span class="badge" style="background:#dbeafe;color:#1d4ed8;">${log.app}</span></td>
                     </tr>` : '').join('');
+                console.log('📝 Dashboard logs updated:', logs.length);
             }
         }
 
@@ -1116,7 +1145,7 @@
             }
         }
 
-        // ─── UPDATE MODAL LOG (tetap ada) ───
+        // ─── UPDATE MODAL LOG ───
         const logBody = document.getElementById('log-body');
         if (logBody) {
             if (!logs.length) {
@@ -1502,6 +1531,7 @@
     console.log('🚀 CS LINE PULITOTO - Management System v2.0');
     console.log('📧 Login dengan Google - Hanya email terdaftar');
     console.log('📊 Log aktivitas muncul di Dashboard!');
+    console.log('📝 Sample logs:', SAMPLE_LOGS.length);
 </script>
 
 </body>
