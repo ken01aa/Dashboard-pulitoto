@@ -353,7 +353,7 @@
             border-radius: 18px;
             border: 1px solid rgba(56, 189, 248, 0.08);
             overflow: hidden;
-            margin-bottom: 24px;
+            margin-bottom: 0px;
         }
         .cmd-header {
             background: rgba(17, 19, 24, 0.80);
@@ -764,58 +764,8 @@
                         </div>
                     </div>
 
-                    <!-- ═══ LOG AKTIVITAS DI DASHBOARD (DI BAWAH CMD) ═══ -->
-                    <div class="panel">
-                        <div class="panel-title">
-                            <i class="fas fa-history" style="color:#10b981;"></i> 
-                            📋 Log Aktivitas Terbaru
-                            <span style="font-size:11px;font-weight:400;color:var(--text-muted);margin-left:auto;">
-                                <i class="fas fa-sync-alt" style="cursor:pointer;" onclick="loadData()" title="Refresh"></i>
-                            </span>
-                        </div>
-                        <div style="overflow-x:auto;max-height:300px;overflow-y:auto;">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Waktu</th>
-                                        <th>Nama User</th>
-                                        <th>Email</th>
-                                        <th>Aktivitas</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="dashboard-log-body">
-                                    <tr><td colspan="4" class="empty-state">Belum ada aktivitas.</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- ═══ DAFTAR USER DI DASHBOARD (DI BAWAH LOG) ═══ -->
-                    <div class="panel">
-                        <div class="panel-title">
-                            <i class="fas fa-users" style="color:#8b5cf6;"></i> 
-                            👥 Daftar User Aktif
-                            <span style="font-size:11px;font-weight:400;color:var(--text-muted);margin-left:auto;">
-                                Total: <span id="dashboard-total-users">0</span> user
-                            </span>
-                        </div>
-                        <div style="overflow-x:auto;max-height:250px;overflow-y:auto;">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Nama User</th>
-                                        <th>Email</th>
-                                        <th>Total Akses</th>
-                                        <th>Terakhir Akses</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="dashboard-user-body">
-                                    <tr><td colspan="5" class="empty-state">Belum ada user.</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                    <!-- ═══ TIDAK ADA LOG & DAFTAR USER DI SINI ═══ -->
+                    <!-- SEMUA SUDAH DIHAPUS -->
 
                 </div>
                 <iframe id="content-frame" src=""></iframe>
@@ -1080,53 +1030,6 @@
         const uniqueEmails = [...new Set(logs.filter(l=>l&&l.email).map(l=>l.email))];
         document.getElementById('stat-total-user').textContent = uniqueEmails.length;
 
-        // ─── UPDATE DASHBOARD LOG ───
-        const dashLogBody = document.getElementById('dashboard-log-body');
-        if (dashLogBody) {
-            if (!logs.length) {
-                dashLogBody.innerHTML = '<tr><td colspan="4" class="empty-state">Belum ada aktivitas.</td></tr>';
-            } else {
-                dashLogBody.innerHTML = logs.slice(0,20).map(log => log && log.app ? `
-                    <tr>
-                        <td style="color:var(--text-muted);font-size:12px;">${log.time||'-'}</td>
-                        <td><strong>${log.userName||log.email||'Unknown'}</strong></td>
-                        <td style="color:#2563eb;font-size:12px;">${log.email||'-'}</td>
-                        <td><span class="badge" style="background:#dbeafe;color:#1d4ed8;">${log.app}</span></td>
-                    </tr>` : '').join('');
-                console.log('📝 Dashboard logs updated:', logs.length);
-            }
-        }
-
-        // ─── UPDATE DASHBOARD USER ───
-        const userMap = new Map();
-        logs.forEach(log => {
-            if (!log || !log.email || log.email === 'undefined') return;
-            if (!userMap.has(log.email)) userMap.set(log.email, { name: log.userName||log.email, email: log.email, total: 0, last: log.time });
-            const u = userMap.get(log.email);
-            u.total++;
-            if (log.time > u.last) u.last = log.time;
-        });
-
-        const dashUserBody = document.getElementById('dashboard-user-body');
-        const totalUsersEl = document.getElementById('dashboard-total-users');
-        if (totalUsersEl) totalUsersEl.textContent = userMap.size;
-
-        if (dashUserBody) {
-            if (!userMap.size) {
-                dashUserBody.innerHTML = '<tr><td colspan="5" class="empty-state">Belum ada user.</td></tr>';
-            } else {
-                let no = 1;
-                dashUserBody.innerHTML = [...userMap.values()].map(u => `
-                    <tr>
-                        <td style="color:var(--text-muted);">${no++}</td>
-                        <td><strong>${u.name}</strong></td>
-                        <td style="color:#2563eb;font-size:12px;">${u.email}</td>
-                        <td><span class="badge" style="background:#dcfce7;color:#16a34a;">${u.total}x</span></td>
-                        <td style="color:var(--text-muted);font-size:12px;">${u.last}</td>
-                    </tr>`).join('');
-            }
-        }
-
         // ─── UPDATE MODAL LOG ───
         const logBody = document.getElementById('log-body');
         if (logBody) {
@@ -1145,6 +1048,14 @@
 
         const userBody = document.getElementById('user-stats-body');
         if (userBody) {
+            const userMap = new Map();
+            logs.forEach(log => {
+                if (!log || !log.email || log.email === 'undefined') return;
+                if (!userMap.has(log.email)) userMap.set(log.email, { name: log.userName||log.email, email: log.email, total: 0, last: log.time });
+                const u = userMap.get(log.email);
+                u.total++;
+                if (log.time > u.last) u.last = log.time;
+            });
             if (!userMap.size) {
                 userBody.innerHTML = '<tr><td colspan="5" class="empty-state">Belum ada user.</td></tr>';
             } else {
@@ -1160,7 +1071,7 @@
             }
         }
         
-        console.log('✅ UI Updated - Logs:', logs.length, 'Users:', userMap.size);
+        console.log('✅ UI Updated - Logs:', logs.length);
     }
 
     async function saveStats() {
@@ -1512,8 +1423,7 @@
 
     console.log('🚀 CS LINE PULITOTO - Management System v2.0');
     console.log('📧 Login dengan Google - Hanya email terdaftar');
-    console.log('📊 Log aktivitas muncul di Dashboard!');
-    console.log('✅ Hanya user yang login yang tercatat di log');
+    console.log('✅ Log & Daftar User hanya ada di menu Log Aktivitas');
 </script>
 
 </body>
