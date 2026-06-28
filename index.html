@@ -157,19 +157,19 @@
         .section-title { font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
         .section-title i { color: var(--accent); font-size: 18px; }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 28px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; margin-bottom: 24px; }
         .stat-card {
             background: var(--card);
             border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 20px;
-            display: flex; align-items: center; gap: 14px;
+            border-radius: 14px;
+            padding: 16px 18px;
+            display: flex; align-items: center; gap: 12px;
             transition: transform 0.2s, box-shadow 0.2s;
         }
         .stat-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0,0,0,0.08); }
-        .stat-icon { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-        .stat-info p { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-        .stat-info h3 { font-size: 28px; font-weight: 800; color: var(--text); line-height: 1.1; margin-top: 2px; }
+        .stat-icon { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+        .stat-info p { font-size: 10px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-info h3 { font-size: 24px; font-weight: 800; color: var(--text); line-height: 1.1; margin-top: 2px; }
         .stat-card.hero { background: linear-gradient(135deg, #1d4ed8, #7c3aed); border: none; }
         .stat-card.hero .stat-icon { background: rgba(255,255,255,0.2); color: #fff; }
         .stat-card.hero .stat-info p, .stat-card.hero .stat-info h3 { color: #fff; }
@@ -273,14 +273,14 @@
         .clock-card {
             background: linear-gradient(145deg, rgba(13, 27, 42, 0.85), rgba(26, 16, 64, 0.85));
             border-radius: 20px;
-            padding: 30px 28px 32px;
+            padding: 28px 28px 32px;
             border: 1px solid rgba(99, 102, 241, 0.2);
             display: flex;
             flex-direction: column;
             justify-content: center;
             position: relative;
             overflow: hidden;
-            min-height: 240px;
+            min-height: 210px;
         }
         .clock-card::before {
             content: '';
@@ -305,7 +305,7 @@
             pointer-events: none;
         }
         .clock-day {
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 700;
             color: #818cf8;
             letter-spacing: 3px;
@@ -318,7 +318,7 @@
             font-size: 15px;
             font-weight: 500;
             color: rgba(255, 255, 255, 0.45);
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             position: relative;
             z-index: 1;
             letter-spacing: 0.5px;
@@ -326,12 +326,12 @@
         .clock-time-wrap {
             display: flex;
             align-items: baseline;
-            gap: 2px;
+            gap: 6px;
             position: relative;
             z-index: 1;
         }
         .clock-hm {
-            font-size: 68px;
+            font-size: 64px;
             font-weight: 900;
             color: #fff;
             line-height: 1;
@@ -347,45 +347,30 @@
             transition: opacity 0.15s;
         }
         .clock-ss {
-            font-size: 26px;
-            font-weight: 700;
+            font-size: 36px;
+            font-weight: 800;
             color: #818cf8;
-            margin-top: 10px;
             font-variant-numeric: tabular-nums;
-            min-width: 40px;
-        }
-        .clock-timezone {
-            margin-top: 14px;
-            background: rgba(99, 102, 241, 0.12);
-            border: 1px solid rgba(99, 102, 241, 0.25);
-            padding: 5px 18px;
-            border-radius: 100px;
-            display: inline-block;
-            align-self: flex-start;
-            position: relative;
-            z-index: 1;
-        }
-        .clock-timezone span {
-            font-size: 11px;
-            color: #a5b4fc;
-            font-weight: 600;
-            letter-spacing: 1.5px;
+            min-width: 50px;
+            text-shadow: 0 0 30px rgba(99, 102, 241, 0.20);
         }
 
         /* ─── SPEED CARD ─── */
         .speed-card {
             background: linear-gradient(145deg, rgba(10, 15, 26, 0.85), rgba(15, 26, 46, 0.85));
             border-radius: 20px;
-            padding: 24px 22px 20px;
+            padding: 20px 22px 18px;
             border: 1px solid rgba(56, 189, 248, 0.15);
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
         .speed-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
         }
         .speed-header .label {
             font-size: 10px;
@@ -394,10 +379,24 @@
             letter-spacing: 2.5px;
             text-transform: uppercase;
         }
+        .speed-header .ip-display {
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.50);
+            font-family: 'Inter', monospace;
+            background: rgba(255,255,255,0.05);
+            padding: 2px 12px;
+            border-radius: 100px;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .speed-header .ip-display i {
+            color: #38bdf8;
+            margin-right: 4px;
+        }
         .speed-header .status-group {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 14px;
         }
         .speed-header .status-item {
             text-align: center;
@@ -439,24 +438,24 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin: -6px 0 -10px 0;
+            margin: -8px 0 -12px 0;
             position: relative;
         }
         .gauge-wrap svg {
             width: 100%;
-            max-width: 260px;
+            max-width: 240px;
             height: auto;
             overflow: visible;
         }
         .gauge-value {
-            font-size: 26px;
+            font-size: 24px;
             font-weight: 900;
             fill: #fff;
             text-anchor: middle;
             font-family: 'Inter', sans-serif;
         }
         .gauge-unit {
-            font-size: 10px;
+            font-size: 9px;
             fill: rgba(255, 255, 255, 0.30);
             text-anchor: middle;
             font-family: 'Inter', sans-serif;
@@ -471,14 +470,14 @@
         .speed-dual {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-top: 2px;
+            gap: 10px;
+            margin-top: 0px;
         }
         .speed-box {
             background: rgba(14, 165, 233, 0.05);
             border: 1px solid rgba(14, 165, 233, 0.12);
-            border-radius: 14px;
-            padding: 12px 14px 8px;
+            border-radius: 12px;
+            padding: 10px 12px 6px;
             transition: border-color 0.3s;
         }
         .speed-box.upload {
@@ -489,22 +488,22 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            margin-bottom: 2px;
+            margin-bottom: 1px;
         }
         .speed-box .top svg {
-            width: 14px;
-            height: 14px;
+            width: 13px;
+            height: 13px;
             flex-shrink: 0;
         }
         .speed-box .top .lbl {
-            font-size: 9px;
+            font-size: 8px;
             font-weight: 700;
             color: rgba(255, 255, 255, 0.30);
             letter-spacing: 1.8px;
             text-transform: uppercase;
         }
         .speed-box .number {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 900;
             font-variant-numeric: tabular-nums;
             line-height: 1.1;
@@ -512,14 +511,14 @@
         .speed-box .number.dl { color: #38bdf8; }
         .speed-box .number.ul { color: #a78bfa; }
         .speed-box .number .u {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
             color: rgba(255, 255, 255, 0.25);
             margin-left: 2px;
         }
         .speed-box .wave-wrap {
-            margin-top: 6px;
-            height: 28px;
+            margin-top: 4px;
+            height: 24px;
             width: 100%;
         }
         .speed-box .wave-wrap canvas {
@@ -534,7 +533,7 @@
             border-radius: 18px;
             border: 1px solid rgba(56, 189, 248, 0.08);
             overflow: hidden;
-            margin-bottom: 24px;
+            margin-bottom: 0px;
         }
         .cmd-header {
             background: rgba(17, 19, 24, 0.80);
@@ -635,26 +634,30 @@
 
         @media (max-width: 600px) {
             #content-dashboard { padding: 16px; }
-            .clock-card { padding: 20px 16px 24px; min-height: auto; }
-            .clock-hm { font-size: 44px; letter-spacing: -1px; }
-            .clock-ss { font-size: 18px; margin-top: 4px; min-width: 28px; }
+            .clock-card { padding: 18px 14px 20px; min-height: auto; }
+            .clock-hm { font-size: 42px; letter-spacing: -1px; }
+            .clock-ss { font-size: 24px; min-width: 32px; }
             .clock-date { font-size: 13px; }
-            .speed-card { padding: 16px 12px 14px; }
-            .speed-dual { grid-template-columns: 1fr; gap: 8px; }
-            .speed-box .number { font-size: 20px; }
-            .gauge-wrap svg { max-width: 200px; }
-            .gauge-value { font-size: 20px; }
+            .speed-card { padding: 14px 12px 12px; }
+            .speed-dual { grid-template-columns: 1fr; gap: 6px; }
+            .speed-box .number { font-size: 18px; }
+            .gauge-wrap svg { max-width: 180px; }
+            .gauge-value { font-size: 18px; }
             .cmd-stats { gap: 10px 20px; }
             .cmd-stats .stat-item .val { font-size: 12px; }
             .cmd-table-wrap table { font-size: 10px; }
             .cmd-table-wrap th,
             .cmd-table-wrap td { padding: 3px 6px 3px 0; }
-            .stats-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+            .stats-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+            .stat-card { padding: 12px 14px; }
+            .stat-info h3 { font-size: 20px; }
+            .stat-icon { width: 36px; height: 36px; font-size: 14px; }
+            .speed-header .ip-display { font-size: 10px; padding: 0 10px; }
         }
 
         @media (max-width: 400px) {
-            .clock-hm { font-size: 34px; }
-            .clock-ss { font-size: 14px; }
+            .clock-hm { font-size: 32px; }
+            .clock-ss { font-size: 18px; min-width: 26px; }
             .speed-header .status-item .val { font-size: 13px; }
         }
     </style>
@@ -852,129 +855,7 @@
                 <!-- DASHBOARD -->
                 <div id="content-dashboard">
 
-                    <!-- ═══ PREMIUM ROW: CLOCK + SPEED TEST ═══ -->
-                    <div class="premium-row">
-                        <!-- CLOCK -->
-                        <div class="clock-card">
-                            <div class="clock-day" id="clock-day">Senin</div>
-                            <div class="clock-date" id="clock-date">1 Januari 2025</div>
-                            <div class="clock-time-wrap">
-                                <span class="clock-hm" id="clock-hm">00<span class="colon">:</span>00</span>
-                                <span class="clock-ss" id="clock-ss">:00</span>
-                            </div>
-                            <div class="clock-timezone">
-                                <span>🕒 WIB · UTC+7</span>
-                            </div>
-                        </div>
-
-                        <!-- SPEED TEST -->
-                        <div class="speed-card">
-                            <div class="speed-header">
-                                <span class="label"><i class="fas fa-satellite-dish" style="margin-right:6px;color:#38bdf8;"></i>Internet Monitor</span>
-                                <div class="status-group">
-                                    <div class="status-item">
-                                        <div class="sub">Ping</div>
-                                        <div class="val ping" id="sp-ping">--<span class="unit">ms</span></div>
-                                    </div>
-                                    <div class="status-item">
-                                        <div class="sub">Jitter</div>
-                                        <div class="val jitter" id="sp-jitter">--<span class="unit">ms</span></div>
-                                    </div>
-                                    <div class="status-dot" id="status-dot"></div>
-                                </div>
-                            </div>
-
-                            <!-- Gauge -->
-                            <div class="gauge-wrap">
-                                <svg viewBox="0 0 220 130">
-                                    <defs>
-                                        <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                                            <stop offset="0%" stop-color="#1d4ed8" />
-                                            <stop offset="40%" stop-color="#0ea5e9" />
-                                            <stop offset="100%" stop-color="#06b6d4" />
-                                        </linearGradient>
-                                        <linearGradient id="gaugeGlow" x1="0%" y1="0%" x2="100%" y2="0%">
-                                            <stop offset="0%" stop-color="#1d4ed8" stop-opacity="0.4" />
-                                            <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.4" />
-                                        </linearGradient>
-                                    </defs>
-                                    <path d="M 20 110 A 90 90 0 0 1 200 110" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="14" stroke-linecap="round" />
-                                    <path d="M 20 110 A 90 90 0 0 1 200 110" fill="none" stroke="url(#gaugeGlow)" stroke-width="18" stroke-linecap="round" opacity="0.3" />
-                                    <path id="gauge-arc" d="M 20 110 A 90 90 0 0 1 200 110" fill="none" stroke="url(#gaugeGrad)" stroke-width="14" stroke-linecap="round" stroke-dasharray="0 283" />
-                                    <text x="14" y="128" class="gauge-label">0</text>
-                                    <text x="55" y="60" class="gauge-label">125</text>
-                                    <text x="110" y="30" class="gauge-label">250</text>
-                                    <text x="165" y="60" class="gauge-label">375</text>
-                                    <text x="207" y="128" class="gauge-label">500</text>
-                                    <g id="gauge-needle" transform="rotate(-90, 110, 110)">
-                                        <line x1="110" y1="110" x2="110" y2="28" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" />
-                                        <circle cx="110" cy="110" r="6" fill="#38bdf8" opacity="0.9" />
-                                        <circle cx="110" cy="110" r="3" fill="#fff" />
-                                    </g>
-                                    <text x="110" y="100" class="gauge-value" id="gauge-val">--</text>
-                                    <text x="110" y="116" class="gauge-unit">Mbps</text>
-                                </svg>
-                            </div>
-
-                            <!-- DL / UL -->
-                            <div class="speed-dual">
-                                <div class="speed-box">
-                                    <div class="top">
-                                        <svg viewBox="0 0 12 12"><path d="M6 2v8M3 7l3 3 3-3" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none" /></svg>
-                                        <span class="lbl">Download</span>
-                                    </div>
-                                    <div class="number dl" id="sp-dl">--<span class="u">Mbps</span></div>
-                                    <div class="wave-wrap"><canvas id="wave-dl" height="28"></canvas></div>
-                                </div>
-                                <div class="speed-box upload">
-                                    <div class="top">
-                                        <svg viewBox="0 0 12 12"><path d="M6 10V2M3 5L6 2l3 3" stroke="#a78bfa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none" /></svg>
-                                        <span class="lbl">Upload</span>
-                                    </div>
-                                    <div class="number ul" id="sp-ul">--<span class="u">Mbps</span></div>
-                                    <div class="wave-wrap"><canvas id="wave-ul" height="28"></canvas></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ═══ CMD PING MONITOR ═══ -->
-                    <div class="cmd-card">
-                        <div class="cmd-header">
-                            <span class="cmd-dot red"></span>
-                            <span class="cmd-dot yellow"></span>
-                            <span class="cmd-dot green"></span>
-                            <span class="title">Command Prompt</span>
-                            <span class="cmd-blink" id="cmd-blink"></span>
-                        </div>
-                        <div class="cmd-prompt">C:\Users\PULITOTO&gt; <span class="hl">ping 8.8.8.8 -t</span></div>
-                        <div class="cmd-sub">Pinging 8.8.8.8 with 32 bytes of data:</div>
-                        <div class="cmd-table-wrap">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Reply from</th>
-                                        <th>Bytes</th>
-                                        <th>Time (ms)</th>
-                                        <th>TTL</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="cmd-ping-body"></tbody>
-                            </table>
-                        </div>
-                        <div class="cmd-stats">
-                            <div class="stat-item"><span class="lbl">Sent</span><br><span class="val" style="color:#38bdf8;" id="cmd-sent">0</span></div>
-                            <div class="stat-item"><span class="lbl">Received</span><br><span class="val" style="color:#22c55e;" id="cmd-recv">0</span></div>
-                            <div class="stat-item"><span class="lbl">Lost</span><br><span class="val" style="color:#ef4444;" id="cmd-lost">0</span></div>
-                            <div class="stat-item"><span class="lbl">Min</span><br><span class="val" style="color:#a78bfa;" id="cmd-min">--</span></div>
-                            <div class="stat-item"><span class="lbl">Max</span><br><span class="val" style="color:#a78bfa;" id="cmd-max">--</span></div>
-                            <div class="stat-item"><span class="lbl">Avg</span><br><span class="val" style="color:#f59e0b;" id="cmd-avg">--</span></div>
-                        </div>
-                    </div>
-
-                    <!-- ═══ STATISTICS ═══ -->
+                    <!-- ═══ REKAP TOTAL PENGGUNAAN APLIKASI (DI ATAS) ═══ -->
                     <div class="section-title"><i class="fas fa-chart-pie"></i> Rekap Total Penggunaan Aplikasi</div>
                     <div class="stats-grid">
                         <div class="stat-card hero">
@@ -1034,6 +915,127 @@
                             <div class="stat-info"><p>Auto Report Phising</p><h3 id="stat-auto_report_phising">0</h3></div>
                         </div>
                     </div>
+
+                    <!-- ═══ PREMIUM ROW: CLOCK + SPEED TEST ═══ -->
+                    <div class="premium-row">
+                        <!-- CLOCK (tanpa 🕒 WIB · UTC+7, detik BESAR) -->
+                        <div class="clock-card">
+                            <div class="clock-day" id="clock-day">Senin</div>
+                            <div class="clock-date" id="clock-date">1 Januari 2025</div>
+                            <div class="clock-time-wrap">
+                                <span class="clock-hm" id="clock-hm">00<span class="colon">:</span>00</span>
+                                <span class="clock-ss" id="clock-ss">:00</span>
+                            </div>
+                        </div>
+
+                        <!-- SPEED TEST (dengan IP) -->
+                        <div class="speed-card">
+                            <div class="speed-header">
+                                <span class="label"><i class="fas fa-satellite-dish" style="margin-right:6px;color:#38bdf8;"></i>Internet Monitor</span>
+                                <span class="ip-display" id="ip-display"><i class="fas fa-network-wired"></i> <span id="ip-address">--</span></span>
+                                <div class="status-group">
+                                    <div class="status-item">
+                                        <div class="sub">Ping</div>
+                                        <div class="val ping" id="sp-ping">--<span class="unit">ms</span></div>
+                                    </div>
+                                    <div class="status-item">
+                                        <div class="sub">Jitter</div>
+                                        <div class="val jitter" id="sp-jitter">--<span class="unit">ms</span></div>
+                                    </div>
+                                    <div class="status-dot" id="status-dot"></div>
+                                </div>
+                            </div>
+
+                            <!-- Gauge -->
+                            <div class="gauge-wrap">
+                                <svg viewBox="0 0 220 130">
+                                    <defs>
+                                        <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="0%" stop-color="#1d4ed8" />
+                                            <stop offset="40%" stop-color="#0ea5e9" />
+                                            <stop offset="100%" stop-color="#06b6d4" />
+                                        </linearGradient>
+                                        <linearGradient id="gaugeGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="0%" stop-color="#1d4ed8" stop-opacity="0.4" />
+                                            <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.4" />
+                                        </linearGradient>
+                                    </defs>
+                                    <path d="M 20 110 A 90 90 0 0 1 200 110" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="14" stroke-linecap="round" />
+                                    <path d="M 20 110 A 90 90 0 0 1 200 110" fill="none" stroke="url(#gaugeGlow)" stroke-width="18" stroke-linecap="round" opacity="0.3" />
+                                    <path id="gauge-arc" d="M 20 110 A 90 90 0 0 1 200 110" fill="none" stroke="url(#gaugeGrad)" stroke-width="14" stroke-linecap="round" stroke-dasharray="0 283" />
+                                    <text x="14" y="128" class="gauge-label">0</text>
+                                    <text x="55" y="60" class="gauge-label">125</text>
+                                    <text x="110" y="30" class="gauge-label">250</text>
+                                    <text x="165" y="60" class="gauge-label">375</text>
+                                    <text x="207" y="128" class="gauge-label">500</text>
+                                    <g id="gauge-needle" transform="rotate(-90, 110, 110)">
+                                        <line x1="110" y1="110" x2="110" y2="28" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" />
+                                        <circle cx="110" cy="110" r="6" fill="#38bdf8" opacity="0.9" />
+                                        <circle cx="110" cy="110" r="3" fill="#fff" />
+                                    </g>
+                                    <text x="110" y="100" class="gauge-value" id="gauge-val">--</text>
+                                    <text x="110" y="116" class="gauge-unit">Mbps</text>
+                                </svg>
+                            </div>
+
+                            <!-- DL / UL -->
+                            <div class="speed-dual">
+                                <div class="speed-box">
+                                    <div class="top">
+                                        <svg viewBox="0 0 12 12"><path d="M6 2v8M3 7l3 3 3-3" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none" /></svg>
+                                        <span class="lbl">Download</span>
+                                    </div>
+                                    <div class="number dl" id="sp-dl">--<span class="u">Mbps</span></div>
+                                    <div class="wave-wrap"><canvas id="wave-dl" height="24"></canvas></div>
+                                </div>
+                                <div class="speed-box upload">
+                                    <div class="top">
+                                        <svg viewBox="0 0 12 12"><path d="M6 10V2M3 5L6 2l3 3" stroke="#a78bfa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none" /></svg>
+                                        <span class="lbl">Upload</span>
+                                    </div>
+                                    <div class="number ul" id="sp-ul">--<span class="u">Mbps</span></div>
+                                    <div class="wave-wrap"><canvas id="wave-ul" height="24"></canvas></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ═══ CMD PING MONITOR ═══ -->
+                    <div class="cmd-card">
+                        <div class="cmd-header">
+                            <span class="cmd-dot red"></span>
+                            <span class="cmd-dot yellow"></span>
+                            <span class="cmd-dot green"></span>
+                            <span class="title">Command Prompt</span>
+                            <span class="cmd-blink" id="cmd-blink"></span>
+                        </div>
+                        <div class="cmd-prompt">C:\Users\PULITOTO&gt; <span class="hl">ping 8.8.8.8 -t</span></div>
+                        <div class="cmd-sub">Pinging 8.8.8.8 with 32 bytes of data:</div>
+                        <div class="cmd-table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Reply from</th>
+                                        <th>Bytes</th>
+                                        <th>Time (ms)</th>
+                                        <th>TTL</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cmd-ping-body"></tbody>
+                            </table>
+                        </div>
+                        <div class="cmd-stats">
+                            <div class="stat-item"><span class="lbl">Sent</span><br><span class="val" style="color:#38bdf8;" id="cmd-sent">0</span></div>
+                            <div class="stat-item"><span class="lbl">Received</span><br><span class="val" style="color:#22c55e;" id="cmd-recv">0</span></div>
+                            <div class="stat-item"><span class="lbl">Lost</span><br><span class="val" style="color:#ef4444;" id="cmd-lost">0</span></div>
+                            <div class="stat-item"><span class="lbl">Min</span><br><span class="val" style="color:#a78bfa;" id="cmd-min">--</span></div>
+                            <div class="stat-item"><span class="lbl">Max</span><br><span class="val" style="color:#a78bfa;" id="cmd-max">--</span></div>
+                            <div class="stat-item"><span class="lbl">Avg</span><br><span class="val" style="color:#f59e0b;" id="cmd-avg">--</span></div>
+                        </div>
+                    </div>
+
                 </div>
 
                 <!-- IFRAME -->
@@ -1074,6 +1076,7 @@
         link_prediksi:0, hasil_result:0, reportan:0, selisih_mineray:0,
         tugas_line:0, youtube:0, safety_lock:0, kendala_bank:0, auto_report_phising:0, logs:[]
     };
+    let publicIP = '--';
 
     function showToast(msg, type='') {
         const t = document.getElementById('toast');
@@ -1086,6 +1089,20 @@
         const now = new Date();
         return now.toLocaleDateString('id-ID') + ' ' + now.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' });
     }
+
+    // ─── GET PUBLIC IP ───
+    async function getPublicIP() {
+        try {
+            const res = await fetch('https://api.ipify.org?format=json');
+            const data = await res.json();
+            publicIP = data.ip;
+            document.getElementById('ip-address').textContent = publicIP;
+        } catch(e) {
+            document.getElementById('ip-address').textContent = '--';
+        }
+    }
+    getPublicIP();
+    setInterval(getPublicIP, 60000); // refresh IP setiap 1 menit
 
     // ─── AUTH ───
     auth.onAuthStateChanged(async (user) => {
@@ -1399,16 +1416,18 @@
     updateClock();
     setInterval(updateClock, 1000);
 
-    // ═══ SPEED TEST ═══
+    // ═══ SPEED TEST ═══ (OPTIMASI LANCAR)
     const dlHistory = Array(30).fill(0);
     const ulHistory = Array(30).fill(0);
+    let speedRunning = false;
 
     function drawWave(canvasId, data, color) {
         const c = document.getElementById(canvasId);
         if (!c) return;
         const ctx = c.getContext('2d');
-        const W = c.parentElement.clientWidth || c.offsetWidth || 200;
-        const H = 28;
+        const parent = c.parentElement;
+        const W = parent ? parent.clientWidth || 200 : 200;
+        const H = 24;
         c.width = W;
         c.height = H;
         ctx.clearRect(0, 0, W, H);
@@ -1469,65 +1488,70 @@
     }
 
     async function runSpeedCheck() {
-        const start = Date.now();
-        let ok = false, ping = null;
+        if (speedRunning) return;
+        speedRunning = true;
         try {
-            await fetch('https://www.gstatic.com/generate_204', { mode: 'no-cors', cache: 'no-store' });
-            ping = Date.now() - start;
-            ok = true;
-        } catch (_) { ok = false; }
+            const start = Date.now();
+            let ok = false, ping = null;
+            try {
+                await fetch('https://www.gstatic.com/generate_204', { mode: 'no-cors', cache: 'no-store' });
+                ping = Date.now() - start;
+                ok = true;
+            } catch (_) { ok = false; }
 
-        cmdSent++;
-        const seqNum = ++cmdSeq;
+            cmdSent++;
+            const seqNum = ++cmdSeq;
 
-        if (ok && ping !== null) {
-            cmdRecv++;
-            pingValues.push(ping);
-            if (pingValues.length > 50) pingValues.shift();
+            if (ok && ping !== null) {
+                cmdRecv++;
+                pingValues.push(ping);
+                if (pingValues.length > 50) pingValues.shift();
 
-            const jitter = pingValues.length > 1 ? Math.round(Math.abs(ping - (lastPing || ping))) : 0;
-            lastPing = ping;
+                const jitter = pingValues.length > 1 ? Math.round(Math.abs(ping - (lastPing || ping))) : 0;
+                lastPing = ping;
 
-            document.getElementById('sp-ping').innerHTML = ping + '<span class="unit">ms</span>';
-            document.getElementById('sp-jitter').innerHTML = jitter + '<span class="unit">ms</span>';
-            document.getElementById('status-dot').className = 'status-dot';
+                document.getElementById('sp-ping').innerHTML = ping + '<span class="unit">ms</span>';
+                document.getElementById('sp-jitter').innerHTML = jitter + '<span class="unit">ms</span>';
+                document.getElementById('status-dot').className = 'status-dot';
 
-            const baseDL = Math.max(5, 120 - ping * 0.7 + (Math.random() - 0.5) * 15);
-            const baseUL = Math.max(2, baseDL * 0.65 + (Math.random() - 0.5) * 10);
-            const dl = parseFloat(baseDL.toFixed(2));
-            const ul = parseFloat(baseUL.toFixed(2));
+                const baseDL = Math.max(5, 120 - ping * 0.7 + (Math.random() - 0.5) * 15);
+                const baseUL = Math.max(2, baseDL * 0.65 + (Math.random() - 0.5) * 10);
+                const dl = parseFloat(baseDL.toFixed(2));
+                const ul = parseFloat(baseUL.toFixed(2));
 
-            document.getElementById('sp-dl').innerHTML = dl.toFixed(2) + '<span class="u">Mbps</span>';
-            document.getElementById('sp-ul').innerHTML = ul.toFixed(2) + '<span class="u">Mbps</span>';
+                document.getElementById('sp-dl').innerHTML = dl.toFixed(2) + '<span class="u">Mbps</span>';
+                document.getElementById('sp-ul').innerHTML = ul.toFixed(2) + '<span class="u">Mbps</span>';
 
-            dlHistory.push(dl);
-            dlHistory.shift();
-            ulHistory.push(ul);
-            ulHistory.shift();
+                dlHistory.push(dl);
+                dlHistory.shift();
+                ulHistory.push(ul);
+                ulHistory.shift();
 
-            drawWave('wave-dl', dlHistory, '#38bdf8');
-            drawWave('wave-ul', ulHistory, '#a78bfa');
-            setGauge(dl);
+                drawWave('wave-dl', dlHistory, '#38bdf8');
+                drawWave('wave-ul', ulHistory, '#a78bfa');
+                setGauge(dl);
 
-            const color = ping < 50 ? '#22c55e' : ping < 150 ? '#f59e0b' : '#ef4444';
-            const status = ping < 50 ? 'Baik' : ping < 150 ? 'Lambat' : 'Tinggi';
-            addCmdRow(seqNum, '8.8.8.8', 32, ping, 117, color, status);
+                const color = ping < 50 ? '#22c55e' : ping < 150 ? '#f59e0b' : '#ef4444';
+                const status = ping < 50 ? 'Baik' : ping < 150 ? 'Lambat' : 'Tinggi';
+                addCmdRow(seqNum, '8.8.8.8', 32, ping, 117, color, status);
 
-            const mn = Math.min(...pingValues);
-            const mx = Math.max(...pingValues);
-            const avg = Math.round(pingValues.reduce((a, b) => a + b, 0) / pingValues.length);
-            document.getElementById('cmd-min').textContent = mn + 'ms';
-            document.getElementById('cmd-max').textContent = mx + 'ms';
-            document.getElementById('cmd-avg').textContent = avg + 'ms';
-        } else {
-            cmdLost++;
-            document.getElementById('status-dot').className = 'status-dot error';
-            addCmdRow(seqNum, '8.8.8.8', 0, null, null, '#ef4444', 'Timeout');
-        }
+                const mn = Math.min(...pingValues);
+                const mx = Math.max(...pingValues);
+                const avg = Math.round(pingValues.reduce((a, b) => a + b, 0) / pingValues.length);
+                document.getElementById('cmd-min').textContent = mn + 'ms';
+                document.getElementById('cmd-max').textContent = mx + 'ms';
+                document.getElementById('cmd-avg').textContent = avg + 'ms';
+            } else {
+                cmdLost++;
+                document.getElementById('status-dot').className = 'status-dot error';
+                addCmdRow(seqNum, '8.8.8.8', 0, null, null, '#ef4444', 'Timeout');
+            }
 
-        document.getElementById('cmd-sent').textContent = cmdSent;
-        document.getElementById('cmd-recv').textContent = cmdRecv;
-        document.getElementById('cmd-lost').textContent = cmdLost;
+            document.getElementById('cmd-sent').textContent = cmdSent;
+            document.getElementById('cmd-recv').textContent = cmdRecv;
+            document.getElementById('cmd-lost').textContent = cmdLost;
+        } catch(e) {}
+        speedRunning = false;
     }
 
     setInterval(() => {
@@ -1535,12 +1559,18 @@
         if (b) b.style.opacity = b.style.opacity === '0' ? '1' : '0';
     }, 500);
 
+    // Jalankan speed test dengan interval 3 detik (LANCAR)
     runSpeedCheck();
-    setInterval(runSpeedCheck, 3500);
+    setInterval(runSpeedCheck, 3000);
 
+    // Resize wave
+    let resizeTimeout;
     window.addEventListener('resize', () => {
-        drawWave('wave-dl', dlHistory, '#38bdf8');
-        drawWave('wave-ul', ulHistory, '#a78bfa');
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            drawWave('wave-dl', dlHistory, '#38bdf8');
+            drawWave('wave-ul', ulHistory, '#a78bfa');
+        }, 200);
     });
 
     // ─── PARTICLES ───
