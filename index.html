@@ -857,20 +857,6 @@
         logs: []
     };
 
-    // ─── SAMPLE DATA UNTUK TEST (LOG LAMA) ───
-    const SAMPLE_LOGS = [
-        { app: "Prediksi Bola", time: "29/06/2026 10:30", userName: "Robby Viera", email: "robbyviera.smb88@gmail.com" },
-        { app: "Bukti JP", time: "29/06/2026 10:15", userName: "Jerry Kenny", email: "jerrykenny.1122@gmail.com" },
-        { app: "Syair Togel", time: "29/06/2026 09:45", userName: "Muhammad Erfin", email: "muhammaderfinsyah21@gmail.com" },
-        { app: "Result Togel", time: "29/06/2026 09:20", userName: "Dandy Pulungan", email: "dandypulungan38@gmail.com" },
-        { app: "Cek Saldo", time: "29/06/2026 08:55", userName: "Arifin", email: "arifin00cc@gmail.com" },
-        { app: "Dashboard", time: "29/06/2026 08:30", userName: "Robby Viera", email: "robbyviera.smb88@gmail.com" },
-        { app: "Prediksi Bola", time: "28/06/2026 22:10", userName: "Jerry Kenny", email: "jerrykenny.1122@gmail.com" },
-        { app: "Link Prediksi Bola", time: "28/06/2026 21:45", userName: "Muhammad Erfin", email: "muhammaderfinsyah21@gmail.com" },
-        { app: "Hasil Result", time: "28/06/2026 21:20", userName: "Dandy Pulungan", email: "dandypulungan38@gmail.com" },
-        { app: "Reportan", time: "28/06/2026 20:55", userName: "Arifin", email: "arifin00cc@gmail.com" }
-    ];
-
     function showToast(msg, type='') {
         const t = document.getElementById('toast');
         t.textContent = msg;
@@ -1056,7 +1042,7 @@
         try {
             const snap = await db.ref('stats').once('value');
             const data = snap.val();
-            if (data && data.logs && data.logs.length > 0) {
+            if (data) {
                 statsData = {
                     prediksi: data.prediksi||0, bukti_jp: data.bukti_jp||0, syair: data.syair||0,
                     result: data.result||0, saldo: data.saldo||0, link_prediksi: data.link_prediksi||0,
@@ -1068,18 +1054,15 @@
                 };
                 console.log('📥 Data loaded from Firebase, logs:', statsData.logs.length);
             } else {
-                // FIRST TIME - kasih sample data
-                console.log('⚠️ No data in Firebase, using sample logs');
-                statsData.logs = [...SAMPLE_LOGS];
+                // FIRST TIME - data kosong
+                console.log('⚠️ No data in Firebase, starting fresh');
+                statsData.logs = [];
                 await saveStats();
             }
             updateUI();
         } catch(e) { 
             console.error('Load data error:', e); 
-            // Pakai sample data kalo error
-            if (statsData.logs.length === 0) {
-                statsData.logs = [...SAMPLE_LOGS];
-            }
+            statsData.logs = [];
             updateUI();
         }
     }
@@ -1213,6 +1196,7 @@
             const menuKey = element ? element.getAttribute('data-menu') : '';
             const title = element ? element.getAttribute('data-title') : page;
 
+            // ✅ HANYA LOG UNTUK USER YANG LOGIN!
             if (menuKey && currentUser) {
                 statsData[menuKey] = (statsData[menuKey]||0) + 1;
                 
@@ -1531,7 +1515,7 @@
     console.log('🚀 CS LINE PULITOTO - Management System v2.0');
     console.log('📧 Login dengan Google - Hanya email terdaftar');
     console.log('📊 Log aktivitas muncul di Dashboard!');
-    console.log('📝 Sample logs:', SAMPLE_LOGS.length);
+    console.log('✅ Hanya user yang login yang tercatat di log');
 </script>
 
 </body>
