@@ -477,8 +477,8 @@
         <div id="log-tab-users" style="display:none;">
             <div style="overflow-x:auto;max-height:420px;overflow-y:auto;">
                 <table>
-                    <thead><tr><th>#</th><th>Nama User</th><th>Email</th><th>Total Akses</th><th>Terakhir Akses</th></tr></thead>
-                    <tbody id="user-stats-body"><tr><td colspan="5" class="empty-state">Memuat data...</td></tr></tbody>
+                    <thead><tr><th>#</th><th>Nama User</th><th>Email</th><th>Terakhir Akses</th></tr></thead>
+                    <tbody id="user-stats-body"><tr><td colspan="4" class="empty-state">Memuat data...</td></tr></tbody>
                 </table>
             </div>
         </div>
@@ -765,7 +765,6 @@
                     </div>
 
                     <!-- ═══ TIDAK ADA LOG & DAFTAR USER DI SINI ═══ -->
-                    <!-- SEMUA SUDAH DIHAPUS -->
 
                 </div>
                 <iframe id="content-frame" src=""></iframe>
@@ -1046,18 +1045,22 @@
             }
         }
 
+        // ─── UPDATE DAFTAR USER (TANPA Total Akses) ───
         const userBody = document.getElementById('user-stats-body');
         if (userBody) {
             const userMap = new Map();
             logs.forEach(log => {
                 if (!log || !log.email || log.email === 'undefined') return;
-                if (!userMap.has(log.email)) userMap.set(log.email, { name: log.userName||log.email, email: log.email, total: 0, last: log.time });
+                if (!userMap.has(log.email)) userMap.set(log.email, { 
+                    name: log.userName || log.email, 
+                    email: log.email, 
+                    last: log.time 
+                });
                 const u = userMap.get(log.email);
-                u.total++;
                 if (log.time > u.last) u.last = log.time;
             });
             if (!userMap.size) {
-                userBody.innerHTML = '<tr><td colspan="5" class="empty-state">Belum ada user.</td></tr>';
+                userBody.innerHTML = '<tr><td colspan="4" class="empty-state">Belum ada user.</td></tr>';
             } else {
                 let no = 1;
                 userBody.innerHTML = [...userMap.values()].map(u => `
@@ -1065,7 +1068,6 @@
                         <td style="color:var(--text-muted);">${no++}</td>
                         <td><strong>${u.name}</strong></td>
                         <td style="color:#2563eb;">${u.email}</td>
-                        <td><span class="badge" style="background:#dcfce7;color:#16a34a;">${u.total}x</span></td>
                         <td style="color:var(--text-muted);font-size:12px;">${u.last}</td>
                     </tr>`).join('');
             }
@@ -1153,6 +1155,8 @@
 
     function renderLogModal() {
         const logs = statsData.logs || [];
+        
+        // Log Aktivitas
         const logBody = document.getElementById('log-body');
         if (!logs.length) {
             logBody.innerHTML = '<tr><td colspan="4" class="empty-state">Belum ada aktivitas.</td></tr>';
@@ -1165,17 +1169,22 @@
                     <td><span class="badge" style="background:#d1fae5;color:#065f46;">${log.app}</span></td>
                 </tr>` : '').join('');
         }
+        
+        // Daftar User (TANPA Total Akses)
+        const userBody = document.getElementById('user-stats-body');
         const userMap = new Map();
         logs.forEach(log => {
             if (!log || !log.email || log.email === 'undefined') return;
-            if (!userMap.has(log.email)) userMap.set(log.email, { name: log.userName||log.email, email: log.email, total: 0, last: log.time });
+            if (!userMap.has(log.email)) userMap.set(log.email, { 
+                name: log.userName || log.email, 
+                email: log.email, 
+                last: log.time 
+            });
             const u = userMap.get(log.email);
-            u.total++;
             if (log.time > u.last) u.last = log.time;
         });
-        const userBody = document.getElementById('user-stats-body');
         if (!userMap.size) {
-            userBody.innerHTML = '<tr><td colspan="5" class="empty-state">Belum ada user.</td></tr>';
+            userBody.innerHTML = '<tr><td colspan="4" class="empty-state">Belum ada user.</td></tr>';
         } else {
             let no = 1;
             userBody.innerHTML = [...userMap.values()].map(u => `
@@ -1183,7 +1192,6 @@
                     <td style="color:var(--text-muted);">${no++}</td>
                     <td><strong>${u.name}</strong></td>
                     <td style="color:#2563eb;">${u.email}</td>
-                    <td><span class="badge" style="background:#dcfce7;color:#16a34a;">${u.total}x</span></td>
                     <td style="color:var(--text-muted);font-size:12px;">${u.last}</td>
                 </tr>`).join('');
         }
@@ -1423,7 +1431,7 @@
 
     console.log('🚀 CS LINE PULITOTO - Management System v2.0');
     console.log('📧 Login dengan Google - Hanya email terdaftar');
-    console.log('✅ Log & Daftar User hanya ada di menu Log Aktivitas');
+    console.log('✅ "Total Akses" sudah dihapus dari semua tampilan');
 </script>
 
 </body>
