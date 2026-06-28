@@ -1122,7 +1122,7 @@
             document.getElementById('user-name').textContent = user.displayName || user.email;
             document.getElementById('user-avatar').src = user.photoURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.displayName||'U') + '&background=2563eb&color=fff';
             await loadData();
-            await loadAllowedEmails(); // Refresh allowed emails
+            await loadAllowedEmails();
             renderEmailList();
         } else {
             currentUser = null;
@@ -1144,7 +1144,7 @@
         icon.className = document.body.classList.contains('dark') ? 'fas fa-sun' : 'fas fa-moon';
     };
 
-    // ─── ALLOWED EMAILS ───
+    // ─── ALLOWED EMAILS (FIXED - DENGAN ERROR HANDLING) ───
     async function loadAllowedEmails() {
         try {
             const snap = await db.ref('allowed_emails').once('value');
@@ -1152,12 +1152,14 @@
             if (val) {
                 allowedEmails = Object.values(val);
             } else {
+                // First time: seed with defaults
                 await saveAllowedEmails(DEFAULT_ALLOWED);
                 allowedEmails = [...DEFAULT_ALLOWED];
             }
         } catch(e) {
             console.error('Load allowed emails error:', e);
             allowedEmails = [...DEFAULT_ALLOWED];
+            showToast('⚠️ Gagal load data, pakai default', 'error');
         }
         renderEmailList();
     }
@@ -1166,13 +1168,29 @@
         try {
             const obj = {};
             list.forEach((e, i) => obj[i] = e.toLowerCase().trim());
-            await db.ref('allowed_emails').set(obj);
+            
+            // Coba write dengan timeout
+            await Promise.race([
+                db.ref('allowed_emails').set(obj),
+                new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 10000))
+            ]);
+            
             allowedEmails = list;
             renderEmailList();
+            showToast('✅ Data berhasil disimpan!');
             return true;
         } catch(e) {
             console.error('Save allowed emails error:', e);
-            showToast('❌ Gagal menyimpan data!', 'error');
+            
+            let msg = '❌ Gagal menyimpan data! ';
+            if (e.code === 'PERMISSION_DENIED') {
+                msg += 'Cek rules Firebase: "write" harus diizinkan.';
+            } else if (e.message === 'Timeout') {
+                msg += 'Koneksi timeout, coba lagi.';
+            } else {
+                msg += e.message;
+            }
+            showToast(msg, 'error');
             return false;
         }
     }
@@ -1292,7 +1310,6 @@
         const uniqueEmails = [...new Set(logs.filter(l=>l&&l.email).map(l=>l.email))];
         document.getElementById('stat-total-user').textContent = uniqueEmails.length;
 
-        // Update log body
         const logBody = document.getElementById('log-body');
         if (!logs.length) {
             logBody.innerHTML = '<tr><td colspan="4" class="empty-state">Belum ada aktivitas.</td></tr>';
@@ -1306,7 +1323,6 @@
                 </tr>` : '').join('');
         }
 
-        // Update user stats
         const userMap = new Map();
         logs.forEach(log => {
             if (!log || !log.email || log.email === 'undefined') return;
@@ -1677,6 +1693,10 @@
         }
         animate();
     })();
+
+    console.log('🚀 CS LINE PULITOTO - Management System v2.0');
+    console.log('📧 Login dengan Google - Hanya email terdaftar');
+    console.log('💾 Pastikan Firebase Rules: .write = auth != null');
 </script>
 
 </body>
