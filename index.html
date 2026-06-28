@@ -269,7 +269,8 @@
 
 <!-- ═══ LOGIN ═══ -->
 <div id="login-overlay">
-    <div class="login-card">
+    <canvas id="particles-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;"></canvas>
+    <div class="login-card" style="position:relative;z-index:1;">
         <img src="https://puli32217.com/resources/images/logo.png" alt="Logo" class="login-logo">
         <div class="login-title">CS LINE PULITOTO</div>
         <div class="login-subtitle">Management System v2.0</div>
@@ -810,5 +811,81 @@
         icon.className = document.body.classList.contains('dark') ? 'fas fa-sun' : 'fas fa-moon';
     };
 </script>
+
+<script>
+// ─── PARTICLE ANIMATION ───
+(function() {
+    const canvas = document.getElementById('particles-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let W, H, particles = [];
+
+    function resize() {
+        W = canvas.width = canvas.offsetWidth;
+        H = canvas.height = canvas.offsetHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    function rand(min, max) { return Math.random() * (max - min) + min; }
+
+    function createParticle() {
+        return {
+            x: rand(0, W),
+            y: rand(H * 0.5, H + 20),
+            size: rand(0.8, 2),
+            speedY: rand(0.2, 0.7),
+            speedX: rand(-0.1, 0.1),
+            opacity: rand(0.5, 1),
+            fadeSpeed: rand(0.003, 0.007),
+            color: 'rgba(167,139,250,',
+            twinkle: rand(0, Math.PI * 2),
+            twinkleSpeed: rand(0.01, 0.03)
+        };
+    }
+
+    // Seed particles across whole screen
+    for (let i = 0; i < 120; i++) {
+        const p = createParticle();
+        p.y = rand(0, H); // spread vertically on init
+        particles.push(p);
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, W, H);
+
+        particles.forEach((p, i) => {
+            // Twinkle effect
+            p.twinkle += p.twinkleSpeed;
+            const twinkleFactor = 0.5 + 0.5 * Math.sin(p.twinkle);
+            const alpha = p.opacity * twinkleFactor;
+
+            // Draw tiny dot only
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fillStyle = p.color + alpha + ')';
+            ctx.fill();
+
+            // Move upward
+            p.y -= p.speedY;
+            p.x += p.speedX;
+
+            // Fade in as it rises
+            if (p.y < H * 0.3) {
+                p.opacity -= p.fadeSpeed;
+            }
+
+            // Reset when out of view or fully transparent
+            if (p.y < -10 || p.opacity <= 0) {
+                particles[i] = createParticle();
+            }
+        });
+
+        requestAnimationFrame(animate);
+    }
+    animate();
+})();
+</script>
+
 </body>
 </html>
