@@ -764,7 +764,7 @@
                         </div>
                     </div>
 
-                    <!-- ═══ LOG AKTIVITAS DI DASHBOARD ═══ -->
+                    <!-- ═══ LOG AKTIVITAS DI DASHBOARD (DI BAWAH CMD) ═══ -->
                     <div class="panel">
                         <div class="panel-title">
                             <i class="fas fa-history" style="color:#10b981;"></i> 
@@ -790,7 +790,7 @@
                         </div>
                     </div>
 
-                    <!-- ═══ DAFTAR USER DI DASHBOARD ═══ -->
+                    <!-- ═══ DAFTAR USER DI DASHBOARD (DI BAWAH LOG) ═══ -->
                     <div class="panel">
                         <div class="panel-title">
                             <i class="fas fa-users" style="color:#8b5cf6;"></i> 
@@ -1054,7 +1054,6 @@
                 };
                 console.log('📥 Data loaded from Firebase, logs:', statsData.logs.length);
             } else {
-                // FIRST TIME - data kosong
                 console.log('⚠️ No data in Firebase, starting fresh');
                 statsData.logs = [];
                 await saveStats();
@@ -1196,7 +1195,6 @@
             const menuKey = element ? element.getAttribute('data-menu') : '';
             const title = element ? element.getAttribute('data-title') : page;
 
-            // ✅ HANYA LOG UNTUK USER YANG LOGIN!
             if (menuKey && currentUser) {
                 statsData[menuKey] = (statsData[menuKey]||0) + 1;
                 
