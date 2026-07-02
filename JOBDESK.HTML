@@ -2,734 +2,1411 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>JOB CS LINE - Auto Save</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JOB CS LINE - Manajemen Tugas</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
     <style>
+        /* ============================================================
+           RESET & GLOBAL
+           ============================================================ */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
         }
 
         body {
-            background: radial-gradient(circle at 10% 30%, #eef2f9, #d9e2ef);
+            font-family: 'Inter', sans-serif;
             min-height: 100vh;
-            padding: 2rem 1.5rem;
-        }
-
-        .app-container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .glass-header {
-            background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(16px);
-            border-radius: 2rem;
-            padding: 1.2rem 2rem;
-            margin-bottom: 2.5rem;
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
-            border: 1px solid rgba(255,255,245,0.6);
+            background: #0f172a;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
         }
 
-        .title-section h1 {
-            font-size: 2rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #0B2B40, #1A4A5F);
+        /* ============================================================
+           BACKGROUND ANIMASI - GELOMBANG & PARTIKEL
+           ============================================================ */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        /* Gelombang background */
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 20% 80%, rgba(16, 185, 129, 0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(59, 130, 246, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(11, 43, 64, 0.3) 0%, transparent 70%);
+            animation: waveMove 20s ease-in-out infinite alternate;
+        }
+
+        @keyframes waveMove {
+            0% { transform: translateX(0) scale(1); }
+            100% { transform: translateX(-25%) scale(1.1); }
+        }
+
+        /* Partikel berkilau */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            animation: floatParticle 25s infinite linear;
+        }
+
+        .particle:nth-child(1) { width: 4px; height: 4px; left: 10%; animation-delay: 0s; animation-duration: 22s; }
+        .particle:nth-child(2) { width: 6px; height: 6px; left: 25%; animation-delay: 2s; animation-duration: 28s; }
+        .particle:nth-child(3) { width: 3px; height: 3px; left: 40%; animation-delay: 4s; animation-duration: 18s; }
+        .particle:nth-child(4) { width: 5px; height: 5px; left: 55%; animation-delay: 1s; animation-duration: 24s; }
+        .particle:nth-child(5) { width: 7px; height: 7px; left: 70%; animation-delay: 3s; animation-duration: 30s; }
+        .particle:nth-child(6) { width: 4px; height: 4px; left: 85%; animation-delay: 5s; animation-duration: 20s; }
+        .particle:nth-child(7) { width: 5px; height: 5px; left: 15%; animation-delay: 6s; animation-duration: 26s; }
+        .particle:nth-child(8) { width: 3px; height: 3px; left: 50%; animation-delay: 2.5s; animation-duration: 32s; }
+        .particle:nth-child(9) { width: 6px; height: 6px; left: 75%; animation-delay: 4.5s; animation-duration: 21s; }
+        .particle:nth-child(10) { width: 4px; height: 4px; left: 90%; animation-delay: 1.5s; animation-duration: 27s; }
+        .particle:nth-child(11) { width: 5px; height: 5px; left: 5%; animation-delay: 7s; animation-duration: 23s; }
+        .particle:nth-child(12) { width: 3px; height: 3px; left: 60%; animation-delay: 3.5s; animation-duration: 29s; }
+
+        @keyframes floatParticle {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* ============================================================
+           CONTAINER UTAMA
+           ============================================================ */
+        .app-wrapper {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 960px;
+            min-height: 600px;
+        }
+
+        /* ============================================================
+           CARD UTAMA - GLASSMORPHISM
+           ============================================================ */
+        .main-card {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-radius: 48px;
+            padding: 48px 44px 44px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 
+                0 40px 80px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            min-height: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Efek glow di tepi card */
+        .main-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at 30% 20%, rgba(16, 185, 129, 0.03) 0%, transparent 60%),
+                        radial-gradient(ellipse at 70% 80%, rgba(59, 130, 246, 0.03) 0%, transparent 60%);
+            pointer-events: none;
+            animation: glowPulse 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes glowPulse {
+            0% { opacity: 0.5; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.05); }
+        }
+
+        .main-card > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ============================================================
+           HEADER
+           ============================================================ */
+        .header {
+            text-align: center;
+            margin-bottom: 44px;
+        }
+
+        .header .logo-icon {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 8px;
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(4deg); }
+        }
+
+        .header h1 {
+            font-size: 42px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #f0fdf4 0%, #86efac 40%, #fbbf24 70%, #f0fdf4 100%);
+            background-size: 300% 100%;
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            animation: shimmerText 4s ease-in-out infinite;
             letter-spacing: -0.5px;
+            line-height: 1.1;
         }
 
-        .badge-date {
-            background: rgba(0, 0, 0, 0.65);
+        @keyframes shimmerText {
+            0%, 100% { background-position: 0% center; }
+            50% { background-position: 200% center; }
+        }
+
+        .header .subtitle {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 16px;
+            font-weight: 500;
+            margin-top: 6px;
+            letter-spacing: 1px;
+        }
+
+        .header .date-display {
+            display: inline-block;
+            margin-top: 14px;
+            padding: 8px 24px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.04);
             backdrop-filter: blur(8px);
-            padding: 0.6rem 1.3rem;
-            border-radius: 2rem;
-            color: white;
-            font-weight: 500;
-            font-size: 0.9rem;
+        }
+
+        /* ============================================================
+           PILIHAN SHIFT - 2 BUTTON BESAR
+           ============================================================ */
+        .shift-selection {
             display: flex;
-            align-items: center;
-            gap: 12px;
+            gap: 24px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
         }
 
-        .shifts-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 2rem;
-        }
-
-        .shift-card {
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(4px);
-            border-radius: 2rem;
-            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s;
-            border: 1px solid rgba(255,255,250,0.8);
-        }
-
-        .shift-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 28px 32px -12px rgba(0, 0, 0, 0.3);
-        }
-
-        .card-header {
-            padding: 1.5rem 1.8rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-        }
-
-        .shift-title {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .shift-icon {
-            font-size: 2.2rem;
-        }
-
-        .shift-name {
-            font-size: 1.7rem;
-            font-weight: 800;
-            letter-spacing: -0.3px;
-        }
-
-        .badge-shift {
-            font-size: 0.7rem;
-            background: #ffffffaa;
-            backdrop-filter: blur(2px);
-            padding: 0.3rem 1rem;
-            border-radius: 40px;
-            font-weight: 700;
-            color: #1e293b;
-        }
-
-        .task-count {
-            background: rgba(0,0,0,0.05);
-            padding: 0.4rem 1.1rem;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 0.8rem;
-        }
-
-        .add-task-form {
-            padding: 1.2rem 1.5rem;
-            background: #f9fbfe;
-            display: flex;
-            gap: 12px;
-            border-bottom: 1px solid #e9edf2;
-        }
-
-        .add-task-form input {
+        .shift-btn {
             flex: 1;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 2rem;
-            padding: 0.8rem 1rem;
-            font-size: 0.9rem;
-            font-weight: 500;
-            outline: none;
-            transition: all 0.2s;
-            background: white;
-        }
-
-        .add-task-form input:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
-        }
-
-        .btn-add {
-            background: #0f2c39;
-            border: none;
-            color: white;
-            padding: 0 1.6rem;
-            border-radius: 2rem;
-            font-weight: 700;
+            min-width: 200px;
+            max-width: 320px;
+            padding: 32px 28px;
+            border: 2px solid rgba(255, 255, 255, 0.06);
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.03);
             cursor: pointer;
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
         }
 
-        .btn-add:hover {
-            background: #083344;
+        .shift-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .shift-btn:hover::after {
+            opacity: 1;
+        }
+
+        .shift-btn:hover {
+            transform: translateY(-6px) scale(1.02);
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .shift-btn:active {
             transform: scale(0.96);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        .task-list-container {
-            padding: 1.2rem 1.2rem 1.8rem;
-            max-height: 480px;
-            overflow-y: auto;
+        .shift-btn .icon {
+            font-size: 52px;
+            display: block;
+            margin-bottom: 12px;
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        .task-item {
-            background: white;
-            border-radius: 1.2rem;
-            padding: 0.9rem 1.2rem;
-            margin-bottom: 0.8rem;
-            display: flex;
+        .shift-btn:hover .icon {
+            transform: scale(1.15) rotate(-6deg);
+        }
+
+        .shift-btn .label {
+            font-size: 22px;
+            font-weight: 800;
+            color: #ffffff;
+            display: block;
+        }
+
+        .shift-btn .time {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 500;
+            display: block;
+            margin-top: 4px;
+        }
+
+        .shift-btn .badge {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            background: rgba(16, 185, 129, 0.15);
+            color: #86efac;
+            border: 1px solid rgba(16, 185, 129, 0.1);
+            transition: all 0.3s;
+        }
+
+        .shift-btn:hover .badge {
+            background: rgba(16, 185, 129, 0.25);
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+
+        /* Shift Pagi - warna kuning */
+        .shift-btn.morning {
+            border-color: rgba(251, 191, 36, 0.15);
+        }
+        .shift-btn.morning .badge {
+            background: rgba(251, 191, 36, 0.12);
+            color: #fbbf24;
+            border-color: rgba(251, 191, 36, 0.08);
+        }
+        .shift-btn.morning:hover {
+            border-color: rgba(251, 191, 36, 0.3);
+            box-shadow: 0 20px 40px rgba(251, 191, 36, 0.08);
+        }
+
+        /* Shift Malam - warna biru */
+        .shift-btn.night {
+            border-color: rgba(96, 165, 250, 0.15);
+        }
+        .shift-btn.night .badge {
+            background: rgba(96, 165, 250, 0.12);
+            color: #93c5fd;
+            border-color: rgba(96, 165, 250, 0.08);
+        }
+        .shift-btn.night:hover {
+            border-color: rgba(96, 165, 250, 0.3);
+            box-shadow: 0 20px 40px rgba(96, 165, 250, 0.08);
+        }
+
+        /* ============================================================
+           LOADING OVERLAY
+           ============================================================ */
+        .loading-overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 48px;
             align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.02);
-            border: 1px solid #edf2f7;
-            transition: all 0.25s ease;
-            animation: fadeSlideIn 0.3s ease-out;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 20;
+            animation: fadeInOverlay 0.5s ease;
         }
 
-        @keyframes fadeSlideIn {
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeInOverlay {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .loading-spinner {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.06);
+            border-top-color: #86efac;
+            border-right-color: #fbbf24;
+            animation: spin 0.9s cubic-bezier(0.6, 0, 0.4, 1) infinite;
+            margin-bottom: 28px;
+            box-shadow: 0 0 40px rgba(16, 185, 129, 0.1);
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 1px;
+        }
+
+        .loading-text span {
+            display: inline-block;
+            animation: dotBounce 1.4s ease-in-out infinite;
+        }
+
+        .loading-text span:nth-child(2) { animation-delay: 0.2s; }
+        .loading-text span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes dotBounce {
+            0%, 80%, 100% { 
+                opacity: 0.2; 
+                transform: translateY(0);
+            }
+            40% { 
+                opacity: 1; 
+                transform: translateY(-6px);
+            }
+        }
+
+        .loading-sub {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 13px;
+            font-weight: 400;
+            margin-top: 10px;
+        }
+
+        /* ============================================================
+           KONTEN AREA (muncul setelah loading)
+           ============================================================ */
+        .content-area {
+            display: none;
+            animation: slideUpContent 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .content-area.active {
+            display: block;
+        }
+
+        @keyframes slideUpContent {
             from {
                 opacity: 0;
-                transform: translateY(12px);
+                transform: translateY(40px) scale(0.98);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* ============================================================
+           INFO SHIFT
+           ============================================================ */
+        .shift-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 20px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .shift-info .title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .shift-info .title .emoji {
+            margin-right: 10px;
+        }
+
+        .shift-info .stats {
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.04);
+            padding: 6px 18px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .shift-info .stats strong {
+            color: #ffffff;
+        }
+
+        .shift-info .back-btn {
+            padding: 8px 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.5);
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .shift-info .back-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            transform: translateX(-3px);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* ============================================================
+           FORM TAMBAH
+           ============================================================ */
+        .add-form {
+            display: flex;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .add-form input {
+            flex: 1;
+            padding: 16px 22px;
+            border: 2px solid rgba(255, 255, 255, 0.06);
+            border-radius: 18px;
+            font-size: 15px;
+            font-weight: 500;
+            outline: none;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+            background: rgba(255, 255, 255, 0.04);
+            color: #ffffff;
+        }
+
+        .add-form input::placeholder {
+            color: rgba(255, 255, 255, 0.25);
+        }
+
+        .add-form input:focus {
+            border-color: rgba(16, 185, 129, 0.3);
+            background: rgba(255, 255, 255, 0.06);
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.04);
+        }
+
+        .add-form .btn-add {
+            padding: 16px 32px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #ffffff;
+            border: none;
+            border-radius: 18px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-family: 'Inter', sans-serif;
+            white-space: nowrap;
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.2);
+        }
+
+        .add-form .btn-add:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.3);
+        }
+
+        .add-form .btn-add:active {
+            transform: scale(0.95);
+        }
+
+        /* ============================================================
+           TASK LIST
+           ============================================================ */
+        .task-list {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .task-list::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .task-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+        }
+
+        .task-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            transition: background 0.3s;
+        }
+
+        .task-list::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* ============================================================
+           TASK ITEM
+           ============================================================ */
+        .task-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation: taskSlideIn 0.4s ease;
+        }
+
+        @keyframes taskSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-30px) scale(0.96);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
             }
         }
 
         .task-item:hover {
-            border-color: #cbd5e1;
-            background: #fefefe;
-            transform: translateX(6px);
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.08);
+            transform: translateX(4px);
         }
 
-        .task-info {
+        .task-item .task-left {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 16px;
             flex: 1;
         }
 
-        .task-check {
-            width: 22px;
-            height: 22px;
+        .task-item .task-check {
+            width: 24px;
+            height: 24px;
             cursor: pointer;
-            accent-color: #0f5c6e;
+            accent-color: #10b981;
+            flex-shrink: 0;
+            transition: transform 0.2s;
+            border-radius: 6px;
         }
 
-        .task-text {
-            font-size: 0.98rem;
+        .task-item .task-check:hover {
+            transform: scale(1.12);
+        }
+
+        .task-item .task-text {
+            font-size: 16px;
             font-weight: 500;
-            color: #0f172a;
+            color: rgba(255, 255, 255, 0.9);
             word-break: break-word;
+            transition: all 0.3s;
         }
 
-        .task-text.completed {
+        .task-item .task-text.completed {
             text-decoration: line-through;
-            color: #94a3b8;
+            color: rgba(255, 255, 255, 0.25);
         }
 
-        .task-actions {
+        .task-item .task-actions {
             display: flex;
-            gap: 12px;
+            gap: 6px;
+            flex-shrink: 0;
         }
 
-        .edit-btn, .delete-btn {
+        .task-item .btn-icon {
+            width: 38px;
+            height: 38px;
+            border: none;
+            border-radius: 12px;
             background: transparent;
-            border: none;
-            font-size: 1.1rem;
             cursor: pointer;
-            transition: 0.15s;
-            color: #64748b;
-        }
-
-        .edit-btn:hover { color: #0284c7; transform: scale(1.15);}
-        .delete-btn:hover { color: #dc2626; transform: scale(1.15);}
-
-        .empty-message {
-            text-align: center;
-            padding: 2rem;
-            color: #5b6e8c;
-            font-style: italic;
+            font-size: 16px;
+            transition: all 0.25s;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 8px;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(6px);
             justify-content: center;
-            align-items: center;
-            z-index: 1000;
+            font-family: 'Inter', sans-serif;
+            color: rgba(255, 255, 255, 0.3);
         }
 
-        .modal-content {
-            background: white;
-            padding: 2rem;
-            border-radius: 1.8rem;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 25px 40px rgba(0,0,0,0.3);
-            animation: zoomIn 0.2s ease;
+        .task-item .btn-icon:hover {
+            background: rgba(255, 255, 255, 0.06);
         }
 
-        @keyframes zoomIn {
-            from { transform: scale(0.95); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+        .task-item .btn-icon.edit:hover {
+            background: rgba(59, 130, 246, 0.12);
+            color: #93c5fd;
         }
 
-        .modal-content h3 {
-            margin-bottom: 1rem;
-            font-weight: 700;
+        .task-item .btn-icon.delete:hover {
+            background: rgba(239, 68, 68, 0.12);
+            color: #fca5a5;
         }
 
-        .modal-content input {
-            width: 100%;
-            padding: 0.8rem;
-            border-radius: 2rem;
-            border: 1px solid #ccc;
-            margin-bottom: 1rem;
+        /* ============================================================
+           EMPTY STATE
+           ============================================================ */
+        .empty-state {
+            text-align: center;
+            padding: 56px 20px;
         }
 
-        .modal-buttons {
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
+        .empty-state .empty-icon {
+            font-size: 60px;
+            margin-bottom: 16px;
+            opacity: 0.3;
         }
 
-        .modal-buttons button {
-            padding: 0.5rem 1.2rem;
-            border-radius: 2rem;
-            border: none;
-            cursor: pointer;
+        .empty-state p {
+            font-size: 18px;
             font-weight: 600;
+            color: rgba(255, 255, 255, 0.4);
         }
 
-        .save-edit {
-            background: #0f5c6e;
-            color: white;
+        .empty-state .sub {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.15);
+            margin-top: 4px;
         }
 
-        .cancel-edit {
-            background: #e2e8f0;
-        }
-
-        .toast-notif {
+        /* ============================================================
+           TOAST NOTIFICATION
+           ============================================================ */
+        .toast {
             position: fixed;
             bottom: 30px;
             left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: #1e293bdd;
-            backdrop-filter: blur(12px);
-            color: white;
-            padding: 10px 24px;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            color: #ffffff;
+            padding: 16px 32px;
             border-radius: 40px;
-            font-weight: 500;
-            font-size: 0.85rem;
-            z-index: 1100;
+            font-weight: 600;
+            font-size: 15px;
             opacity: 0;
-            transition: all 0.25s ease;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
             pointer-events: none;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 9999;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
         }
 
-        .toast-notif.show {
+        .toast.show {
             opacity: 1;
             transform: translateX(-50%) translateY(0);
         }
 
-        @media (max-width: 850px) {
-            .shifts-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
+        .toast.success {
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+
+        .toast.error {
+            border-color: rgba(239, 68, 68, 0.2);
+        }
+
+        .toast .toast-icon {
+            font-size: 20px;
+        }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 768px) {
+            .main-card {
+                padding: 32px 20px 28px;
+                border-radius: 32px;
             }
-            body {
-                padding: 1rem;
+
+            .header h1 {
+                font-size: 30px;
+            }
+
+            .header .logo-icon {
+                font-size: 38px;
+            }
+
+            .shift-selection {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .shift-btn {
+                min-width: unset;
+                max-width: 100%;
+                width: 100%;
+                padding: 24px 20px;
+            }
+
+            .shift-btn .icon {
+                font-size: 40px;
+            }
+
+            .shift-btn .label {
+                font-size: 19px;
+            }
+
+            .add-form {
+                flex-direction: column;
+            }
+
+            .add-form .btn-add {
+                width: 100%;
+                justify-content: center;
+                padding: 14px;
+            }
+
+            .shift-info {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+
+            .shift-info .back-btn {
+                align-self: center;
+            }
+
+            .task-item {
+                padding: 14px 16px;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .task-item .task-actions {
+                margin-left: 40px;
+            }
+
+            .loading-spinner {
+                width: 56px;
+                height: 56px;
+            }
+
+            .loading-text {
+                font-size: 17px;
+            }
+
+            .toast {
+                font-size: 13px;
+                padding: 14px 24px;
+                width: 90%;
+                justify-content: center;
             }
         }
 
-        footer {
+        @media (max-width: 400px) {
+            .main-card {
+                padding: 24px 14px 20px;
+                border-radius: 24px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .shift-btn {
+                padding: 18px 16px;
+            }
+
+            .shift-btn .icon {
+                font-size: 32px;
+            }
+
+            .shift-btn .label {
+                font-size: 17px;
+            }
+
+            .task-item .task-text {
+                font-size: 14px;
+            }
+        }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        .footer {
             text-align: center;
-            margin-top: 3rem;
-            font-size: 0.75rem;
-            color: #2c3e50;
-            opacity: 0.7;
+            margin-top: 24px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.12);
+            letter-spacing: 0.5px;
+        }
+
+        .footer span {
+            color: rgba(16, 185, 129, 0.2);
         }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <div class="glass-header">
-        <div class="title-section">
-            <h1><i class="fas fa-headset"></i> JOB CS LINE</h1>
-        </div>
-        <div class="badge-date">
-            <i class="far fa-calendar-alt"></i>
-            <span id="liveDate"></span>
-        </div>
-    </div>
-
-    <div class="shifts-grid">
-        <div class="shift-card">
-            <div class="card-header" style="background: linear-gradient(115deg, #FEF3C7, #FFE4A3);">
-                <div class="shift-title">
-                    <div class="shift-icon"><i class="fas fa-sun"></i></div>
-                    <div class="shift-name">Shift Pagi</div>
-                    <span class="badge-shift"><i class="far fa-clock"></i> 07.45 – 19.45</span>
-                </div>
-                <div class="task-count" id="morningCount">0 tugas</div>
-            </div>
-            <div class="add-task-form">
-                <input type="text" id="morningInput" placeholder="+ Tambah jobdesk CS pagi ..." autocomplete="off">
-                <button class="btn-add" id="btnMorningAdd"><i class="fas fa-plus-circle"></i> Tambah</button>
-            </div>
-            <div class="task-list-container" id="morningList"></div>
-        </div>
-
-        <div class="shift-card">
-            <div class="card-header" style="background: linear-gradient(115deg, #C9E9FF, #ADD8FF);">
-                <div class="shift-title">
-                    <div class="shift-icon"><i class="fas fa-moon"></i></div>
-                    <div class="shift-name">Shift Malam</div>
-                    <span class="badge-shift"><i class="far fa-clock"></i> 19.45 – 07.45</span>
-                </div>
-                <div class="task-count" id="nightCount">0 tugas</div>
-            </div>
-            <div class="add-task-form">
-                <input type="text" id="nightInput" placeholder="+ Tambah jobdesk CS malam ..." autocomplete="off">
-                <button class="btn-add" id="btnNightAdd"><i class="fas fa-plus-circle"></i> Tambah</button>
-            </div>
-            <div class="task-list-container" id="nightList"></div>
-        </div>
-    </div>
-    <footer>
-        <i class="fas fa-save"></i> Auto save otomatis (Tambah/Hapus/Edit/Centang) • Data tetap setelah refresh
-    </footer>
-</div>
-
-<div id="editModal" class="modal">
-    <div class="modal-content">
-        <h3><i class="fas fa-pen-fancy"></i> Edit Jobdesk</h3>
-        <input type="text" id="editInput" placeholder="Ubah deskripsi tugas ...">
-        <div class="modal-buttons">
-            <button class="cancel-edit" id="cancelEditBtn">Batal</button>
-            <button class="save-edit" id="saveEditBtn">Simpan</button>
-        </div>
+<!-- ============================================================
+     BACKGROUND ANIMASI
+     ============================================================ -->
+<div class="bg-animation">
+    <div class="wave"></div>
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
     </div>
 </div>
 
-<div id="toastMsg" class="toast-notif"><i class="fas fa-check-circle"></i> <span>Berhasil</span></div>
+<!-- ============================================================
+     TOAST
+     ============================================================ -->
+<div class="toast" id="toast">
+    <span class="toast-icon">✅</span>
+    <span id="toastMessage">Berhasil</span>
+</div>
 
-<script>
-    // ==================== DATA ====================
-    let tasksData = {
-        morning: [],
-        night: []
+<!-- ============================================================
+     APP
+     ============================================================ -->
+<div class="app-wrapper">
+    <div class="main-card" id="mainCard">
+
+        <!-- ===== HEADER ===== -->
+        <div class="header">
+            <span class="logo-icon">📋</span>
+            <h1>JOB CS LINE</h1>
+            <p class="subtitle">Manajemen Tugas Customer Service</p>
+            <div class="date-display" id="dateDisplay">📅 Memuat tanggal...</div>
+        </div>
+
+        <!-- ===== PILIHAN SHIFT ===== -->
+        <div class="shift-selection" id="shiftSelection">
+            <button class="shift-btn morning" data-shift="morning">
+                <span class="icon">☀️</span>
+                <span class="label">Shift Pagi</span>
+                <span class="time">07.45 – 19.45 WIB</span>
+                <span class="badge">▶ Pilih</span>
+            </button>
+            <button class="shift-btn night" data-shift="night">
+                <span class="icon">🌙</span>
+                <span class="label">Shift Malam</span>
+                <span class="time">19.45 – 07.45 WIB</span>
+                <span class="badge">▶ Pilih</span>
+            </button>
+        </div>
+
+        <!-- ===== LOADING ===== -->
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">
+                Memuat<span>.</span><span>.</span><span>.</span>
+            </div>
+            <div class="loading-sub">Menyiapkan data shift</div>
+        </div>
+
+        <!-- ===== KONTEN AREA ===== -->
+        <div class="content-area" id="contentArea">
+
+            <!-- Info Shift -->
+            <div class="shift-info">
+                <div>
+                    <span class="title" id="shiftTitle">
+                        <span class="emoji">☀️</span> Shift Pagi
+                    </span>
+                </div>
+                <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+                    <span class="stats" id="taskStats">
+                        <strong>0</strong> tugas • <strong>0</strong> selesai
+                    </span>
+                    <button class="back-btn" id="backBtn">← Kembali</button>
+                </div>
+            </div>
+
+            <!-- Form Tambah -->
+            <div class="add-form">
+                <input type="text" id="taskInput" placeholder="✏️ Tambah jobdesk baru..." autocomplete="off">
+                <button class="btn-add" id="addBtn">+ Tambah</button>
+            </div>
+
+            <!-- Task List -->
+            <div class="task-list" id="taskList">
+                <div class="empty-state">
+                    <div class="empty-icon">📭</div>
+                    <p>Belum ada jobdesk</p>
+                    <div class="sub">Tambahkan tugas di atas</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <span>⚡</span> Real-time • Firebase <span>⚡</span>
+        </div>
+
+    </div>
+</div>
+
+<!-- ============================================================
+     FIREBASE + LOGIC
+     ============================================================ -->
+<script type="module">
+    // ============================================================
+    // 1. IMPOR FIREBASE
+    // ============================================================
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+    import {
+        getFirestore,
+        collection,
+        onSnapshot,
+        addDoc,
+        deleteDoc,
+        updateDoc,
+        doc,
+        query,
+        orderBy,
+        serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+
+    // ============================================================
+    // 2. KONFIGURASI FIREBASE
+    //    ⚠️ GANTI DENGAN PUNYA ANDA DARI FIREBASE CONSOLE!
+    // ============================================================
+    const firebaseConfig = {
+        apiKey: "AIzaSyAU6rAUUbi1GtJKj_LzrgudJS-9XTWf3Lf6",
+        authDomain: "job-cs-line.firebaseapp.com",
+        projectId: "job-cs-line",
+        storageBucket: "job-cs-line.firebasestorage.app",
+        messagingSenderId: "342552549838",
+        appId: "1:342552549838:web:237a4cd11423d1aca13ac7"
     };
 
-    // ==================== FUNGSI DASAR ====================
-    function generateId() {
-        return Date.now() + '-' + Math.random().toString(36).substr(2, 8);
-    }
+    // ============================================================
+    // 3. INISIALISASI
+    // ============================================================
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    console.log('🔥 Firebase Connected!');
 
-    function showToast(message, icon = 'fa-check-circle') {
-        const toast = document.getElementById('toastMsg');
-        toast.innerHTML = `<i class="fas ${icon}"></i> <span>${message}</span>`;
+    // ============================================================
+    // 4. STATE
+    // ============================================================
+    let currentShift = null;
+    let tasks = [];
+    let unsubscribe = null;
+
+    // ============================================================
+    // 5. DOM REFS
+    // ============================================================
+    const shiftSelection = document.getElementById('shiftSelection');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const contentArea = document.getElementById('contentArea');
+    const shiftTitle = document.getElementById('shiftTitle');
+    const taskStats = document.getElementById('taskStats');
+    const taskList = document.getElementById('taskList');
+    const taskInput = document.getElementById('taskInput');
+    const addBtn = document.getElementById('addBtn');
+    const backBtn = document.getElementById('backBtn');
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toastMessage');
+
+    // ============================================================
+    // 6. TOAST
+    // ============================================================
+    function showToast(message, type = 'success') {
+        const icon = type === 'success' ? '✅' : '❌';
+        toast.querySelector('.toast-icon').textContent = icon;
+        toastMessage.textContent = message;
+        toast.className = 'toast ' + type;
+        void toast.offsetWidth;
         toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 2000);
+        clearTimeout(toast._timeout);
+        toast._timeout = setTimeout(() => toast.classList.remove('show'), 2800);
     }
 
-    function burstConfetti() {
-        canvasConfetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, startVelocity: 15, colors: ['#0f5c6e', '#f59e0b', '#3b82f6'] });
-        canvasConfetti({ particleCount: 40, spread: 100, origin: { y: 0.5, x: 0.3 }, startVelocity: 20 });
-    }
-
-    // ==================== LOCALSTORAGE (AUTO SAVE) ====================
-    function saveToLocalStorage() {
-        localStorage.setItem('jobCSLine_data', JSON.stringify(tasksData));
-        console.log("✅ Data auto saved:", tasksData);
-    }
-
-    function loadFromLocalStorage() {
-        const stored = localStorage.getItem('jobCSLine_data');
-        if (stored) {
-            try {
-                const parsed = JSON.parse(stored);
-                if (parsed && typeof parsed === 'object' && parsed.morning && parsed.night) {
-                    tasksData = parsed;
-                    console.log("📀 Data loaded from storage:", tasksData);
-                    return true;
-                }
-            } catch(e) { console.error("Gagal parse storage:", e); }
-        }
-        return false;
-    }
-
-    // ==================== RENDER UI ====================
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
-    }
-
-    function renderShift(shift) {
-        const container = document.getElementById(`${shift}List`);
-        const countSpan = document.getElementById(`${shift}Count`);
-        if (!container) return;
-
-        const tasks = tasksData[shift];
+    // ============================================================
+    // 7. RENDER TUGAS
+    // ============================================================
+    function renderTasks() {
         const total = tasks.length;
-        const completedCount = tasks.filter(t => t.completed).length;
-        countSpan.innerText = `${total} tugas • ${completedCount} selesai`;
+        const completed = tasks.filter(t => t.completed).length;
+        taskStats.innerHTML = `<strong>${total}</strong> tugas • <strong>${completed}</strong> selesai`;
 
         if (total === 0) {
-            const icon = shift === 'morning' ? 'fa-sun' : 'fa-moon';
-            container.innerHTML = `<div class="empty-message"><i class="fas ${icon}"></i> Kosong, tambah jobdesk</div>`;
+            taskList.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">📭</div>
+                    <p>Belum ada jobdesk</p>
+                    <div class="sub">Tambahkan tugas di atas</div>
+                </div>
+            `;
             return;
         }
 
         let html = '';
         tasks.forEach(task => {
+            const checked = task.completed ? 'checked' : '';
             const completedClass = task.completed ? 'completed' : '';
-            const checkedAttr = task.completed ? 'checked' : '';
+            const text = escapeHtml(task.text);
             html += `
                 <div class="task-item" data-id="${task.id}">
-                    <div class="task-info">
-                        <input type="checkbox" class="task-check" data-shift="${shift}" data-id="${task.id}" ${checkedAttr}>
-                        <span class="task-text ${completedClass}">${escapeHtml(task.text)}</span>
+                    <div class="task-left">
+                        <input type="checkbox" class="task-check" ${checked} data-id="${task.id}">
+                        <span class="task-text ${completedClass}">${text}</span>
                     </div>
                     <div class="task-actions">
-                        <button class="edit-btn" data-shift="${shift}" data-id="${task.id}"><i class="fas fa-edit"></i></button>
-                        <button class="delete-btn" data-shift="${shift}" data-id="${task.id}"><i class="fas fa-trash-alt"></i></button>
+                        <button class="btn-icon edit" data-id="${task.id}" title="Edit">✏️</button>
+                        <button class="btn-icon delete" data-id="${task.id}" title="Hapus">🗑️</button>
                     </div>
                 </div>
             `;
         });
-        container.innerHTML = html;
+        taskList.innerHTML = html;
     }
 
-    function renderAll() {
-        renderShift('morning');
-        renderShift('night');
-    }
-
-    // ==================== CRUD + AUTO SAVE ====================
-    function addTask(shift, text) {
-        if (!text.trim()) {
-            showToast("Jobdesk tidak boleh kosong!", "fa-exclamation-triangle");
-            return false;
-        }
-        const newTask = {
-            id: generateId(),
-            text: text.trim(),
-            completed: false
-        };
-        tasksData[shift].push(newTask);
-        saveToLocalStorage();  // ← AUTO SAVE
-        renderAll();
-        showToast(`✅ Jobdesk ditambahkan di ${shift === 'morning' ? 'Pagi' : 'Malam'}`, "fa-plus-circle");
-        
-        // scroll ke bawah
-        const listDiv = document.getElementById(`${shift}List`);
-        if (listDiv) listDiv.scrollTop = listDiv.scrollHeight;
-        return true;
-    }
-
-    function deleteTask(shift, taskId) {
-        const beforeLength = tasksData[shift].length;
-        tasksData[shift] = tasksData[shift].filter(t => t.id !== taskId);
-        if (beforeLength !== tasksData[shift].length) {
-            saveToLocalStorage();  // ← AUTO SAVE (WAJIB)
-            renderAll();
-            showToast("🗑 Tugas berhasil dihapus", "fa-trash-alt");
-        }
-    }
-
-    function toggleComplete(shift, taskId, isChecked) {
-        const task = tasksData[shift].find(t => t.id === taskId);
-        if (task) {
-            task.completed = isChecked;
-            saveToLocalStorage();  // ← AUTO SAVE
-            renderAll();
-            if (isChecked) {
-                burstConfetti();
-                showToast("🎉 Selamat! Tugas selesai 🎉", "fa-trophy");
-            } else {
-                showToast("Tugas dibatalkan selesai", "fa-undo-alt");
-            }
-        }
-    }
-
-    function editTask(shift, taskId, newText) {
-        if (!newText.trim()) {
-            showToast("Text tidak boleh kosong!", "fa-exclamation");
-            return false;
-        }
-        const task = tasksData[shift].find(t => t.id === taskId);
-        if (task) {
-            task.text = newText.trim();
-            saveToLocalStorage();  // ← AUTO SAVE
-            renderAll();
-            showToast("✏️ Jobdesk diperbarui", "fa-pen");
-            return true;
-        }
-        return false;
-    }
-
-    // ==================== EVENT LISTENER (DELEGASI) ====================
-    function attachGlobalEvents() {
-        // Morning add
-        const btnMorning = document.getElementById('btnMorningAdd');
-        const morningInput = document.getElementById('morningInput');
-        if (btnMorning) {
-            btnMorning.onclick = () => addTask('morning', morningInput.value) && (morningInput.value = '');
-        }
-        if (morningInput) {
-            morningInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') addTask('morning', morningInput.value) && (morningInput.value = '');
-            });
-        }
-
-        // Night add
-        const btnNight = document.getElementById('btnNightAdd');
-        const nightInput = document.getElementById('nightInput');
-        if (btnNight) {
-            btnNight.onclick = () => addTask('night', nightInput.value) && (nightInput.value = '');
-        }
-        if (nightInput) {
-            nightInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') addTask('night', nightInput.value) && (nightInput.value = '');
-            });
-        }
-
-        // Event delegation untuk checkbox, edit, delete (karena dynamic)
-        document.body.addEventListener('change', (e) => {
-            if (e.target.classList.contains('task-check')) {
-                const shift = e.target.getAttribute('data-shift');
-                const id = e.target.getAttribute('data-id');
-                const isChecked = e.target.checked;
-                if (shift && id) toggleComplete(shift, id, isChecked);
-            }
-        });
-
-        document.body.addEventListener('click', (e) => {
-            // Hapus
-            if (e.target.closest('.delete-btn')) {
-                const btn = e.target.closest('.delete-btn');
-                const shift = btn.getAttribute('data-shift');
-                const id = btn.getAttribute('data-id');
-                if (shift && id) deleteTask(shift, id);
-            }
-            // Edit
-            if (e.target.closest('.edit-btn')) {
-                const btn = e.target.closest('.edit-btn');
-                const shift = btn.getAttribute('data-shift');
-                const id = btn.getAttribute('data-id');
-                if (shift && id) openEditModal(shift, id);
-            }
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>"]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            if (m === '"') return '&quot;';
+            return m;
         });
     }
 
-    // ==================== MODAL EDIT ====================
-    let currentEditShift = null;
-    let currentEditId = null;
+    // ============================================================
+    // 8. SUBSCRIBE FIRESTORE (REAL-TIME)
+    // ============================================================
+    function subscribeToShift(shift) {
+        if (unsubscribe) {
+            unsubscribe();
+            unsubscribe = null;
+        }
 
-    function openEditModal(shift, taskId) {
-        const task = tasksData[shift].find(t => t.id === taskId);
-        if (!task) return;
-        currentEditShift = shift;
-        currentEditId = taskId;
-        const modal = document.getElementById('editModal');
-        const input = document.getElementById('editInput');
-        input.value = task.text;
-        modal.style.display = 'flex';
+        const q = query(
+            collection(db, shift),
+            orderBy('createdAt', 'asc')
+        );
+
+        unsubscribe = onSnapshot(q, (snapshot) => {
+            tasks = [];
+            snapshot.forEach(doc => {
+                tasks.push({
+                    id: doc.id,
+                    ...doc.data()
+                });
+            });
+            renderTasks();
+            console.log(`📥 ${shift} data updated:`, tasks.length);
+        }, (error) => {
+            console.error('Error:', error);
+            showToast('Gagal memuat data', 'error');
+        });
     }
 
-    function closeModal() {
-        document.getElementById('editModal').style.display = 'none';
-        currentEditShift = null;
-        currentEditId = null;
-    }
-
-    function confirmEdit() {
-        if (!currentEditShift || !currentEditId) {
-            closeModal();
+    // ============================================================
+    // 9. CRUD
+    // ============================================================
+    async function addTask(text) {
+        const trimmed = text.trim();
+        if (!trimmed) {
+            showToast('Jobdesk tidak boleh kosong!', 'error');
             return;
         }
-        const newText = document.getElementById('editInput').value;
-        editTask(currentEditShift, currentEditId, newText);
-        closeModal();
-    }
+        if (!currentShift) return;
 
-    // ==================== INIT DEMO & LOAD ====================
-    function initDemoData() {
-        tasksData.morning = [
-            { id: generateId(), text: "📞 Menjawab telepon customer (07.45 - 10.00)", completed: false },
-            { id: generateId(), text: "💬 Membalas chat WhatsApp & email", completed: false },
-            { id: generateId(), text: "📝 Input keluhan ke sistem", completed: true },
-            { id: generateId(), text: "🔄 Koordinasi dengan teknisi lapangan", completed: false },
-            { id: generateId(), text: "📊 Laporan CS shift pagi", completed: false }
-        ];
-        tasksData.night = [
-            { id: generateId(), text: "🌙 Follow up tiket malam (19.45 - 22.00)", completed: false },
-            { id: generateId(), text: "🔒 Cek kepuasan pelanggan via broadcast", completed: false },
-            { id: generateId(), text: "📋 Rekap masalah darurat", completed: true },
-            { id: generateId(), text: "☎️ Layanan hotline 24 jam", completed: false },
-            { id: generateId(), text: "📑 Serah terima ke shift pagi", completed: false }
-        ];
-        saveToLocalStorage();
-        renderAll();
-    }
-
-    function updateLiveDate() {
-        const now = new Date();
-        const formatted = now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        const span = document.getElementById('liveDate');
-        if (span) span.innerHTML = `<i class="far fa-calendar-check"></i> ${formatted}`;
-    }
-
-    // ==================== START APLIKASI ====================
-    function startApp() {
-        const hasData = loadFromLocalStorage();
-        if (!hasData || (tasksData.morning.length === 0 && tasksData.night.length === 0)) {
-            initDemoData();
-        } else {
-            renderAll();
+        try {
+            await addDoc(collection(db, currentShift), {
+                text: trimmed,
+                completed: false,
+                createdAt: serverTimestamp()
+            });
+            showToast('✅ Jobdesk berhasil ditambahkan');
+        } catch (error) {
+            console.error('Error adding:', error);
+            showToast('Gagal menambahkan tugas', 'error');
         }
-        attachGlobalEvents();
-        updateLiveDate();
-        setInterval(updateLiveDate, 60000);
-
-        // Modal buttons
-        document.getElementById('saveEditBtn').onclick = confirmEdit;
-        document.getElementById('cancelEditBtn').onclick = closeModal;
-        window.onclick = (e) => { if (e.target === document.getElementById('editModal')) closeModal(); };
-        
-        console.log("🔥 JOB CS LINE - Auto save siap, hapus akan tersimpan permanen");
     }
 
-    startApp();
+    async function deleteTask(taskId) {
+        if (!confirm('Yakin ingin menghapus tugas ini?')) return;
+        if (!currentShift) return;
+
+        try {
+            await deleteDoc(doc(db, currentShift, taskId));
+            showToast('🗑️ Tugas berhasil dihapus');
+        } catch (error) {
+            console.error('Error deleting:', error);
+            showToast('Gagal menghapus tugas', 'error');
+        }
+    }
+
+    async function toggleComplete(taskId, isChecked) {
+        if (!currentShift) return;
+
+        try {
+            await updateDoc(doc(db, currentShift, taskId), {
+                completed: isChecked
+            });
+            if (isChecked) {
+                showToast('🎉 Selamat! Tugas selesai!');
+                triggerConfetti();
+            }
+        } catch (error) {
+            console.error('Error updating:', error);
+            showToast('Gagal mengupdate tugas', 'error');
+        }
+    }
+
+    async function editTask(taskId, newText) {
+        const trimmed = newText.trim();
+        if (!trimmed) {
+            showToast('Text tidak boleh kosong!', 'error');
+            return;
+        }
+        if (!currentShift) return;
+
+        try {
+            await updateDoc(doc(db, currentShift, taskId), {
+                text: trimmed
+            });
+            showToast('✏️ Jobdesk berhasil diperbarui');
+        } catch (error) {
+            console.error('Error editing:', error);
+            showToast('Gagal mengedit tugas', 'error');
+        }
+    }
+
+    // ============================================================
+    // 10. CONFETTI
+    // ============================================================
+    function triggerConfetti() {
+        const colors = ['#10b981', '#fbbf24', '#60a5fa', '#f472b6', '#a78bfa', '#fb923c'];
+        for (let i = 0; i < 50; i++) {
+            const el = document.createElement('div');
+            const size = Math.random() * 10 + 4;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const startX = Math.random() * 100;
+            const duration = Math.random() * 1.5 + 0.8;
+            const delay = Math.random() * 0.4;
+            const rotate = Math.random() * 720 - 360;
+
+            el.style.cssText = `
+                position: fixed;
+                top: -10px;
+                left: ${startX}%;
+                width: ${size}px;
+                height: ${size * 2.5}px;
+                background: ${color};
+                border-radius: 2px;
+                pointer-events: none;
+                z-index: 9999;
+                animation: confettiFall ${duration}s cubic-bezier(0.3, 0, 0.7, 1) ${delay}s forwards;
+                transform: rotate(${rotate}deg);
+            `;
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), (duration + delay) * 1000 + 200);
+        }
+
+        if (!document.getElementById('confettiStyle')) {
+            const style = document.createElement('style');
+            style.id = 'confettiStyle';
+            style.textContent = `
+                @keyframes confettiFall {
+                    0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+                    100% { transform: translateY(100vh) rotate(720deg) scale(0.2); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    }
+
+    // ============================================================
+    // 11. PILIH SHIFT
+    // ============================================================
+    function selectShift(shift) {
+        if (shift === currentShift) return;
+
+        currentShift = shift;
+
+        // Sembunyikan pilihan
+        shiftSelection.style.display = 'none';
+
+        // Tampilkan loading
+        loadingOverlay.classList.add('active');
+        contentArea.classList.remove('active');
+
+        // Update title
+        const emoji = shift === 'morning' ? '☀️' : '🌙';
+        const name = shift === 'morning' ? 'Shift Pagi' : 'Shift Malam';
+        shiftTitle.innerHTML = `<span class="emoji">${emoji}</span> ${name}`;
+
+        // Loading 2 detik
+        setTimeout(() => {
+            loadingOverlay.classList.remove('active');
+            contentArea.classList.add('active');
+
+            subscribeToShift(shift);
+            taskInput.focus();
+
+            showToast(`🔓 Masuk ke ${name}`);
+        }, 2000);
+    }
+
+    // ============================================================
+    // 12. KEMBALI
+    // ============================================================
+    function goBack() {
+        if (unsubscribe) {
+            unsubscribe();
+            unsubscribe = null;
+        }
+        currentShift = null;
+        tasks = [];
+
+        contentArea.classList.remove('active');
+        shiftSelection.style.display = 'flex';
+        taskInput.value = '';
+
+        showToast('↩️ Kembali ke pilihan shift');
+    }
+
+    // ============================================================
+    // 13. TANGGAL
+    // ============================================================
+    function updateDate() {
+        const now = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('dateDisplay').textContent =
+            '📅 ' + now.toLocaleDateString('id-ID', options);
+    }
+
+    // ============================================================
+    // 14. EVENT LISTENERS
+    // ============================================================
+    function setupEventListeners() {
+        // Pilihan Shift
+        document.querySelectorAll('.shift-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                selectShift(btn.dataset.shift);
+            });
+        });
+
+        // Kembali
+        backBtn.addEventListener('click', goBack);
+
+        // Tambah
+        addBtn.addEventListener('click', () => {
+            addTask(taskInput.value);
+            taskInput.value = '';
+            taskInput.focus();
+        });
+
+        taskInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addTask(taskInput.value);
+                taskInput.value = '';
+            }
+        });
+
+        // Delegasi event
+        taskList.addEventListener('change', (e) => {
+            if (e.target.classList.contains('task-check')) {
+                const id = e.target.dataset.id;
+                const checked = e.target.checked;
+                if (id) toggleComplete(id, checked);
+            }
+        });
+
+        taskList.addEventListener('click', (e) => {
+            const deleteBtn = e.target.closest('.delete');
+            if (deleteBtn) {
+                const id = deleteBtn.dataset.id;
+                if (id) deleteTask(id);
+            }
+
+            const editBtn = e.target.closest('.edit');
+            if (editBtn) {
+                const id = editBtn.dataset.id;
+                if (id) openEditModal(id);
+            }
+        });
+    }
+
+    // ============================================================
+    // 15. MODAL EDIT (prompt)
+    // ============================================================
+    function openEditModal(taskId) {
+        const task = tasks.find(t => t.id === taskId);
+        if (!task) return;
+
+        const newText = prompt('✏️ Edit jobdesk:', task.text);
+        if (newText !== null && newText.trim() !== '') {
+            editTask(taskId, newText);
+        } else if (newText !== null && newText.trim() === '') {
+            showToast('Text tidak boleh kosong!', 'error');
+        }
+    }
+
+    // ============================================================
+    // 16. INIT
+    // ============================================================
+    function init() {
+        updateDate();
+        setInterval(updateDate, 60000);
+        setupEventListeners();
+        console.log('🚀 JOB CS LINE siap!');
+    }
+
+    init();
 </script>
 </body>
 </html>
