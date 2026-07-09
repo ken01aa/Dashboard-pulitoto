@@ -320,6 +320,9 @@
             background: #f0fdf4;
             opacity: 0.7;
         }
+        .data-table tbody tr.row-result-done {
+            background: #dbeafe;
+        }
 
         @keyframes rowGlow {
             0%, 100% { box-shadow: inset 0 0 0 0 rgba(245, 158, 11, 0); }
@@ -425,7 +428,7 @@
         .countdown-soon { background: #fef3c7; color: #92400e; }
         .countdown-urgent { background: #fee2e2; color: #dc2626; }
 
-        /* ===== STYLE JADWAL (SAMA DENGAN ASLI) ===== */
+        /* ===== STYLE JADWAL ===== */
         #pane-jadwal {
             background: var(--bg-dark);
             border-radius: 12px;
@@ -635,6 +638,169 @@
             opacity: 0.5;
         }
 
+        /* ===== STYLE RESULT CEK ===== */
+        #tab-result .result-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        #tab-result .result-stat-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 16px 20px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        #tab-result .result-stat-card .num {
+            font-size: 28px;
+            font-weight: 700;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+        #tab-result .result-stat-card .label {
+            font-size: 12px;
+            color: var(--fg-secondary);
+            margin-top: 4px;
+        }
+        #tab-result .result-stat-card .num.green { color: var(--accent-success); }
+        #tab-result .result-stat-card .num.orange { color: var(--accent-warning); }
+        #tab-result .result-stat-card .num.blue { color: var(--accent-primary); }
+
+        #tab-result .result-table-wrap {
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        #tab-result .result-table-wrap .result-header {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        #tab-result .result-table-wrap .result-header h4 {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        #tab-result .result-table-wrap .result-header .result-filter {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        #tab-result .result-table-wrap .result-header .result-filter button {
+            padding: 4px 14px;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--fg-secondary);
+        }
+
+        #tab-result .result-table-wrap .result-header .result-filter button:hover {
+            background: var(--bg-hover);
+        }
+
+        #tab-result .result-table-wrap .result-header .result-filter button.active {
+            background: var(--accent-primary);
+            color: #fff;
+            border-color: var(--accent-primary);
+        }
+
+        #tab-result .result-scroll {
+            max-height: 55vh;
+            overflow-y: auto;
+            overflow-x: auto;
+        }
+
+        #tab-result .result-scroll table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px;
+        }
+
+        #tab-result .result-scroll th {
+            background: #f8fafc;
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--fg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+
+        #tab-result .result-scroll td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        #tab-result .result-scroll tr:last-child td { border-bottom: none; }
+        #tab-result .result-scroll tr:hover { background: var(--bg-hover); }
+
+        #tab-result .result-number {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent-primary);
+            letter-spacing: 2px;
+        }
+
+        #tab-result .result-number.winner {
+            color: var(--accent-success);
+            background: #d1fae5;
+            padding: 4px 12px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        #tab-result .result-time {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            color: var(--fg-muted);
+        }
+
+        #tab-result .result-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        #tab-result .result-badge.live { background: #fef3c7; color: #d97706; animation: livePulse 1.5s ease-in-out infinite; }
+        #tab-result .result-badge.done { background: #d1fae5; color: #059669; }
+        #tab-result .result-badge.upcoming { background: #f3f4f6; color: #6b7280; }
+
+        #tab-result .no-result {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--fg-muted);
+        }
+
+        #tab-result .no-result i {
+            font-size: 40px;
+            opacity: 0.3;
+            margin-bottom: 12px;
+            display: block;
+        }
+
         /* VIEWER SECTION */
         #viewerSection {
             display: none;
@@ -712,9 +878,11 @@
         /* Responsive */
         @media (max-width: 1200px) {
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            #tab-result .result-stats { grid-template-columns: repeat(3, 1fr); }
         }
         @media (max-width: 768px) {
             .stats-grid { grid-template-columns: 1fr; }
+            #tab-result .result-stats { grid-template-columns: 1fr; }
             body { padding: 16px; }
             .table-header { flex-direction: column; gap: 12px; align-items: flex-start; }
             .viewer-content { margin: 0; border-radius: 0; }
@@ -766,7 +934,6 @@
 
         <!-- TAB 1: Crosscheck -->
         <div id="tab-crosscheck" class="tab-content active">
-            <!-- Stats Grid -->
             <div class="stats-grid" style="margin-top: 20px;">
                 <div class="stat-card info"><div class="stat-label">Total Pasaran</div><div class="stat-value" id="statTotal">0</div></div>
                 <div class="stat-card alert"><div class="stat-label">Perlu Crosscheck</div><div class="stat-value" id="statAlert">0</div></div>
@@ -774,7 +941,6 @@
                 <div class="stat-card"><div class="stat-label">Menunggu</div><div class="stat-value" id="statWaiting">0</div></div>
             </div>
 
-            <!-- Table Section -->
             <div class="table-section">
                 <div class="table-header">
                     <h3 class="table-title"><i class="fas fa-list" style="color: var(--accent-primary);"></i> Daftar Pasaran</h3>
@@ -802,7 +968,7 @@
             </div>
         </div>
 
-        <!-- TAB 2: Jadwal (SAMA DENGAN ASLI) -->
+        <!-- TAB 2: Jadwal -->
         <div id="tab-jadwal" class="tab-content">
             <div id="pane-jadwal">
                 <div class="pj-header">
@@ -821,19 +987,46 @@
 
         <!-- TAB 3: Result Cek -->
         <div id="tab-result" class="tab-content">
-            <div style="background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-color); padding: 24px; margin-top: 20px; min-height: 400px;">
-                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;margin-bottom:20px;">
-                    <h3 style="font-size:18px;font-weight:700;color:var(--fg-primary);">
-                        <i class="fas fa-trophy" style="color:var(--accent-warning);"></i> Result Cek
-                    </h3>
-                    <div class="clock-display">
-                        <div class="clock-time" id="clockResult">00:00:00</div>
+            <div style="margin-top: 20px;">
+                <!-- Result Stats -->
+                <div class="result-stats">
+                    <div class="result-stat-card">
+                        <div class="num green" id="resultTotal">0</div>
+                        <div class="label">Total Result</div>
+                    </div>
+                    <div class="result-stat-card">
+                        <div class="num orange" id="resultLive">0</div>
+                        <div class="label">Live / Menunggu</div>
+                    </div>
+                    <div class="result-stat-card">
+                        <div class="num blue" id="resultDone">0</div>
+                        <div class="label">Selesai</div>
                     </div>
                 </div>
-                <div style="text-align:center;padding:60px 20px;color:var(--fg-muted);">
-                    <i class="fas fa-chart-line" style="font-size:48px;opacity:0.3;margin-bottom:16px;display:block;"></i>
-                    <p style="font-size:16px;font-weight:500;">Fitur Result Cek akan segera hadir</p>
-                    <p style="font-size:13px;margin-top:8px;">Pantau hasil result pasaran secara real-time</p>
+
+                <!-- Result Table -->
+                <div class="result-table-wrap">
+                    <div class="result-header">
+                        <h4><i class="fas fa-trophy" style="color:var(--accent-warning);"></i> Hasil Result Pasaran</h4>
+                        <div class="result-filter">
+                            <button class="active" data-filter="all" onclick="filterResult('all')">Semua</button>
+                            <button data-filter="live" onclick="filterResult('live')">Live</button>
+                            <button data-filter="done" onclick="filterResult('done')">Selesai</button>
+                        </div>
+                    </div>
+                    <div class="result-scroll" id="resultScroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Pasaran</th>
+                                    <th>Result</th>
+                                    <th>Waktu</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultBody"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -861,7 +1054,7 @@
 
     <script>
         // ================================
-        // CROSSCHECK DATA (SAMA DENGAN ASLI)
+        // CROSSCHECK DATA
         // ================================
         const marketsData = [
             { name: "TOTOMACAU PAGI", schedule: "SETIAP HARI", betclose: "00:00", result: "00:15", liveDraw: "https://www.poolstotomacao.com/", liveYt: "https://kick.com/live-ttm4d" },
@@ -916,35 +1109,91 @@
         ];
 
         let approvedMarkets = {};
-        const clockEl = document.getElementById('clock');
-        const clockResult = document.getElementById('clockResult');
-        const tableBody = document.getElementById('tableBody');
-        const alertBanner = document.getElementById('alertBanner');
-        const alertTitle = document.getElementById('alertTitle');
-        const alertMessage = document.getElementById('alertMessage');
-        const alertBadge = document.getElementById('alertBadge');
-        const mainView = document.getElementById('mainView');
-        const viewerSection = document.getElementById('viewerSection');
-        const viewerIframe = document.getElementById('viewerIframe');
-        const viewerTitle = document.getElementById('viewerTitle');
-        const viewerUrlDisplay = document.getElementById('viewerUrlDisplay');
-        const newTabLink = document.getElementById('newTabLink');
+        let currentResultFilter = 'all';
+
+        // ================================
+        // RESULT DATA (Simulasi Real-Time)
+        // ================================
+        let resultData = [];
+
+        function generateResultData() {
+            const now = new Date();
+            const today = now.toDateString();
+            resultData = [];
+            
+            marketsData.forEach(market => {
+                // Generate random 4-digit number
+                const num = String(Math.floor(1000 + Math.random() * 9000));
+                const status = getMarketStatus(market);
+                const key = getApprovalKey(market);
+                const isApproved = approvedMarkets[key];
+                
+                let resultStatus = 'upcoming';
+                let resultTime = market.result;
+                let resultNumber = '-';
+                
+                // If result time has passed today or approved, show result
+                const currentMins = getCurrentMinutes();
+                const resultMins = parseTimeToMinutes(market.result);
+                const betcloseMins = parseTimeToMinutes(market.betclose);
+                
+                if (market.hourly) {
+                    const min = now.getMinutes();
+                    if (min >= 10 && min < 40) {
+                        resultStatus = 'live';
+                        resultNumber = num;
+                    } else if (min >= 40) {
+                        resultStatus = 'done';
+                        resultNumber = num;
+                    } else {
+                        resultStatus = 'upcoming';
+                        resultNumber = '-';
+                    }
+                } else if (resultMins !== -1) {
+                    if (currentMins >= resultMins && currentMins < resultMins + 30) {
+                        resultStatus = 'live';
+                        resultNumber = isApproved ? num : '???';
+                    } else if (currentMins >= resultMins + 30) {
+                        resultStatus = 'done';
+                        resultNumber = isApproved ? num : '???';
+                    } else {
+                        resultStatus = 'upcoming';
+                        resultNumber = '-';
+                    }
+                }
+                
+                resultData.push({
+                    name: market.name,
+                    resultNumber: resultNumber,
+                    resultTime: resultTime,
+                    status: resultStatus,
+                    isApproved: isApproved,
+                    betclose: market.betclose
+                });
+            });
+            
+            // Sort: live first, then upcoming, then done
+            resultData.sort((a, b) => {
+                const order = { live: 0, upcoming: 1, done: 2 };
+                return order[a.status] - order[b.status];
+            });
+        }
 
         // ================================
         // TAB SWITCHING
         // ================================
         function switchTab(tabId) {
-            // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             
-            // Show selected tab
             document.getElementById(tabId).classList.add('active');
             document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add('active');
 
-            // If switching to jadwal, reinitialize
             if (tabId === 'tab-jadwal') {
                 setTimeout(initJadwal, 50);
+            }
+            if (tabId === 'tab-result') {
+                renderResultTable();
             }
         }
 
@@ -1074,7 +1323,6 @@
         }
 
         function renderTable() {
-            const today = new Date().toDateString();
             const sortedMarkets = [...marketsData].sort((a, b) => getSortPriority(a) - getSortPriority(b));
             let html = '';
             let alertCount = 0;
@@ -1150,7 +1398,7 @@
             document.getElementById('statApproved').textContent = approvedCount;
             document.getElementById('statWaiting').textContent = waitingCount;
             document.getElementById('tableCount').textContent = `${marketsData.length} data`;
-            alertBadge.textContent = alertCount;
+            document.getElementById('alertBadge').textContent = alertCount;
         }
 
         function approveMarket(name) {
@@ -1160,6 +1408,7 @@
             approvedMarkets[key] = { timestamp: new Date().toISOString(), date: new Date().toDateString() };
             saveApproved();
             renderTable();
+            renderResultTable();
             showAlertBanner('Berhasil', `${name} telah di-approve`, false);
         }
 
@@ -1186,20 +1435,86 @@
         function updateClock() {
             const now = new Date();
             const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
-            if (clockEl) clockEl.textContent = timeStr;
-            if (clockResult) clockResult.textContent = timeStr;
+            document.getElementById('clock').textContent = timeStr;
         }
 
         // ================================
-        // JADWAL FUNCTIONS (SAMA DENGAN ASLI)
+        // RESULT CEK FUNCTIONS
         // ================================
-        let jadwalInitialized = false;
+        function renderResultTable() {
+            generateResultData();
+            
+            let filtered = resultData;
+            if (currentResultFilter === 'live') {
+                filtered = resultData.filter(r => r.status === 'live' || r.status === 'upcoming');
+            } else if (currentResultFilter === 'done') {
+                filtered = resultData.filter(r => r.status === 'done');
+            }
+            
+            let html = '';
+            if (filtered.length === 0) {
+                html = `<tr><td colspan="4"><div class="no-result"><i class="fas fa-inbox"></i>Tidak ada data result</div></td></tr>`;
+            } else {
+                filtered.forEach(r => {
+                    let statusLabel = '';
+                    let statusClass = '';
+                    let numberDisplay = r.resultNumber;
+                    
+                    if (r.status === 'live') {
+                        statusLabel = '🟡 Live';
+                        statusClass = 'live';
+                        numberDisplay = r.isApproved ? r.resultNumber : '⏳ Menunggu';
+                    } else if (r.status === 'done') {
+                        statusLabel = '✅ Selesai';
+                        statusClass = 'done';
+                        numberDisplay = r.isApproved ? r.resultNumber : '❓ Belum dicek';
+                    } else {
+                        statusLabel = '⏳ Akan Datang';
+                        statusClass = 'upcoming';
+                        numberDisplay = '-';
+                    }
+                    
+                    const isWinner = r.status !== 'upcoming' && r.isApproved && r.resultNumber !== '-';
+                    
+                    html += `
+                        <tr>
+                            <td><strong>${r.name}</strong></td>
+                            <td>
+                                <span class="result-number ${isWinner ? 'winner' : ''}">
+                                    ${numberDisplay}
+                                </span>
+                            </td>
+                            <td class="result-time">${r.resultTime} WIB</td>
+                            <td><span class="result-badge ${statusClass}">${statusLabel}</span></td>
+                        </tr>
+                    `;
+                });
+            }
+            
+            document.getElementById('resultBody').innerHTML = html;
+            
+            // Update stats
+            const total = resultData.length;
+            const live = resultData.filter(r => r.status === 'live' || r.status === 'upcoming').length;
+            const done = resultData.filter(r => r.status === 'done').length;
+            document.getElementById('resultTotal').textContent = total;
+            document.getElementById('resultLive').textContent = live;
+            document.getElementById('resultDone').textContent = done;
+        }
 
+        function filterResult(filter) {
+            currentResultFilter = filter;
+            document.querySelectorAll('.result-filter button').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.filter === filter);
+            });
+            renderResultTable();
+        }
+
+        // ================================
+        // JADWAL FUNCTIONS
+        // ================================
         function initJadwal() {
             if (document.getElementById('pj-grid').children.length > 0) return;
-
-            var NAMA_HARI = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
-            var NAMA_BULAN = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
 
             var LOGO_MAP = {
                 'HOKIDRAW': 'https://cdn.areabermain.club/assets/cdn/az4/2024/12/25/20241225/1de5162dbfea7a85f41b654a2c3a4d07/logo-1.png',
@@ -1392,10 +1707,10 @@
             loadApproved();
             updateClock();
             renderTable();
+            renderResultTable();
             setInterval(updateClock, 1000);
-            setInterval(() => { renderTable(); checkAlerts(); }, 10000);
+            setInterval(() => { renderTable(); renderResultTable(); checkAlerts(); }, 10000);
             setTimeout(checkAlerts, 1000);
-            // Initialize jadwal on first load
             setTimeout(initJadwal, 100);
         }
 
