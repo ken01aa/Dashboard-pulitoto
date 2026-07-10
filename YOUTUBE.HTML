@@ -90,7 +90,7 @@ min-width: 140px;
 
 .status-title{
 font-size: 11px;
-color: var(--text-secondary);
+color: var(--text-muted);
 margin-bottom: 5px;
 font-weight: 600;
 }
@@ -145,6 +145,13 @@ transition: 0.3s;
 button:hover{
 transform: translateY(-2px);
 background: #1e293b;
+}
+
+button.danger-btn {
+    background: var(--accent-danger);
+}
+button.danger-btn:hover {
+    background: #dc2626;
 }
 
 button.success-btn {
@@ -281,7 +288,7 @@ font-weight: 700;
 
 .comment-time{
 font-size: 10px;
-color: var(--text-secondary);
+color: var(--text-muted);
 margin-top: 3px;
 }
 
@@ -315,6 +322,15 @@ color: var(--text-secondary);
 .deleted-table td {
     padding: 12px;
     border-bottom: 1px solid var(--border);
+}
+
+.badge-deleted {
+    background: var(--accent-danger);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 600;
 }
 
 .toast{
@@ -376,7 +392,8 @@ KOMENTAR <span>NEGATIF YOUTUBE</span>
 <input type="number" id="refreshInput" placeholder="Menit Refresh" value="30" min="1">
 <button onclick="saveRefresh()">SIMPAN REFRESH</button>
 <button onclick="manualRefresh()">REFRESH SEKARANG</button>
-<button onclick="testSound()" class="success-btn">🔊 TEST SUARA</button>
+<button onclick="clearAllHistory()" class="danger-btn">HAPUS SEMUA HISTORY</button>
+<button onclick="testSound()" class="success-btn">🔊 TEST SUARA </button>
 </div>
 </div>
 
@@ -392,16 +409,8 @@ KOMENTAR <span>NEGATIF YOUTUBE</span>
 <div id="deletedTab" class="tab-content">
 <div class="deleted-table-container">
 <table class="deleted-table">
-<thead>
-<tr>
-<th>Waktu Dihapus</th>
-<th>Pengguna</th>
-<th>Komentar</th>
-<th>Video</th>
-</tr>
-</thead>
-<tbody id="deletedTableBody">
-<tr><td colspan="4" style="text-align:center;padding:40px;">⏳ Memuat data dari Firebase...</td></tr>
+<thead><tr><th>Waktu Dihapus</th><th>Pengguna</th><th>Komentar</th><th>Video</th><th>Status</th></tr></thead>
+<tbody id="deletedTableBody"><tr><td colspan="5" style="text-align:center;padding:40px;">⏳ Memuat data dari Firebase......</td></tr>
 </tbody>
 </table>
 </div>
@@ -442,23 +451,27 @@ let savedCommentsDetail = {};
 let deletedCommentsLog = [];
 let isFirstLoad = true;
 
-// ==================== SUARA CEWEK LEMBUT ====================
+// ==================== SUARA CEWEK LEMBUT BAHASA INDONESIA ====================
 let speechEnabled = true;
 let speechSynthesis = window.speechSynthesis;
 let notificationPermission = false;
 let selectedVoice = null;
 
+// Fungsi untuk mendapatkan suara cewek Indonesia yang lembut
 function getIndonesianFemaleVoice() {
     const voices = speechSynthesis.getVoices();
     
+    // Daftar prioritas suara cewek Indonesia (dari yang terbaik)
     const priorityList = [
-        "Google Bahasa Indonesia",
-        "Microsoft Siti Online",
-        "Siti",
-        "Female",
-        "Perempuan"
+        "Google Bahasa Indonesia",      // Google Assistant (cewek, lembut)
+        "Microsoft Siti Online",        // Microsoft Siti (cewek Indonesia)
+        "Google Bahasa Indonesia",      // alternatif
+        "Siti",                         // Siti Indonesia
+        "Female",                       // generic female
+        "Perempuan"                     // generic perempuan
     ];
     
+    // Cari suara yang match dengan prioritas
     for (const priority of priorityList) {
         const voice = voices.find(v => 
             (v.lang === "id-ID" || v.lang === "id") && 
@@ -467,18 +480,22 @@ function getIndonesianFemaleVoice() {
         if (voice) return voice;
     }
     
+    // Fallback: cari suara dengan lang id-ID (Indonesia)
     const indonesianVoice = voices.find(v => v.lang === "id-ID");
     if (indonesianVoice) return indonesianVoice;
     
+    // Fallback terakhir: cari suara female dengan bahasa apapun
     const femaleVoice = voices.find(v => 
         v.name.toLowerCase().includes("female") || 
         v.name.toLowerCase().includes("perempuan")
     );
     if (femaleVoice) return femaleVoice;
     
+    // Default: suara pertama yang available
     return voices[0];
 }
 
+// Inisialisasi suara (panggil setelah voices loaded)
 function initVoice() {
     const voices = speechSynthesis.getVoices();
     if (voices.length > 0) {
@@ -487,30 +504,36 @@ function initVoice() {
     }
 }
 
+// Load voices (karena kadang perlu waktu)
 if (speechSynthesis) {
     speechSynthesis.onvoiceschanged = () => {
         initVoice();
     };
+    // Coba langsung
     setTimeout(() => initVoice(), 500);
 }
 
+// Fungsi untuk mengucapkan teks dengan suara cewek lembut
 function speakText(text) {
     if (!speechEnabled) return;
     
     try {
+        // Hentikan suara yang sedang berlangsung
         if (speechSynthesis.speaking) {
             speechSynthesis.cancel();
         }
         
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = "id-ID";
-        utterance.rate = 0.85;
-        utterance.pitch = 1.15;
-        utterance.volume = 1.0;
+        utterance.lang = "id-ID"; // Bahasa Indonesia
+        utterance.rate = 0.85;    // Sedikit lebih lambat (lembut)
+        utterance.pitch = 1.15;   // Nada lebih tinggi (khas cewek)
+        utterance.volume = 1.0;   // Volume maksimal
         
+        // Gunakan suara cewek yang sudah dipilih
         if (selectedVoice) {
             utterance.voice = selectedVoice;
         } else {
+            // Coba cari lagi suara cewek Indonesia
             const voices = speechSynthesis.getVoices();
             const femaleIndo = voices.find(v => 
                 (v.lang === "id-ID" || v.lang === "id") && 
@@ -520,12 +543,35 @@ function speakText(text) {
         }
         
         speechSynthesis.speak(utterance);
-        console.log(`🔊 Mengucapkan: "${text}"`);
+        console.log(`🔊 (Suara cewek lembut) Mengucapkan: "${text}"`);
     } catch(e) {
         console.log("Speech error:", e);
+        playFallbackBeep();
     }
 }
 
+// Fallback jika speech synthesis gagal
+function playFallbackBeep() {
+    try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioContext.state === "suspended") {
+            audioContext.resume();
+        }
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        oscillator.frequency.value = 880;
+        gainNode.gain.value = 0.3;
+        oscillator.start();
+        gainNode.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 1);
+        oscillator.stop(audioContext.currentTime + 0.8);
+    } catch(e) {
+        console.log("Beep fallback gagal");
+    }
+}
+
+// Minta izin notifikasi
 function requestNotificationPermission() {
     if ("Notification" in window) {
         if (Notification.permission === "default") {
@@ -539,6 +585,7 @@ function requestNotificationPermission() {
     }
 }
 
+// Tampilkan notifikasi desktop
 function showDesktopNotification(title, body) {
     if (notificationPermission && "Notification" in window) {
         try {
@@ -558,31 +605,39 @@ function showDesktopNotification(title, body) {
     }
 }
 
+// Tampilkan notifikasi komentar baru DENGAN SUARA CEWEK LEMBUT
 function showNewCommentNotification(username, videoTitle, commentText) {
+    // 1. SUARA UCAPAN CEWEK LEMBUT: "SATU KOMENTAR NEGATIF YOUTUBE"
     speakText("SATU KOMENTAR NEGATIF YOUTUBE");
     
+    // 2. Toast di dalam halaman
     const toast = document.getElementById("toast");
     document.getElementById("toastText").innerHTML = `💬 <strong>${escapeHtml(username)}</strong> berkomentar di <strong>${escapeHtml(videoTitle)}</strong><br><span style="font-size:11px;">${escapeHtml(commentText.substring(0,80))}${commentText.length>80?'...':''}</span>`;
     toast.classList.add("show");
     setTimeout(() => toast.classList.remove("show"), 5000);
     
+    // 3. Notifikasi desktop
     showDesktopNotification(`💬 Komentar baru dari ${username}`, `${videoTitle}\n"${commentText.substring(0,100)}${commentText.length>100?'...':''}"`);
 }
 
+// Test suara (tombol TEST SUARA)
 function testSound() {
     speakText("SATU KOMENTAR NEGATIF YOUTUBE");
-    showToast("🔊 Test suara cewek lembut!");
+    showToast("🔊 Test suara cewek lembut! Seharusnya terdengar 'SATU KOMENTAR NEGATIF YOUTUBE' dengan suara perempuan");
     
+    // Test notifikasi desktop
     if (notificationPermission) {
-        new Notification("Test Notifikasi", { body: "Notifikasi berfungsi!" });
+        new Notification("Test Notifikasi", { body: "Notifikasi berfungsi dengan baik!" });
     } else {
-        showToast("⚠️ Izin notifikasi belum diberikan.");
+        showToast("⚠️ Izin notifikasi belum diberikan. Klik izinkan saat popup muncul.");
         Notification.requestPermission();
     }
 }
 
+// Panggil minta izin saat halaman dimuat
 requestNotificationPermission();
 
+// Aktifkan Speech Synthesis (butuh interaksi user pertama)
 function enableSpeech() {
     speechEnabled = true;
     if (speechSynthesis) {
@@ -590,6 +645,7 @@ function enableSpeech() {
         speechSynthesis.speak(dummy);
         speechSynthesis.cancel();
     }
+    console.log("✅ Speech diaktifkan");
 }
 
 setTimeout(() => enableSpeech(), 1000);
@@ -612,72 +668,57 @@ function startAutoRefresh() {
     refreshInterval = setInterval(() => loadAllComments(), refreshMinutes * 60 * 1000);
 }
 
-// ==================== FIREBASE SYNC (DIPERBAIKI) ====================
+// ==================== FIREBASE SYNC ====================
 async function loadHistoryFromFirebase() {
     try {
-        console.log("🔄 Memuat history dari Firebase...");
         const response = await fetch(`${FIREBASE_URL}deletedHistory.json`);
         const data = await response.json();
         
-        console.log("📦 Data mentah dari Firebase:", data);
-        
         if(data) {
-            // Konversi object ke array dan filter data yang valid
-            const rawData = Object.values(data);
-            deletedCommentsLog = rawData.filter(log => {
-                // Hanya tampilkan data yang memiliki minimal authorName atau commentText
-                return log && (log.authorName || log.commentText || log.videoTitle);
-            });
-            // Urutkan dari yang terbaru
-            deletedCommentsLog.sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
-            console.log(`✅ Loaded ${deletedCommentsLog.length} history valid dari Firebase`);
-            console.log("📝 Detail data:", deletedCommentsLog);
+            deletedCommentsLog = Object.values(data);
+            deletedCommentsLog.sort((a,b) => b.timestamp - a.timestamp);
+            updateDeletedCount();
+            renderDeletedTable();
+            console.log(`✅ Loaded ${deletedCommentsLog.length} history from Firebase`);
         } else {
             deletedCommentsLog = [];
-            console.log("ℹ️ Tidak ada history di Firebase");
+            updateDeletedCount();
+            renderDeletedTable();
         }
-        
-        updateDeletedCount();
-        renderDeletedTable();
-        return deletedCommentsLog.length;
     } catch(e) {
-        console.error("❌ Gagal load dari Firebase:", e);
-        deletedCommentsLog = [];
-        updateDeletedCount();
-        renderDeletedTable();
-        return 0;
+        console.error("Gagal load dari Firebase:", e);
+        showToast("⚠️ Gagal sync dari Firebase");
     }
 }
 
 async function addHistoryToFirebase(comment) {
     try {
-        // Validasi data sebelum disimpan
-        if (!comment || !comment.authorName || !comment.commentText) {
-            console.error("❌ Data tidak lengkap:", comment);
-            return false;
-        }
-        
         const newId = Date.now() + "_" + Math.random().toString(36).substr(2, 6);
-        const url = `${FIREBASE_URL}deletedHistory/${newId}.json`;
-        console.log("💾 Menyimpan ke Firebase:", url);
-        console.log("📝 Data lengkap:", comment);
-        
-        const response = await fetch(url, {
+        await fetch(`${FIREBASE_URL}deletedHistory/${newId}.json`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(comment)
         });
-        
-        if (response.ok) {
-            console.log("✅ History saved to Firebase");
-            return true;
-        } else {
-            console.error("❌ Gagal save, response:", response.status);
-            return false;
-        }
+        console.log("✅ History saved to Firebase");
     } catch(e) {
-        console.error("❌ Gagal save ke Firebase:", e);
-        return false;
+        console.error("Gagal save ke Firebase:", e);
+    }
+}
+
+async function clearAllHistory() {
+    if(!confirm("⚠️ PERINGATAN: Ini akan menghapus SEMUA history untuk SEMUA pengguna! Yakin?")) return;
+    
+    try {
+        await fetch(`${FIREBASE_URL}deletedHistory.json`, {
+            method: 'PUT',
+            body: JSON.stringify(null)
+        });
+        deletedCommentsLog = [];
+        updateDeletedCount();
+        renderDeletedTable();
+        showToast("✅ Semua history telah dihapus dari Firebase");
+    } catch(e) {
+        showToast("❌ Gagal menghapus history");
     }
 }
 
@@ -689,83 +730,46 @@ function renderDeletedTable() {
     const tbody = document.getElementById("deletedTableBody");
     if(!tbody) return;
     
-    console.log("🔄 Render tabel dengan", deletedCommentsLog.length, "data");
-    
     if(deletedCommentsLog.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;">✨ Belum ada komentar yang dihapus ✨</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;">✨ Belum ada komentar yang dihapus ✨</td></tr>';
         return;
     }
     
-    tbody.innerHTML = deletedCommentsLog.map((log) => {
-        // Pastikan semua field ada nilainya
-        const deletedAt = log.deletedAt || log.timestamp ? new Date(log.timestamp).toLocaleString('id-ID') : 'Tidak diketahui';
-        const authorName = log.authorName || 'Pengguna tidak dikenal';
-        const commentText = log.commentText || 'Komentar tidak tersedia';
-        const videoTitle = log.videoTitle || 'Video tidak diketahui';
-        
-        return `
+    tbody.innerHTML = deletedCommentsLog.map(log => `
         <tr>
-            <td style="white-space:nowrap;">${escapeHtml(deletedAt)}</td>
-            <td><strong>${escapeHtml(authorName)}</strong></td>
-            <td style="max-width:300px;">${escapeHtml(commentText)}</td>
-            <td style="max-width:250px;">${escapeHtml(videoTitle)}</td>
+            <td style="white-space:nowrap;">${escapeHtml(log.deletedAt)}</td>
+            <td><strong>${escapeHtml(log.authorName)}</strong></td>
+            <td style="max-width:300px;">${escapeHtml(log.commentText)}</td>
+            <td style="max-width:250px;">${escapeHtml(log.videoTitle)}</td>
+            <td><span class="badge-deleted">TERHAPUS</span></td>
         </tr>
-    `}).join('');
-    
-    console.log("✅ Tabel dirender dengan", deletedCommentsLog.length, "baris");
+    `).join('');
 }
 
 async function addDeletedCommentToFirebase(authorName, commentText, videoTitle, videoId, commentId) {
-    // VALIDASI: Pastikan semua data ada
-    if (!authorName || !commentText || !videoTitle) {
-        console.error("❌ Data tidak lengkap! authorName:", authorName, "commentText:", commentText, "videoTitle:", videoTitle);
-        return;
-    }
-    
     const now = new Date();
-    const formattedTime = now.toLocaleString('id-ID', { 
-        year: 'numeric', 
-        month: '2-digit', 
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-    });
+    const formattedTime = now.toLocaleString('id-ID');
     
-    // Cek apakah komentar sudah tercatat
     const alreadyExists = deletedCommentsLog.some(log => log.commentId === commentId);
-    if(alreadyExists) {
-        console.log("ℹ️ Komentar sudah tercatat:", commentId);
-        return;
-    }
+    if(alreadyExists) return;
     
-    // Buat objek data lengkap
     const newComment = {
         deletedAt: formattedTime,
-        authorName: authorName.trim(),
-        commentText: commentText.trim(),
-        videoTitle: videoTitle.trim(),
-        videoId: videoId || '',
-        commentId: commentId || '',
+        authorName: authorName,
+        commentText: commentText,
+        videoTitle: videoTitle,
+        videoId: videoId,
+        commentId: commentId,
         timestamp: now.getTime()
     };
     
-    console.log("📝 Menambahkan komentar terhapus dengan data lengkap:", newComment);
+    deletedCommentsLog.unshift(newComment);
+    if(deletedCommentsLog.length > 500) deletedCommentsLog = deletedCommentsLog.slice(0, 500);
     
-    // Simpan ke Firebase
-    const saved = await addHistoryToFirebase(newComment);
-    
-    if (saved) {
-        // Tambahkan ke lokal
-        deletedCommentsLog.unshift(newComment);
-        if(deletedCommentsLog.length > 500) deletedCommentsLog = deletedCommentsLog.slice(0, 500);
-        
-        updateDeletedCount();
-        renderDeletedTable();
-        showToast(`🗑️ Komentar dari ${authorName} dihapus & tersimpan`);
-    } else {
-        showToast("❌ Gagal menyimpan komentar ke Firebase");
-    }
+    updateDeletedCount();
+    renderDeletedTable();
+    await addHistoryToFirebase(newComment);
+    showToast(`🗑️ Komentar dari ${authorName} dihapus dari YouTube & tersimpan di cloud`);
 }
 
 // ==================== LOAD COMMENTS ====================
@@ -807,6 +811,7 @@ async function loadVideoCard(video) {
                 
                 const oldList = savedComments[video.id] || [];
                 if(!isFirstLoad && !oldList.includes(commentId)) {
+                    // NOTIFIKASI KOMENTAR BARU dengan SUARA CEWEK LEMBUT
                     showNewCommentNotification(comment.authorDisplayName, video.title, comment.textDisplay);
                 }
                 
@@ -828,14 +833,8 @@ async function loadVideoCard(video) {
             for(const oldCommentId of oldList) {
                 if(!currentCommentsMap.has(oldCommentId)) {
                     const oldDetail = savedCommentsDetail[video.id]?.[oldCommentId];
-                    if(oldDetail && oldDetail.authorName && oldDetail.commentText) {
-                        await addDeletedCommentToFirebase(
-                            oldDetail.authorName, 
-                            oldDetail.commentText, 
-                            video.title, 
-                            video.id, 
-                            oldCommentId
-                        );
+                    if(oldDetail) {
+                        await addDeletedCommentToFirebase(oldDetail.authorName, oldDetail.commentText, video.title, video.id, oldCommentId);
                     }
                 }
             }
@@ -986,6 +985,7 @@ startAutoRefresh();
 
 window.saveRefresh = saveRefresh;
 window.manualRefresh = manualRefresh;
+window.clearAllHistory = clearAllHistory;
 window.switchTab = switchTab;
 window.testSound = testSound;
 </script>
