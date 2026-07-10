@@ -392,8 +392,8 @@ KOMENTAR <span>NEGATIF YOUTUBE</span>
 <input type="number" id="refreshInput" placeholder="Menit Refresh" value="30" min="1">
 <button onclick="saveRefresh()">SIMPAN REFRESH</button>
 <button onclick="manualRefresh()">REFRESH SEKARANG</button>
-<button onclick="clearAllHistory()" class="danger-btn">HAPUS SEMUA HISTORY</button>
-<button onclick="testSound()" class="success-btn">🔊 TEST SUARA </button>
+<!-- TOMBOL HAPUS SEMUA HISTORY TELAH DIHAPUS -->
+<button onclick="testSound()" class="success-btn">🔊 TEST SUARA</button>
 </div>
 </div>
 
@@ -705,22 +705,7 @@ async function addHistoryToFirebase(comment) {
     }
 }
 
-async function clearAllHistory() {
-    if(!confirm("⚠️ PERINGATAN: Ini akan menghapus SEMUA history untuk SEMUA pengguna! Yakin?")) return;
-    
-    try {
-        await fetch(`${FIREBASE_URL}deletedHistory.json`, {
-            method: 'PUT',
-            body: JSON.stringify(null)
-        });
-        deletedCommentsLog = [];
-        updateDeletedCount();
-        renderDeletedTable();
-        showToast("✅ Semua history telah dihapus dari Firebase");
-    } catch(e) {
-        showToast("❌ Gagal menghapus history");
-    }
-}
+// FUNGSI clearAllHistory() TELAH DIHAPUS - TIDAK ADA YANG BISA HAPUS HISTORY
 
 function updateDeletedCount() {
     document.getElementById("deletedCount").innerText = deletedCommentsLog.length;
@@ -985,7 +970,6 @@ startAutoRefresh();
 
 window.saveRefresh = saveRefresh;
 window.manualRefresh = manualRefresh;
-window.clearAllHistory = clearAllHistory;
 window.switchTab = switchTab;
 window.testSound = testSound;
 </script>
