@@ -147,13 +147,6 @@ transform: translateY(-2px);
 background: #1e293b;
 }
 
-button.danger-btn {
-    background: var(--accent-danger);
-}
-button.danger-btn:hover {
-    background: #dc2626;
-}
-
 button.success-btn {
     background: var(--accent-success);
 }
@@ -383,7 +376,6 @@ KOMENTAR <span>NEGATIF YOUTUBE</span>
 <input type="number" id="refreshInput" placeholder="Menit Refresh" value="30" min="1">
 <button onclick="saveRefresh()">SIMPAN REFRESH</button>
 <button onclick="manualRefresh()">REFRESH SEKARANG</button>
-<!-- TOMBOL REFRESH HISTORY DIHAPUS -->
 <button onclick="testSound()" class="success-btn">🔊 TEST SUARA</button>
 </div>
 </div>
@@ -620,19 +612,26 @@ function startAutoRefresh() {
     refreshInterval = setInterval(() => loadAllComments(), refreshMinutes * 60 * 1000);
 }
 
-// ==================== FIREBASE SYNC ====================
+// ==================== FIREBASE SYNC (DIPERBAIKI) ====================
 async function loadHistoryFromFirebase() {
     try {
         console.log("🔄 Memuat history dari Firebase...");
         const response = await fetch(`${FIREBASE_URL}deletedHistory.json`);
         const data = await response.json();
         
-        console.log("📦 Data dari Firebase:", data);
+        console.log("📦 Data mentah dari Firebase:", data);
         
         if(data) {
-            deletedCommentsLog = Object.values(data);
-            deletedCommentsLog.sort((a,b) => b.timestamp - a.timestamp);
-            console.log(`✅ Loaded ${deletedCommentsLog.length} history dari Firebase`);
+            // Konversi object ke array dan filter data yang valid
+            const rawData = Object.values(data);
+            deletedCommentsLog = rawData.filter(log => {
+                // Hanya tampilkan data yang memiliki minimal authorName atau commentText
+                return log && (log.authorName || log.commentText || log.videoTitle);
+            });
+            // Urutkan dari yang terbaru
+            deletedCommentsLog.sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
+            console.log(`✅ Loaded ${deletedCommentsLog.length} history valid dari Firebase`);
+            console.log("📝 Detail data:", deletedCommentsLog);
         } else {
             deletedCommentsLog = [];
             console.log("ℹ️ Tidak ada history di Firebase");
@@ -652,9 +651,16 @@ async function loadHistoryFromFirebase() {
 
 async function addHistoryToFirebase(comment) {
     try {
+        // Validasi data sebelum disimpan
+        if (!comment || !comment.authorName || !comment.commentText) {
+            console.error("❌ Data tidak lengkap:", comment);
+            return false;
+        }
+        
         const newId = Date.now() + "_" + Math.random().toString(36).substr(2, 6);
         const url = `${FIREBASE_URL}deletedHistory/${newId}.json`;
         console.log("💾 Menyimpan ke Firebase:", url);
+        console.log("📝 Data lengkap:", comment);
         
         const response = await fetch(url, {
             method: 'PUT',
@@ -690,19 +696,32 @@ function renderDeletedTable() {
         return;
     }
     
-    tbody.innerHTML = deletedCommentsLog.map((log) => `
+    tbody.innerHTML = deletedCommentsLog.map((log) => {
+        // Pastikan semua field ada nilainya
+        const deletedAt = log.deletedAt || log.timestamp ? new Date(log.timestamp).toLocaleString('id-ID') : 'Tidak diketahui';
+        const authorName = log.authorName || 'Pengguna tidak dikenal';
+        const commentText = log.commentText || 'Komentar tidak tersedia';
+        const videoTitle = log.videoTitle || 'Video tidak diketahui';
+        
+        return `
         <tr>
-            <td style="white-space:nowrap;">${escapeHtml(log.deletedAt || 'Tidak diketahui')}</td>
-            <td><strong>${escapeHtml(log.authorName || 'Unknown')}</strong></td>
-            <td style="max-width:300px;">${escapeHtml(log.commentText || 'Komentar tidak tersedia')}</td>
-            <td style="max-width:250px;">${escapeHtml(log.videoTitle || 'Video tidak diketahui')}</td>
+            <td style="white-space:nowrap;">${escapeHtml(deletedAt)}</td>
+            <td><strong>${escapeHtml(authorName)}</strong></td>
+            <td style="max-width:300px;">${escapeHtml(commentText)}</td>
+            <td style="max-width:250px;">${escapeHtml(videoTitle)}</td>
         </tr>
-    `).join('');
+    `}).join('');
     
     console.log("✅ Tabel dirender dengan", deletedCommentsLog.length, "baris");
 }
 
 async function addDeletedCommentToFirebase(authorName, commentText, videoTitle, videoId, commentId) {
+    // VALIDASI: Pastikan semua data ada
+    if (!authorName || !commentText || !videoTitle) {
+        console.error("❌ Data tidak lengkap! authorName:", authorName, "commentText:", commentText, "videoTitle:", videoTitle);
+        return;
+    }
+    
     const now = new Date();
     const formattedTime = now.toLocaleString('id-ID', { 
         year: 'numeric', 
@@ -713,27 +732,31 @@ async function addDeletedCommentToFirebase(authorName, commentText, videoTitle, 
         second: '2-digit'
     });
     
+    // Cek apakah komentar sudah tercatat
     const alreadyExists = deletedCommentsLog.some(log => log.commentId === commentId);
     if(alreadyExists) {
         console.log("ℹ️ Komentar sudah tercatat:", commentId);
         return;
     }
     
+    // Buat objek data lengkap
     const newComment = {
         deletedAt: formattedTime,
-        authorName: authorName,
-        commentText: commentText,
-        videoTitle: videoTitle,
-        videoId: videoId,
-        commentId: commentId,
+        authorName: authorName.trim(),
+        commentText: commentText.trim(),
+        videoTitle: videoTitle.trim(),
+        videoId: videoId || '',
+        commentId: commentId || '',
         timestamp: now.getTime()
     };
     
-    console.log("📝 Menambahkan komentar terhapus:", newComment);
+    console.log("📝 Menambahkan komentar terhapus dengan data lengkap:", newComment);
     
+    // Simpan ke Firebase
     const saved = await addHistoryToFirebase(newComment);
     
     if (saved) {
+        // Tambahkan ke lokal
         deletedCommentsLog.unshift(newComment);
         if(deletedCommentsLog.length > 500) deletedCommentsLog = deletedCommentsLog.slice(0, 500);
         
@@ -805,8 +828,14 @@ async function loadVideoCard(video) {
             for(const oldCommentId of oldList) {
                 if(!currentCommentsMap.has(oldCommentId)) {
                     const oldDetail = savedCommentsDetail[video.id]?.[oldCommentId];
-                    if(oldDetail) {
-                        await addDeletedCommentToFirebase(oldDetail.authorName, oldDetail.commentText, video.title, video.id, oldCommentId);
+                    if(oldDetail && oldDetail.authorName && oldDetail.commentText) {
+                        await addDeletedCommentToFirebase(
+                            oldDetail.authorName, 
+                            oldDetail.commentText, 
+                            video.title, 
+                            video.id, 
+                            oldCommentId
+                        );
                     }
                 }
             }
