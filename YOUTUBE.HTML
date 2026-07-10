@@ -324,14 +324,7 @@ color: var(--text-secondary);
     border-bottom: 1px solid var(--border);
 }
 
-.badge-deleted {
-    background: var(--accent-danger);
-    color: white;
-    padding: 2px 8px;
-    border-radius: 20px;
-    font-size: 10px;
-    font-weight: 600;
-}
+/* BADGE TERHAPUS SUDAH DIHAPUS */
 
 .toast{
 position: fixed;
@@ -392,7 +385,6 @@ KOMENTAR <span>NEGATIF YOUTUBE</span>
 <input type="number" id="refreshInput" placeholder="Menit Refresh" value="30" min="1">
 <button onclick="saveRefresh()">SIMPAN REFRESH</button>
 <button onclick="manualRefresh()">REFRESH SEKARANG</button>
-<!-- TOMBOL HAPUS SEMUA HISTORY TELAH DIHAPUS -->
 <button onclick="testSound()" class="success-btn">🔊 TEST SUARA</button>
 </div>
 </div>
@@ -409,8 +401,17 @@ KOMENTAR <span>NEGATIF YOUTUBE</span>
 <div id="deletedTab" class="tab-content">
 <div class="deleted-table-container">
 <table class="deleted-table">
-<thead><tr><th>Waktu Dihapus</th><th>Pengguna</th><th>Komentar</th><th>Video</th><th>Status</th></tr></thead>
-<tbody id="deletedTableBody"><tr><td colspan="5" style="text-align:center;padding:40px;">⏳ Memuat data dari Firebase......</td></tr>
+<thead>
+<tr>
+<th>Waktu Dihapus</th>
+<th>Pengguna</th>
+<th>Komentar</th>
+<th>Video</th>
+<!-- KOLOM STATUS SUDAH DIHAPUS -->
+</tr>
+</thead>
+<tbody id="deletedTableBody">
+<tr><td colspan="4" style="text-align:center;padding:40px;">⏳ Memuat data dari Firebase...</td></tr>
 </tbody>
 </table>
 </div>
@@ -457,21 +458,18 @@ let speechSynthesis = window.speechSynthesis;
 let notificationPermission = false;
 let selectedVoice = null;
 
-// Fungsi untuk mendapatkan suara cewek Indonesia yang lembut
 function getIndonesianFemaleVoice() {
     const voices = speechSynthesis.getVoices();
     
-    // Daftar prioritas suara cewek Indonesia (dari yang terbaik)
     const priorityList = [
-        "Google Bahasa Indonesia",      // Google Assistant (cewek, lembut)
-        "Microsoft Siti Online",        // Microsoft Siti (cewek Indonesia)
-        "Google Bahasa Indonesia",      // alternatif
-        "Siti",                         // Siti Indonesia
-        "Female",                       // generic female
-        "Perempuan"                     // generic perempuan
+        "Google Bahasa Indonesia",
+        "Microsoft Siti Online",
+        "Google Bahasa Indonesia",
+        "Siti",
+        "Female",
+        "Perempuan"
     ];
     
-    // Cari suara yang match dengan prioritas
     for (const priority of priorityList) {
         const voice = voices.find(v => 
             (v.lang === "id-ID" || v.lang === "id") && 
@@ -480,22 +478,18 @@ function getIndonesianFemaleVoice() {
         if (voice) return voice;
     }
     
-    // Fallback: cari suara dengan lang id-ID (Indonesia)
     const indonesianVoice = voices.find(v => v.lang === "id-ID");
     if (indonesianVoice) return indonesianVoice;
     
-    // Fallback terakhir: cari suara female dengan bahasa apapun
     const femaleVoice = voices.find(v => 
         v.name.toLowerCase().includes("female") || 
         v.name.toLowerCase().includes("perempuan")
     );
     if (femaleVoice) return femaleVoice;
     
-    // Default: suara pertama yang available
     return voices[0];
 }
 
-// Inisialisasi suara (panggil setelah voices loaded)
 function initVoice() {
     const voices = speechSynthesis.getVoices();
     if (voices.length > 0) {
@@ -504,36 +498,30 @@ function initVoice() {
     }
 }
 
-// Load voices (karena kadang perlu waktu)
 if (speechSynthesis) {
     speechSynthesis.onvoiceschanged = () => {
         initVoice();
     };
-    // Coba langsung
     setTimeout(() => initVoice(), 500);
 }
 
-// Fungsi untuk mengucapkan teks dengan suara cewek lembut
 function speakText(text) {
     if (!speechEnabled) return;
     
     try {
-        // Hentikan suara yang sedang berlangsung
         if (speechSynthesis.speaking) {
             speechSynthesis.cancel();
         }
         
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = "id-ID"; // Bahasa Indonesia
-        utterance.rate = 0.85;    // Sedikit lebih lambat (lembut)
-        utterance.pitch = 1.15;   // Nada lebih tinggi (khas cewek)
-        utterance.volume = 1.0;   // Volume maksimal
+        utterance.lang = "id-ID";
+        utterance.rate = 0.85;
+        utterance.pitch = 1.15;
+        utterance.volume = 1.0;
         
-        // Gunakan suara cewek yang sudah dipilih
         if (selectedVoice) {
             utterance.voice = selectedVoice;
         } else {
-            // Coba cari lagi suara cewek Indonesia
             const voices = speechSynthesis.getVoices();
             const femaleIndo = voices.find(v => 
                 (v.lang === "id-ID" || v.lang === "id") && 
@@ -550,7 +538,6 @@ function speakText(text) {
     }
 }
 
-// Fallback jika speech synthesis gagal
 function playFallbackBeep() {
     try {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -571,7 +558,6 @@ function playFallbackBeep() {
     }
 }
 
-// Minta izin notifikasi
 function requestNotificationPermission() {
     if ("Notification" in window) {
         if (Notification.permission === "default") {
@@ -585,7 +571,6 @@ function requestNotificationPermission() {
     }
 }
 
-// Tampilkan notifikasi desktop
 function showDesktopNotification(title, body) {
     if (notificationPermission && "Notification" in window) {
         try {
@@ -605,27 +590,21 @@ function showDesktopNotification(title, body) {
     }
 }
 
-// Tampilkan notifikasi komentar baru DENGAN SUARA CEWEK LEMBUT
 function showNewCommentNotification(username, videoTitle, commentText) {
-    // 1. SUARA UCAPAN CEWEK LEMBUT: "SATU KOMENTAR NEGATIF YOUTUBE"
     speakText("SATU KOMENTAR NEGATIF YOUTUBE");
     
-    // 2. Toast di dalam halaman
     const toast = document.getElementById("toast");
     document.getElementById("toastText").innerHTML = `💬 <strong>${escapeHtml(username)}</strong> berkomentar di <strong>${escapeHtml(videoTitle)}</strong><br><span style="font-size:11px;">${escapeHtml(commentText.substring(0,80))}${commentText.length>80?'...':''}</span>`;
     toast.classList.add("show");
     setTimeout(() => toast.classList.remove("show"), 5000);
     
-    // 3. Notifikasi desktop
     showDesktopNotification(`💬 Komentar baru dari ${username}`, `${videoTitle}\n"${commentText.substring(0,100)}${commentText.length>100?'...':''}"`);
 }
 
-// Test suara (tombol TEST SUARA)
 function testSound() {
     speakText("SATU KOMENTAR NEGATIF YOUTUBE");
     showToast("🔊 Test suara cewek lembut! Seharusnya terdengar 'SATU KOMENTAR NEGATIF YOUTUBE' dengan suara perempuan");
     
-    // Test notifikasi desktop
     if (notificationPermission) {
         new Notification("Test Notifikasi", { body: "Notifikasi berfungsi dengan baik!" });
     } else {
@@ -634,10 +613,8 @@ function testSound() {
     }
 }
 
-// Panggil minta izin saat halaman dimuat
 requestNotificationPermission();
 
-// Aktifkan Speech Synthesis (butuh interaksi user pertama)
 function enableSpeech() {
     speechEnabled = true;
     if (speechSynthesis) {
@@ -705,8 +682,6 @@ async function addHistoryToFirebase(comment) {
     }
 }
 
-// FUNGSI clearAllHistory() TELAH DIHAPUS - TIDAK ADA YANG BISA HAPUS HISTORY
-
 function updateDeletedCount() {
     document.getElementById("deletedCount").innerText = deletedCommentsLog.length;
 }
@@ -716,7 +691,7 @@ function renderDeletedTable() {
     if(!tbody) return;
     
     if(deletedCommentsLog.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;">✨ Belum ada komentar yang dihapus ✨</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;">✨ Belum ada komentar yang dihapus ✨</td></tr>';
         return;
     }
     
@@ -726,7 +701,7 @@ function renderDeletedTable() {
             <td><strong>${escapeHtml(log.authorName)}</strong></td>
             <td style="max-width:300px;">${escapeHtml(log.commentText)}</td>
             <td style="max-width:250px;">${escapeHtml(log.videoTitle)}</td>
-            <td><span class="badge-deleted">TERHAPUS</span></td>
+            <!-- BADGE TERHAPUS SUDAH DIHAPUS -->
         </tr>
     `).join('');
 }
@@ -796,7 +771,6 @@ async function loadVideoCard(video) {
                 
                 const oldList = savedComments[video.id] || [];
                 if(!isFirstLoad && !oldList.includes(commentId)) {
-                    // NOTIFIKASI KOMENTAR BARU dengan SUARA CEWEK LEMBUT
                     showNewCommentNotification(comment.authorDisplayName, video.title, comment.textDisplay);
                 }
                 
