@@ -72,6 +72,8 @@
             -webkit-font-smoothing: antialiased;
             -webkit-tap-highlight-color: transparent;
             transition: background 0.3s, color 0.3s;
+            width: 100%;
+            min-height: 100vh;
         }
         body { display: flex; }
 
@@ -159,7 +161,13 @@
         }
 
         /* ═══════════════ APP SHELL ═══════════════ */
-        #app-shell { display: flex; width: 100%; height: 100vh; overflow: hidden; }
+        #app-shell {
+            display: flex;
+            width: 100vw;
+            max-width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
 
         /* ═══════════════ SIDEBAR ═══════════════ */
         #sidebar {
@@ -171,6 +179,7 @@
             z-index: 100;
             transition: width 0.25s, transform 0.3s;
             overflow: hidden;
+            flex-shrink: 0;
         }
         .sidebar-brand {
             padding: 18px 20px;
@@ -261,7 +270,14 @@
         }
 
         /* ═══════════════ MAIN ═══════════════ */
-        #main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+        #main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            min-width: 0;
+            width: 100%;
+        }
 
         /* ═══════════════ HEADER ═══════════════ */
         header {
@@ -273,6 +289,7 @@
             display: flex; align-items: center; gap: 14px;
             flex-shrink: 0;
             z-index: 50;
+            width: 100%;
         }
         .hamburger-btn {
             display: none;
@@ -391,24 +408,29 @@
         }
 
         /* ═══════════════ CONTENT ═══════════════ */
-        #content-area { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+        #content-area {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
         #content-dashboard {
-            flex: 1; overflow-y: auto;
-            padding: 22px 24px 40px;
+            flex: 1;
+            overflow-y: auto;
+            padding: 22px 28px 40px;
+            width: 100%;
+            max-width: 100%;
             background:
                 radial-gradient(circle at 0% 0%, rgba(59,130,246,0.06), transparent 30%),
                 radial-gradient(circle at 100% 100%, rgba(139,92,246,0.05), transparent 30%),
                 var(--bg);
         }
-        body.light #content-dashboard {
-            background:
-                radial-gradient(circle at 0% 0%, rgba(59,130,246,0.06), transparent 30%),
-                radial-gradient(circle at 100% 100%, rgba(139,92,246,0.04), transparent 30%),
-                var(--bg);
-        }
+        #content-dashboard > * { width: 100%; max-width: 100%; }
         #content-frame {
             width: 100%; height: 100%; border: none;
             display: none; background: var(--bg); flex: 1;
+            max-width: 100%;
         }
 
         /* ═══════════════ HERO ROW ═══════════════ */
@@ -417,6 +439,7 @@
             grid-template-columns: 1.5fr 1fr;
             gap: 16px;
             margin-bottom: 20px;
+            width: 100%;
         }
         .hero-card {
             background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
@@ -475,7 +498,6 @@
         }
         .hero-actions { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
 
-        /* Date card */
         .date-card {
             background: linear-gradient(135deg, var(--surface), var(--surface-2));
             border: 1px solid var(--border);
@@ -524,9 +546,10 @@
         /* ═══════════════ KPI GRID ═══════════════ */
         .kpi-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-            gap: 14px;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
             margin-bottom: 20px;
+            width: 100%;
         }
         .kpi-card {
             background: var(--surface);
@@ -583,7 +606,6 @@
             letter-spacing: 0.2px;
         }
 
-        /* Accent per card */
         .kpi-icon.i1 { background: linear-gradient(135deg, #3b82f6, #2563eb); box-shadow: 0 6px 16px rgba(59,130,246,0.35); }
         .kpi-icon.i2 { background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 6px 16px rgba(245,158,11,0.35); }
         .kpi-icon.i3 { background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 6px 16px rgba(16,185,129,0.35); }
@@ -605,6 +627,7 @@
             display: flex; align-items: center; justify-content: space-between;
             margin: 4px 0 14px;
             gap: 12px;
+            width: 100%;
         }
         .section-head-left { display: flex; align-items: center; gap: 10px; }
         .section-head .sh-icon {
@@ -640,9 +663,9 @@
             grid-template-columns: 1fr 1fr;
             gap: 16px;
             margin-bottom: 20px;
+            width: 100%;
         }
 
-        /* Clock panel */
         .clock-panel {
             background: linear-gradient(145deg, var(--surface), var(--surface-2));
             border: 1px solid var(--border);
@@ -704,7 +727,6 @@
             display: flex; align-items: center; gap: 6px;
         }
 
-        /* Speed panel */
         .speed-panel {
             background: linear-gradient(145deg, var(--surface), var(--surface-2));
             border: 1px solid var(--border);
@@ -835,6 +857,7 @@
             border-radius: var(--radius);
             overflow: hidden;
             margin-bottom: 20px;
+            width: 100%;
         }
         .cmd-header {
             background: var(--surface-2);
@@ -1181,22 +1204,62 @@
         }
         .bnav-item:active { background: var(--surface-2); }
 
-        /* ═══════════════ RESPONSIVE ═══════════════ */
-        @media (max-width: 1100px) {
-            .header-search { max-width: 200px; }
+        /* ═══════════════════════════════════════════════════════════════
+           RESPONSIVE — FULL WIDTH DI SEMUA LAYAR
+           ═══════════════════════════════════════════════════════════════ */
+
+        /* ==== ULTRA WIDE (2K, 4K, ultrawide) ==== */
+        @media (min-width: 1920px) {
+            :root { --sidebar-w: 280px; --header-h: 68px; }
+            #content-dashboard { padding: 28px 40px 52px; }
+            .kpi-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+            .hero-title { font-size: 30px; }
+            .kpi-value { font-size: 34px; }
+            .hero-row { grid-template-columns: 2fr 1fr; gap: 20px; }
+            .monitor-row { grid-template-columns: 1fr 1fr; gap: 20px; }
+            .hero-card { padding: 32px 36px; }
+            .clock-hm { font-size: 72px; }
+            .clock-ss { font-size: 40px; }
+            .menu-item { font-size: 13.5px; padding: 10px 12px; }
         }
 
-        @media (max-width: 1024px) {
+        /* ==== LARGE DESKTOP (1400px - 1920px) ==== */
+        @media (min-width: 1400px) and (max-width: 1919px) {
+            #content-dashboard { padding: 24px 32px 44px; }
+            .kpi-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
+            .hero-row { grid-template-columns: 1.8fr 1fr; gap: 18px; }
+            .hero-title { font-size: 28px; }
+            .kpi-value { font-size: 32px; }
+        }
+
+        /* ==== DESKTOP NORMAL (1100px - 1400px) ==== */
+        @media (min-width: 1100px) and (max-width: 1399px) {
+            #content-dashboard { padding: 22px 28px 40px; }
+            .hero-row { grid-template-columns: 1.6fr 1fr; }
+            .monitor-row { grid-template-columns: 1fr 1fr; }
+        }
+
+        /* ==== TABLET (768px - 1099px) ==== */
+        @media (max-width: 1099px) and (min-width: 769px) {
             :root { --sidebar-w: 220px; }
-            .hero-row { grid-template-columns: 1fr; }
-            .monitor-row { grid-template-columns: 1fr; }
+            #content-dashboard { padding: 20px 20px 40px; }
+            .hero-row { grid-template-columns: 1fr 1fr; gap: 14px; }
+            .monitor-row { grid-template-columns: 1fr; gap: 14px; }
             .kpi-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
-            #content-dashboard { padding: 18px 18px 36px; }
+            .kpi-value { font-size: 26px; }
+            .kpi-icon { width: 36px; height: 36px; font-size: 14px; }
+            .hero-title { font-size: 22px; }
+            .clock-hm { font-size: 54px; }
+            .clock-ss { font-size: 30px; }
             .user-pill .uinfo { display: none; }
             .user-pill { padding: 4px; }
             .header-search { display: none; }
+            .hbtn span { display: none; }
+            .hbtn { padding: 10px 12px; }
+            .gauge-wrap svg { max-width: 220px; }
         }
 
+        /* ==== MOBILE (< 768px) ==== */
         @media (max-width: 768px) {
             :root { --sidebar-w: 280px; }
 
@@ -1207,17 +1270,19 @@
                 box-shadow: var(--shadow-lg);
                 z-index: 100;
                 padding-bottom: 80px;
+                width: 280px;
+                min-width: 280px;
             }
             #sidebar.open { transform: translateX(0); }
 
-            header { padding: 0 14px; gap: 10px; }
+            header { padding: 0 14px; gap: 10px; height: 60px; min-height: 60px; }
             .hamburger-btn { display: flex; }
             .page-title-wrap .crumb { display: none; }
             .page-title-wrap .ptitle { font-size: 14px; }
             .header-search { display: none; }
             .hbtn span { display: none; }
             .hbtn { padding: 10px 12px; }
-            .icon-btn { display: none; }
+            .icon-btn { width: 38px; height: 38px; font-size: 13px; }
             .user-pill .uinfo { display: none; }
             .user-pill { padding: 4px; }
 
@@ -1246,7 +1311,7 @@
 
             .monitor-row { grid-template-columns: 1fr; gap: 12px; margin-bottom: 14px; }
             .clock-panel { padding: 20px; min-height: auto; border-radius: 14px; }
-            .clock-hm { font-size: 48px; letter-spacing: -2px; }
+            .clock-hm { font-size: 46px; letter-spacing: -2px; }
             .clock-ss { font-size: 26px; min-width: 38px; }
             .clock-date { font-size: 12px; }
             .clock-day { font-size: 10px; }
@@ -1310,7 +1375,7 @@
 <div id="login-overlay">
     <canvas id="particles-canvas"></canvas>
     <div class="login-card">
-        <img src="https://puli32217.com/resources/images/logo.png" alt="Logo" class="login-logo">
+        <img src="https://cdn.areabermain.club/assets/cdn/az2/2025/07/25/20250725/09bebe00c69f3dda407b843c22415fbe/logo.png" alt="Logo" class="login-logo">
         <div class="login-title">CS LINE PULITOTO</div>
         <div class="login-subtitle">Management System</div>
         <button id="google-login-btn" class="google-btn">
@@ -1913,7 +1978,7 @@ function getWIBTime() {
 function pad2(n) { return String(n).padStart(2, '0'); }
 
 // ═══════════════════════════════════════════════════════
-//  DARK/LIGHT MODE — default dark, toggle
+//  DARK/LIGHT MODE
 // ═══════════════════════════════════════════════════════
 const darkToggleBtn = document.getElementById('darkModeToggle');
 function applyMode() {
